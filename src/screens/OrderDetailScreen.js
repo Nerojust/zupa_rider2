@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 // create a component
-const DeliveryScreen = () => {
+const OrderDetailScreen = () => {
     return (
         <View style={styles.container}>
-            <Text>DeliveryScreen</Text>
+            <Text>Order Detail Screen</Text>
         </View>
     );
 };
@@ -22,4 +22,4 @@ const styles = StyleSheet.create({
 });
 
 //make this component available to the app
-export default DeliveryScreen;
+export default OrderDetailScreen;

@@ -8,7 +8,13 @@ const LoginScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text>Home</Text>
-      <TouchableOpacity onPress={() => navigation.navigate("Dashboard")}>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate("Home", {
+            screen: "Dashboard",
+          })
+        }
+      >
         <Text style={{ fontSize: 20 }}>Login. Navigate to Dashboard</Text>
       </TouchableOpacity>
     </View>

@@ -1,17 +1,17 @@
 import WelcomeScreen from "./WelcomeScreen";
 import LoginScreen from "./LoginScreen";
 import DashboardScreen from "./DashboardScreen";
-import DeliveryScreen from "./DeliveryScreen";
-import DeliveryDetailScreen from "./DeliveryDetailScreen";
-import DeliveryHistoryScreen from "./DeliveryHistoryScreen";
+import OrdersScreen from "./OrdersScreen";
+import OrderDetailScreen from "./OrderDetailScreen";
+import OrderHistoryScreen from "./OrderHistoryScreen";
 import ForgotPasswordScreen from "./ForgotPasswordScreen";
 
 export {
   WelcomeScreen,
   LoginScreen,
   DashboardScreen,
-  DeliveryScreen,
-  DeliveryDetailScreen,
-  DeliveryHistoryScreen,
+  OrdersScreen,
+  OrderDetailScreen,
+  OrderHistoryScreen,
   ForgotPasswordScreen,
 };

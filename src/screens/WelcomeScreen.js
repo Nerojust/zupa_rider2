@@ -52,7 +52,7 @@ const WelcomeScreen = ({ navigation }) => {
         <Text style={styles.text}>Sign in with an account</Text>
         <View style={styles.button}>
           <TouchableOpacity
-            onPress={() => navigation.push("SignInScreen")}
+            onPress={() => navigation.push("Login")}
             activeOpacity={0.8}
           >
             <LinearGradient
