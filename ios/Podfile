@@ -8,6 +8,7 @@ target 'zupa_rider' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+
   target 'zupa_riderTests' do
     inherit! :complete
     # Pods for testing
