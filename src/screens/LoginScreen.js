@@ -12,6 +12,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  StatusBar,
   Platform,
 } from "react-native";
 import { AuthContext } from "../utils/Context";
@@ -20,6 +21,7 @@ import { TextInput } from "react-native-paper";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 import { COLORS, FONTS, SIZES } from "../utils/theme";
 import TogglePasswordEye from "../components/TogglePassword";
+import LoadingDialog from "../components/LoadingDialog";
 import { visibleImage, inVisibleImage } from "../utils/icons";
 import TextInputComponent from "../components/TextInputComponent";
 import DisplayButton from "../components/Button";
@@ -56,10 +58,17 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <LoadingDialog loading={isLoading} />
+      <StatusBar
+        backgroundColor={COLORS.primary}
+        barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
+      />
       <View
         style={{
+          flex:1,
           justifyContent: "center",
           alignItems: "center",
+          width: SIZES.width - 70,
         }}
       >
         <Image
@@ -70,11 +79,12 @@ const LoginScreen = ({ navigation }) => {
 
         <View
           style={{
-            width: SIZES.width - 70,
             alignSelf: "center",
             marginTop: 20,
           }}
         >
+
+
           <TextInputComponent
             placeholder={"Email"}
             handleTextChange={handleEmailAddress}
@@ -94,10 +104,11 @@ const LoginScreen = ({ navigation }) => {
               secureTextEntry={securePassword ? true : false}
             />
           </View>
+
           <TouchableOpacity>
             <Text
               style={{
-                color: COLORS.purple1,
+                color: COLORS.primary,
                 marginTop: 30,
                 fontSize: 14,
                 alignSelf: "flex-end",
@@ -125,12 +136,13 @@ const LoginScreen = ({ navigation }) => {
               flexDirection: "row",
               justifyContent: "center",
               alignItems: "center",
+              marginTop: 45,
             }}
           >
             <Text
               style={{
                 color: COLORS.black,
-                marginTop: 50,
+
                 fontSize: 14,
                 alignSelf: "center",
                 fontFamily:
@@ -146,7 +158,6 @@ const LoginScreen = ({ navigation }) => {
               <Text
                 style={{
                   color: COLORS.black,
-                  marginTop: 50,
                   fontSize: 15,
                   fontWeight: "bold",
                   alignSelf: "center",
@@ -172,40 +183,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: COLORS.white,
-  },
-
-  header: {
-    flex: 0.5,
-    justifyContent: "flex-end",
-    paddingHorizontal: 20,
-    paddingBottom: Platform.OS === "ios" ? 50 : 20,
-  },
-  text_header: {
-    color: COLORS.secondary,
-    //fontWeight: "bold",
-    fontSize: 28,
-    fontFamily: "Montserrat-Medium",
-  },
-  footer: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    paddingHorizontal: 20,
-    paddingVertical: 25,
-  },
-  textInputView: {
-    flex: 0.3,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-  },
-  textInput: {
-    flex: 0.8,
-    height: 50,
-    fontFamily: "roboto_light",
-    //width: "81%",
-    fontSize: 17,
   },
 });
 

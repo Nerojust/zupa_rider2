@@ -19,9 +19,9 @@ const TextInputComponent = ({
       <TextInput
         style={styles.textInput}
         placeholder={placeholder}
-        placeholderTextColor={(color = COLORS.gray)}
+        placeholderTextColor={COLORS.gray}
         onChangeText={(text) => handleTextChange(text)}
-        underlineColor={{ color: COLORS.white }}
+        underlineColor={COLORS.white}
         defaultValue={defaultValue}
         ref={ref}
         //onSubmitEditing={() => nextRef.current.focus()}
@@ -42,13 +42,13 @@ const styles = StyleSheet.create({
     marginTop: 20,
     backgroundColor: COLORS.lightGray5,
     paddingLeft: 16,
-    color: COLORS.red,
+    color: COLORS.black,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
     borderBottomLeftRadius: 10,
     fontSize: 17,
-    paddingVertical:26
+    //paddingVertical: 26, 
   },
 });
 

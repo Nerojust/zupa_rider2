@@ -23,7 +23,7 @@ const LoadingDialog = (props) => {
           <ActivityIndicator
             animating={loading}
             size="large"
-            color={Colors.appGreen}
+            color={COLORS.primary}
           />
         </View>
       </View>
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.modalBg,
   },
   activityIndicatorWrapper: {
-    backgroundColor: Colors.lightGray,
+    backgroundColor: COLORS.lightGray,
     height: 70,
     width: 70,
     borderRadius: 10,
