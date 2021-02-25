@@ -1,7 +1,7 @@
 //import liraries
 import React, { Component } from "react";
 import { View, Text, StyleSheet, TextInput } from "react-native";
-import { COLORS, SIZES } from "../utils/theme";
+import { COLORS } from "../utils/theme";
 
 // create a component
 const TextInputComponent = ({
@@ -42,11 +42,11 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     color: COLORS.black,
     borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
+    // borderTopRightRadius: 10,
+    // borderBottomRightRadius: 10,
     borderBottomLeftRadius: 10,
-    fontSize: 17,alignSelf:'center',
-    width: SIZES.width - 70,
+    fontSize: 17,
+    //paddingVertical: 26,
   },
 });
 

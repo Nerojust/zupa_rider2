@@ -1,34 +1,31 @@
 //import liraries
 import React from "react";
-import { Dimensions, StyleSheet } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 
-import { Button } from "react-native-paper";
-import { SIZES } from "../utils/theme";
+import { COLORS, SIZES } from "../utils/theme";
 
 // create a component
-const ButtonComponent = ({ text, onPress, color, mode }) => {
+const ButtonComponent = ({ text, onPress, color }) => {
   return (
-    <Button
-      //icon="door"
-      mode={mode}
-      onPress={onPress}
-      color={color}
-      uppercase={false}
+    <TouchableOpacity
       style={{
         height: 50,
-        width: SIZES.width - 65,
+        width: SIZES.width-70,
+        backgroundColor: color,
         justifyContent: "center",
-        //marginHorizontal: 20,
-        marginTop: 15,
-        borderRadius: 8,
+        alignItems: "center",
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10,
       }}
+      onPress={onPress}
     >
-      {text}
-    </Button>
+      <Text style={{ color: COLORS.white, fontSize: 18, fontWeight: "bold" }}>
+        {text}
+      </Text>
+    </TouchableOpacity>
   );
 };
 
-// define your styles
-
-//make this component available to the app
 export default ButtonComponent;

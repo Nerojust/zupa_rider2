@@ -18,7 +18,18 @@ const AuthStack = () => (
   >
     <Auth.Screen name="Welcome" component={WelcomeScreen} />
     <Auth.Screen name="Login" component={LoginScreen} />
-    <Auth.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+    <Auth.Screen
+      name="ForgotPassword"
+      component={ForgotPasswordScreen}
+      options={{
+        title: "Reset",
+        headerShown: true,
+        headerStyle: {
+          elevation: 0,
+          shadowOpacity: 0,
+        },
+      }}
+    />
   </Auth.Navigator>
 );
 // create a component

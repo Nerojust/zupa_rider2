@@ -16,15 +16,13 @@ import {
   Platform,
 } from "react-native";
 import { AuthContext } from "../utils/Context";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import { TextInput } from "react-native-paper";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 import { COLORS, FONTS, SIZES } from "../utils/theme";
 import TogglePasswordEye from "../components/TogglePassword";
 import LoadingDialog from "../components/LoadingDialog";
-import { visibleImage, inVisibleImage } from "../utils/icons";
 import TextInputComponent from "../components/TextInputComponent";
+import TextInputComponent2 from "../components/TextInputComponent2";
 import DisplayButton from "../components/Button";
+
 // create a component
 const LoginScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -55,6 +53,14 @@ const LoginScreen = ({ navigation }) => {
       screen: "Dashboard",
     });
   };
+  const gotoForgotPasswordPage = () => {
+    navigation.navigate("ForgotPassword", {
+      screen: "Dashboard",
+    });
+  };
+  const handleRefFocus = () => {
+    passwordRef.current.focus();
+  };
 
   return (
     <View style={styles.container}>
@@ -63,63 +69,49 @@ const LoginScreen = ({ navigation }) => {
         backgroundColor={COLORS.primary}
         barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
       />
-      <View
-        style={{
-          flex:1,
-          justifyContent: "center",
-          alignItems: "center",
-          width: SIZES.width - 70,
-        }}
-      >
+      <View style={styles.parentView}>
         <Image
           source={require("../assets/icons/zupa.png")}
           resizeMode={"contain"}
-          style={{ width: Platform.OS == "ios" ? 190 : 170, height: 40 }}
+          style={styles.logoImage}
         />
 
-        <View
-          style={{
-            alignSelf: "center",
-            marginTop: 20,
-          }}
-        >
-
-
+        <View style={styles.emailAndPasswordView}>
           <TextInputComponent
             placeholder={"Email"}
             handleTextChange={handleEmailAddress}
             defaultValue={emailAddress}
-            //ref={emailAddressRef}
-            // nextRef={passwordRef}
+            refInput={emailAddressRef}
+            onSubmitEditing={handleRefFocus}
             keyboardType={"email-address"}
             secureTextEntry={false}
+            returnKeyType="next"
           />
-          <View style={{ marginTop: 10 }}>
-            <TextInputComponent
-              placeholder={"Password"}
-              handleTextChange={handlePassword}
-              defaultValue={password}
-              //ref={passwordRef}
-              keyboardType={"default"}
-              secureTextEntry={securePassword ? true : false}
-            />
-          </View>
-
-          <TouchableOpacity>
-            <Text
+          <View style={styles.passwordRowView}>
+            <View
               style={{
-                color: COLORS.primary,
-                marginTop: 30,
-                fontSize: 14,
-                alignSelf: "flex-end",
-                fontFamily:
-                  Platform.OS == "ios"
-                    ? FONTS.ROBOTO_REGULAR_IOS
-                    : FONTS.ROBOTO_REGULAR,
+                flex: 1,
               }}
             >
-              Forgot Password?
-            </Text>
+              <TextInputComponent2
+                placeholder={"Password"}
+                handleTextChange={handlePassword}
+                defaultValue={password}
+                refInput={passwordRef}
+                keyboardType={"default"}
+                returnKeyType="done"
+                secureTextEntry={securePassword ? true : false}
+              />
+            </View>
+            <TouchableOpacity
+              style={styles.toggleView}
+              onPress={togglePassword}
+            >
+              <TogglePasswordEye securePassword={securePassword} />
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity onPress={gotoForgotPasswordPage}>
+            <Text style={styles.forgotPasswordView}>Forgot Password?</Text>
           </TouchableOpacity>
 
           <View style={{ marginTop: 18 }}>
@@ -127,18 +119,9 @@ const LoginScreen = ({ navigation }) => {
               text="Login"
               onPress={performValidation}
               color={COLORS.purple1}
-              mode={"contained"}
             />
           </View>
-          <View
-            style={{
-              //flex: 1,
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-              marginTop: 45,
-            }}
-          >
+          <View style={styles.signRowView}>
             <Text
               style={{
                 color: COLORS.black,
@@ -155,20 +138,7 @@ const LoginScreen = ({ navigation }) => {
             </Text>
 
             <TouchableOpacity style={{ marginLeft: 5 }}>
-              <Text
-                style={{
-                  color: COLORS.black,
-                  fontSize: 15,
-                  fontWeight: "bold",
-                  alignSelf: "center",
-                  fontFamily:
-                    Platform.OS == "ios"
-                      ? FONTS.ROBOTO_REGULAR_IOS
-                      : FONTS.ROBOTO_REGULAR,
-                }}
-              >
-                Sign Up
-              </Text>
+              <Text style={styles.signUp}>Sign Up</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -183,6 +153,60 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: COLORS.white,
+  },
+  parentView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    //width: SIZES.width - 70,
+   
+    marginHorizontal: 35,
+  },
+  logoImage: { width: Platform.OS == "ios" ? 190 : 170, height: 40 },
+  emailAndPasswordView: {
+    alignSelf: "center",
+    marginTop: 20,
+  },
+  toggleView: {
+    backgroundColor: COLORS.lightGray5,
+    flex: 0.2,
+    justifyContent: "center",
+    top: 10,
+    left: -1,
+    height: 50,
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+  signUp: {
+    color: COLORS.black,
+    fontSize: 15,
+    fontWeight: "bold",
+    alignSelf: "center",
+    fontFamily:
+      Platform.OS == "ios" ? FONTS.ROBOTO_REGULAR_IOS : FONTS.ROBOTO_REGULAR,
+  },
+  passwordRowView: {
+    marginTop: 10,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+  },
+  signRowView: {
+    //flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 45,
+  },
+  forgotPasswordView: {
+    color: COLORS.primary,
+    marginTop: 30,
+    fontSize: 14,
+    alignSelf: "flex-end",
+    fontFamily:
+      Platform.OS == "ios" ? FONTS.ROBOTO_REGULAR_IOS : FONTS.ROBOTO_REGULAR,
   },
 });
 
