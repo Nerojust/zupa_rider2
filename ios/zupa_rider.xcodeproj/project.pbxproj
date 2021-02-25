@@ -53,7 +53,7 @@
 		00E356EE1AD99517003FC87E /* zupa_riderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = zupa_riderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* zupa_riderTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = zupa_riderTests.m; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* zupa_rider.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = zupa_rider.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* Zupa Rider.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Zupa Rider.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = zupa_rider/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = zupa_rider/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = zupa_rider/Images.xcassets; sourceTree = "<group>"; };
@@ -224,7 +224,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* zupa_rider.app */,
+				13B07F961A680F5B00A75B9A /* Zupa Rider.app */,
 				00E356EE1AD99517003FC87E /* zupa_riderTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* zupa_rider-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* zupa_rider-tvOSTests.xctest */,
@@ -273,7 +273,7 @@
 			);
 			name = zupa_rider;
 			productName = zupa_rider;
-			productReference = 13B07F961A680F5B00A75B9A /* zupa_rider.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* Zupa Rider.app */;
 			productType = "com.apple.product-type.application";
 		};
 		2D02E47A1E0B4A5D006451C7 /* zupa_rider-tvOS */ = {
@@ -732,7 +732,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/zupa_rider.app/zupa_rider";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Zupa Rider.app/Zupa Rider";
 			};
 			name = Debug;
 		};
@@ -752,7 +752,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/zupa_rider.app/zupa_rider";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Zupa Rider.app/Zupa Rider";
 			};
 			name = Release;
 		};
@@ -772,7 +772,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = zupa_rider;
+				PRODUCT_NAME = "Zupa Rider";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -794,7 +794,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = zupa_rider;
+				PRODUCT_NAME = "Zupa Rider";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

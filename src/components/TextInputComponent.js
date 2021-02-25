@@ -1,24 +1,55 @@
 //import liraries
-import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { Component } from "react";
+import { View, Text, StyleSheet, TextInput } from "react-native";
+import { COLORS } from "../utils/theme";
 
 // create a component
-const TextInputComponent = () => {
-    return (
-        <View style={styles.container}>
-            <Text>TextInputComponent</Text>
-        </View>
-    );
+const TextInputComponent = ({
+  placeholder,
+  handleTextChange,
+  defaultValue,
+  ref,
+  nextRef,
+  keyboardType,
+  secureTextEntry,
+  styleProps,
+}) => {
+  return (
+    <>
+      <TextInput
+        style={styles.textInput}
+        placeholder={placeholder}
+        placeholderTextColor={(color = COLORS.gray)}
+        onChangeText={(text) => handleTextChange(text)}
+        underlineColor={{ color: COLORS.white }}
+        defaultValue={defaultValue}
+        ref={ref}
+        //onSubmitEditing={() => nextRef.current.focus()}
+        returnKeyLabel={"Next"}
+        returnKeyType={"next"}
+        keyboardType={keyboardType}
+        secureTextEntry={secureTextEntry}
+        autoCapitalize="none"
+      />
+    </>
+  );
 };
 
 // define your styles
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#2c3e50',
-    },
+  textInput: {
+    height: 50,
+    marginTop: 20,
+    backgroundColor: COLORS.lightGray5,
+    paddingLeft: 16,
+    color: COLORS.red,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+    borderBottomLeftRadius: 10,
+    fontSize: 17,
+    paddingVertical:26
+  },
 });
 
 //make this component available to the app
