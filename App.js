@@ -1,13 +1,13 @@
 import "react-native-gesture-handler";
 import React, { useEffect } from "react";
 import AuthNavigation from "./src/navigation/AuthNavigation";
-import HomeNavigation from "./src/navigation/HomeNavigation";
+import {HomeNavigation} from "./src/navigation/HomeNavigation";
 import SplashScreen from "react-native-splash-screen";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 
 const AppNav = createStackNavigator();
-const AppStack = () => (
+const AppStack = ({navigation}) => (
   <NavigationContainer>
     <AppNav.Navigator
       screenOptions={{

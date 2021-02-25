@@ -54,9 +54,7 @@ const LoginScreen = ({ navigation }) => {
     });
   };
   const gotoForgotPasswordPage = () => {
-    navigation.navigate("ForgotPassword", {
-      screen: "Dashboard",
-    });
+    navigation.push("ForgotPassword");
   };
   const handleRefFocus = () => {
     passwordRef.current.focus();
@@ -118,7 +116,7 @@ const LoginScreen = ({ navigation }) => {
             <DisplayButton
               text="Login"
               onPress={performValidation}
-              color={COLORS.purple1}
+              color={COLORS.primary}
             />
           </View>
           <View style={styles.signRowView}>

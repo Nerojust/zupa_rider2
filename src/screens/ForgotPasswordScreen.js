@@ -30,15 +30,24 @@ const ForgotPasswordScreen = ({ navigation }) => {
 
   //const { signIn } = useContext(AuthContext);
   const [emailAddress, setEmailAddress] = useState("");
+  const emailAddressRef = useRef(null);
+  const passwordRef = useRef(null);
+  const [securePassword, setSecurePassword] = useState(true);
+  const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(false);
 
   const handleEmailAddress = (value) => {
     setEmailAddress(value);
   };
+ 
 
   const performValidation = () => {
     navigation.navigate("Home", {
       screen: "Dashboard",
     });
+  };
+  
+  const handleRefFocus = () => {
+    passwordRef.current.focus();
   };
 
   return (
@@ -74,6 +83,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
             handleTextChange={handleEmailAddress}
             defaultValue={emailAddress}
             refInput={emailAddressRef}
+            onSubmitEditing={handleRefFocus}
             keyboardType={"email-address"}
             secureTextEntry={false}
             returnKeyType="next"
@@ -83,7 +93,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
             <DisplayButton
               text="Reset Password"
               onPress={performValidation}
-              color={COLORS.purple1}
+              color={COLORS.primary}
             />
           </View>
           <View style={styles.signRowView}>

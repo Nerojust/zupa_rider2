@@ -1,24 +1,31 @@
 //import liraries
-import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { Component } from "react";
+import { View, Text, StyleSheet, SafeAreaView, StatusBar } from "react-native";
+import { COLORS } from "../utils/theme";
+import Header from "../components/Header";
 
 // create a component
-const DashboardScreen = () => {
-    return (
-        <View style={styles.container}>
-            <Text>DashboardScreen</Text>
-        </View>
-    );
+const DashboardScreen = ({ navigation }) => {
+  return (
+    <View style={styles.container}>
+      <StatusBar
+        backgroundColor={COLORS.primary}
+        barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
+      />
+
+      <Text>DashboardScreen</Text>
+    </View>
+  );
 };
 
 // define your styles
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#2c3e50',
-    },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: COLORS.white,
+  },
 });
 
 //make this component available to the app

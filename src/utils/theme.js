@@ -25,7 +25,7 @@ export const COLORS = {
   blue: "blue",
   darkslateblue: "darkslateblue",
   modalBg: "#00000040",
-  purple1: "#583FE8",
+  blue: "#505DF1",
 };
 export const SIZES = {
   // global sizes
