@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   taskText: {
     color: COLORS.blue,
     opacity: 0.8,
-    fontSize: 25,
+    fontSize: 23,
     fontFamily:
       Platform.OS == "android" ? FONTS.ROBOTO_MEDIUM : FONTS.ROBOTO_MEDIUM_IOS,
   },
