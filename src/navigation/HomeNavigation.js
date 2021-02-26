@@ -18,6 +18,7 @@ import {
 } from "@react-navigation/drawer";
 import { COLORS, FONTS } from "../utils/theme";
 import { DrawerActions } from "@react-navigation/native";
+import { getTodaysDate } from "../utils/utils";
 const Drawer = createDrawerNavigator();
 const Home = createStackNavigator();
 const OrderStack = createStackNavigator();
@@ -36,6 +37,8 @@ const DashboardStackScreen = ({ navigation }) => {
           title: "Dashboard",
         }}
       />
+      <Home.Screen name="Orders" component={OrdersStackScreen} />
+      <Home.Screen name="OrderHistory" component={OrderHistoryScreen} />
     </Home.Navigator>
   );
 };
@@ -62,7 +65,7 @@ const OrdersStackScreen = () => {
       />
       <OrderStack.Screen
         name="OrderDetails"
-        component={OrdersDetails}
+        component={OrderDetailScreen}
         options={{
           title: "Order Details",
           animationEnabled: false,
@@ -74,17 +77,6 @@ const OrdersStackScreen = () => {
 
 // create a component
 export const HomeNavigation = ({ navigation }) => {
-  const getCurrentDate = () => {
-    var date = new Date().getDate();
-    var month = new Date().getMonth() + 1;
-    var year = new Date().getFullYear();
-
-    //Alert.alert(date + '-' + month + '-' + year);
-    // You can turn it in to your desired format
-    return date + "-" + month + "-" + year; //format: dd-mm-yyyy;
-  };
-  let date = getCurrentDate();
-  console.log("date", date);
   return (
     <Drawer.Navigator
       initialRouteName="Dashboard"
@@ -96,7 +88,7 @@ export const HomeNavigation = ({ navigation }) => {
         name="Dashboard"
         component={DashboardStackScreen}
         options={{
-          title: new Date().toDateString(),
+          title: getTodaysDate(),
           headerShown: true,
           headerStyle: {
             elevation: 0,
@@ -106,7 +98,7 @@ export const HomeNavigation = ({ navigation }) => {
           headerTintColor: COLORS.white,
           headerTitleStyle: {
             fontWeight: "bold",
-            fontSize: 23,
+            fontSize: 20,
             fontFamily:
               Platform.OS == "android"
                 ? FONTS.ROBOTO_MEDIUM
@@ -116,9 +108,9 @@ export const HomeNavigation = ({ navigation }) => {
           headerLeft: () => (
             <>
               <TouchableOpacity
-                onPress={() =>
-                  navigation.dispatch(DrawerActions.toggleDrawer())
-                }
+                onPress={() => {
+                  navigation.dispatch(DrawerActions.toggleDrawer());
+                }}
               >
                 <Image
                   source={require("../assets/icons/menu.png")}
@@ -129,8 +121,6 @@ export const HomeNavigation = ({ navigation }) => {
           ),
         }}
       />
-      <Drawer.Screen name="Orders" component={OrdersStackScreen} />
-      <Drawer.Screen name="OrderHistory" component={OrderHistoryScreen} />
     </Drawer.Navigator>
   );
 };

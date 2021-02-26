@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { FONTS, SIZES, COLORS } from "../utils/theme";
 import * as Animatable from "react-native-animatable";
-import LinearGradient from "react-native-linear-gradient";
+import DisplayButton from "../components/Button";
 
 const WelcomeScreen = ({ navigation }) => {
   return (
@@ -21,114 +21,64 @@ const WelcomeScreen = ({ navigation }) => {
         <Animatable.Image
           animation="bounceIn"
           duraton="1500"
-          source={require("../assets/images/bitcoin.png")}
+          source={require("../assets/icons/zupa.png")}
           style={styles.logo}
           resizeMode="stretch"
         />
+
+        <Text style={styles.title}>Rider</Text>
       </View>
-      <Animatable.View
-        style={[
-          styles.footer,
-          {
-            backgroundColor: COLORS.white,
-          },
-        ]}
-        animation="fadeInUpBig"
-      >
-        <Text
-          style={[
-            styles.title,
-            {
-              color: COLORS.black,
-              fontFamily:
-                Platform.OS == "ios"
-                  ? FONTS.ROBOTO_MEDIUM_IOS
-                  : FONTS.MONTSERRAT_EXTRABOLD,
-            },
-          ]}
-        >
-          Zupa Rider
-        </Text>
+      <View style={styles.buttonView}>
         <Text style={styles.text}>Sign in with an account</Text>
-        <View style={styles.button}>
-          <TouchableOpacity
-            onPress={() => navigation.push("Login")}
-            activeOpacity={0.8}
-          >
-            <LinearGradient
-              colors={[COLORS.primary, COLORS.secondary]}
-              style={styles.signIn}
-            >
-              <Text style={styles.textSign}>Get Started</Text>
-              <Image
-                source={require("../assets/icons/next.png")}
-                style={{
-                  height: 15,
-                  width: 15,
-                  tintColor: COLORS.white,
-                  marginLeft: 10,
-                }}
-              />
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
-      </Animatable.View>
+
+        <DisplayButton
+          text="Get Started"
+          onPress={() => navigation.push("Login")}
+          color={COLORS.primary}
+        />
+      </View>
     </View>
   );
 };
-const height_logo = SIZES.height * 0.15;
+const height_logo = SIZES.height * 0.08;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.white,
   },
   header: {
     flex: 2,
     justifyContent: "center",
     alignItems: "center",
   },
-  footer: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    paddingVertical: 50,
-    paddingHorizontal: 30,
-  },
+
   logo: {
-    width: height_logo,
+    width: SIZES.width - 140,
     height: height_logo,
-    borderRadius: 10,
   },
   title: {
-    color: "#05375a",
-    fontSize: 30,
+    fontSize: 17,
+    color: COLORS.blue,
     fontFamily:
-      Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.MONTSERRAT_EXTRABOLD,
+      Platform.OS == "ios" ? FONTS.ROBOTO_THIN_IOS : FONTS.ROBOTO_THIN,
+    top: -65,
+    alignSelf: "flex-end",
+    marginRight: Platform.OS == "ios" ? 68 : 70,
   },
   text: {
     color: "grey",
-    marginTop: 5,
+    marginBottom: 20,
+    justifyContent: "center",
+    alignSelf: "center",
     fontFamily:
-      Platform.OS == "ios" ? FONTS.MONTSERRAT_EXTRABOLD_IOS : FONTS.MONTSERRAT_EXTRABOLD,
+      Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
   },
-  button: {
-    alignItems: "flex-end",
-    marginTop: 30,
-  },
-  signIn: {
-    width: 150,
-    height: 40,
+  buttonView: {
+    flex: 0.5,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 50,
-    flexDirection: "row",
-  },
-  textSign: {
-    color: "white",
-    fontFamily:
-      Platform.OS == "ios" ? FONTS.MONTSERRAT_EXTRABOLD_IOS : FONTS.MONTSERRAT_EXTRABOLD,
+    top: -40,
   },
 });
 

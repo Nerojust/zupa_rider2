@@ -9,7 +9,7 @@ const DashboardScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <StatusBar
-        backgroundColor={COLORS.primary}
+        backgroundColor={COLORS.blue}
         barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
       />
 
