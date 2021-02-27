@@ -12,6 +12,7 @@ const AppStack = ({navigation}) => (
     <AppNav.Navigator
       screenOptions={{
         headerShown: false,
+        animationEnabled: false,
       }}
     >
       <AppNav.Screen name="Auth" component={AuthNavigation} />

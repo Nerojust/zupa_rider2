@@ -6075,7 +6075,7 @@
   "resolved" "https://registry.npmjs.org/qs/-/qs-6.5.2.tgz"
   "version" "6.5.2"
 
-"query-string@^6.13.6":
+"query-string@^6.1.0", "query-string@^6.13.6":
   "integrity" "sha512-In3o+lUxlgejoVJgwEdYtdxrmlL0cQWJXj0+kkI7RWVo7hg5AhFtybeKlC9Dpgbr8eOC4ydpEh8017WwyfzqVQ=="
   "resolved" "https://registry.npmjs.org/query-string/-/query-string-6.14.0.tgz"
   "version" "6.14.0"
@@ -6148,6 +6148,13 @@
   "resolved" "https://registry.npmjs.org/react-native-linear-gradient/-/react-native-linear-gradient-2.5.6.tgz"
   "version" "2.5.6"
 
+"react-native-open-maps@^0.3.5":
+  "integrity" "sha512-JPRZVj8gYJDHqJZV90BQIemIvTmoxCE8T3CVD3w25ZNXjf822xAespJ+JRRCB8gZ58TnmcrzcRG8cst/tJeIhQ=="
+  "resolved" "https://registry.npmjs.org/react-native-open-maps/-/react-native-open-maps-0.3.5.tgz"
+  "version" "0.3.5"
+  dependencies:
+    "query-string" "^6.1.0"
+
 "react-native-paper@^4.7.2":
   "integrity" "sha512-MOcDWjBOaknEpQgdm4fIOsRFIt4PJlMCgWlLk4kIe8Wv99/M0JIoxWABkAf4Lj5BuJgXjXdwr0DA/lhGY1BRoQ=="
   "resolved" "https://registry.npmjs.org/react-native-paper/-/react-native-paper-4.7.2.tgz"
@@ -6156,6 +6163,11 @@
     "@callstack/react-theme-provider" "^3.0.5"
     "color" "^3.1.2"
     "react-native-iphone-x-helper" "^1.3.1"
+
+"react-native-phone-call@^1.0.9":
+  "integrity" "sha512-OPWYg8qeWNG/U4bWGMAKcQTH/ifqJnsvUPCH4lOkvWFHbQS3fbH5M8rFhXCzcfS0GVNzHhZX9ZByMM368TFAUQ=="
+  "resolved" "https://registry.npmjs.org/react-native-phone-call/-/react-native-phone-call-1.0.9.tgz"
+  "version" "1.0.9"
 
 "react-native-reanimated@^1.13.2", "react-native-reanimated@>= 1.0.0":
   "integrity" "sha512-O+WhgxSjOIzcVdAAvx+h2DY331Ek1knKlaq+jsNLpC1fhRy9XTdOObovgob/aF2ve9uJfPEawCx8381g/tUJZQ=="
@@ -6173,6 +6185,11 @@
   "integrity" "sha512-8+lCEsxzSu55GWRw6yZpyt3OszxN1OngfBsFXdqspaEfq6uIChanzlcD2PLVQl+iN82GAcrZM800Kd1pA477ZQ=="
   "resolved" "https://registry.npmjs.org/react-native-screens/-/react-native-screens-2.18.0.tgz"
   "version" "2.18.0"
+
+"react-native-sms@^1.11.0":
+  "integrity" "sha512-G5q61qGknNyftN1cFkXfH46UkQWMf3fy/M1fxK/QJzLDJAgCSeBqge62FgJClw1FqzYGSjZeoZvkgpWGDCd3wQ=="
+  "resolved" "https://registry.npmjs.org/react-native-sms/-/react-native-sms-1.11.0.tgz"
+  "version" "1.11.0"
 
 "react-native-splash-screen@^3.2.0":
   "integrity" "sha512-Ls9qiNZzW/OLFoI25wfjjAcrf2DZ975hn2vr6U9gyuxi2nooVbzQeFoQS5vQcbCt9QX5NY8ASEEAtlLdIa6KVg=="
@@ -6226,7 +6243,7 @@
     "use-subscription" "^1.0.0"
     "whatwg-fetch" "^3.0.0"
 
-"react-native@*", "react-native@^0.56.0", "react-native@^0.63.0-0", "react-native@>= 0.62", "react-native@>=0.25.1", "react-native@>=0.50.0", "react-native@>=0.62.0-rc.0 <0.64.0", "react-native@0.63.4":
+"react-native@*", "react-native@^0.56.0", "react-native@^0.63.0-0", "react-native@>= 0.62", "react-native@>=0.25.1", "react-native@>=0.50.0", "react-native@>=0.62.0-rc.0 <0.64.0", "react-native@>0.45.0", "react-native@0.63.4":
   "integrity" "sha512-I4kM8kYO2mWEYUFITMcpRulcy4/jd+j9T6PbIzR0FuMcz/xwd+JwHoLPa1HmCesvR1RDOw9o4D+OFLwuXXfmGw=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.63.4.tgz"
   "version" "0.63.4"

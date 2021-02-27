@@ -8,8 +8,9 @@ import {
   View,
   Platform,
   SafeAreaView,
+  Alert,
 } from "react-native";
-import { DrawerActions } from '@react-navigation/native';
+import { DrawerActions } from "@react-navigation/native";
 import { COLORS, SIZES, FONTS } from "../utils/theme";
 
 export function CustomDrawerContent(props) {
@@ -51,7 +52,7 @@ export function CustomDrawerContent(props) {
                 props.navigation.dispatch(DrawerActions.closeDrawer());
               }}
             />
-            <View style={styles.line} />
+            {/* <View style={styles.line} />
             <DrawerItem
               icon={({}) => (
                 <Image
@@ -65,7 +66,7 @@ export function CustomDrawerContent(props) {
                 props.navigation.push("Orders");
                 props.navigation.dispatch(DrawerActions.closeDrawer());
               }}
-            />
+            /> */}
             <View style={styles.line} />
             <DrawerItem
               icon={({}) => (
@@ -85,24 +86,37 @@ export function CustomDrawerContent(props) {
         </DrawerContentScrollView>
       </View>
       <View>
-      <Drawer.Section>
-           
-            <DrawerItem
-              icon={({}) => (
-                <Image
-                  source={require("../assets/icons/logout.png")}
-                  style={styles.imageStyle}
-                />
-              )}
-              label="Logout"
-              labelStyle={styles.labelColor}
-              onPress={() => {
-                props.navigation.push("Orders");
-                props.navigation.dispatch(DrawerActions.closeDrawer());
-              }}
-            />
-            
-          </Drawer.Section>
+        <Drawer.Section>
+          <DrawerItem
+            icon={({}) => (
+              <Image
+                source={require("../assets/icons/logout.png")}
+                style={styles.imageStyle}
+              />
+            )}
+            label="Logout"
+            labelStyle={styles.labelColor}
+            onPress={() => {
+              Alert.alert(
+                "Logout",
+                "Do you want to logout?",
+                [
+                  {
+                    text: "No",
+                    onPress: () => {
+                      console.log("cancel Pressed");
+                    },
+                  },
+                  {
+                    text: "Yes",
+                    onPress: () => props.navigation.pop(),
+                  },
+                ],
+                { cancelable: true }
+              );
+            }}
+          />
+        </Drawer.Section>
       </View>
       <View style={styles.footerView}>
         <Text style={{ fontSize: 10, color: COLORS.gray }}>Version 1.0.0</Text>

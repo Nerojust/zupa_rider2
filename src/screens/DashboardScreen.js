@@ -11,8 +11,12 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
+
+import { createOpenLink } from "react-native-open-maps";
 import { COLORS, FONTS, SIZES } from "../utils/theme";
 import Order from "../components/Order";
+
+import call from "react-native-phone-call";
 // create a component
 const DashboardScreen = ({ navigation }) => {
   const dataArray = [
@@ -20,17 +24,16 @@ const DashboardScreen = ({ navigation }) => {
       id: 1,
       name: "Mr Akon Musa",
       address: "10th Floor, Necom Building, Marina",
-      phoneNumber: "0809379793794",
+      phoneNumber: "08083797937",
       status: false,
     },
     {
       id: 2,
       name: "Mrs Fola Adeku",
       address: "No 45, Adesua avenue, off SIWES estate, Lagos.",
-      phoneNumber: "0809379793794",
+      phoneNumber: "08093797934",
       status: false,
     },
-    
   ];
   const renderItem = ({ item }) => (
     <Order
@@ -38,10 +41,37 @@ const DashboardScreen = ({ navigation }) => {
       address={item.address}
       phoneNumber={item.phoneNumber}
       status={item.status}
-      onPressNavigate={() => Alert.alert("clicked")}
-      onPressCall={() => Alert.alert("clicked")}
+      onPressNavigate={openLocation}
+      onPressCall={()=>dialNumber(item.phoneNumber)}
+      onPressView={() =>
+        navigation.navigate("Orders", {
+          screen: "OrderDetails",
+          params: {
+            id: item.id,
+            name: item.name,
+            address: item.address,
+            phoneNumber: item.phoneNumber,
+            status: item.status,
+          },
+        })
+      }
     />
   );
+
+  const dialNumber = (phoneNumber) => {
+    const args = {
+      number: phoneNumber, // String value with the number to call
+      prompt: true, // Optional boolean property. Determines if the user should be prompt prior to the call
+    };
+
+    call(args).catch(console.error);
+  };
+
+  const userLocation = { latitude: 6.5886839, longitude: 3.2888395 };
+  //const openUserLocation = createOpenLink(userLocation);
+  const openLocation = createOpenLink({ ...userLocation, zoom: 30 });
+
+
   return (
     <View style={styles.container}>
       <StatusBar
@@ -49,9 +79,16 @@ const DashboardScreen = ({ navigation }) => {
         barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
       />
       {dataArray.length > 1 ? (
+        <Text style={{ fontSize: 17, paddingVertical: 20 }}>
+          Hello Lawrence, you have new order/s
+        </Text>
+      ) : null}
+
+      {dataArray.length > 1 ? (
         <FlatList
           data={dataArray}
           renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
           keyExtractor={(item) => item.id.toString()}
         />
       ) : (

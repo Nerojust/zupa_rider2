@@ -12,6 +12,7 @@ const AuthStack = () => (
   <Auth.Navigator
     screenOptions={{
       headerShown: false,
+      animationEnabled: false,
     }}
     initialRouteName={"Welcome"}
     name="Auth"

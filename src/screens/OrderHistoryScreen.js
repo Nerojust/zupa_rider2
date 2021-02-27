@@ -64,20 +64,20 @@ const OrderHistoryScreen = ({ navigation }) => {
       {dataArray.length > 1 ? (
         <FlatList
           data={dataArray}
+          showsVerticalScrollIndicator={false}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
         />
       ) : (
         <View style={styles.parentView}>
-          <Text style={styles.nameTextview}>Hello Lawrence!</Text>
-
+        
           <Image
             source={require("../assets/images/rider.png")}
             resizeMode={"contain"}
             style={styles.image}
           />
           <Text style={styles.noOrderTextview}>
-            You have no orders assigned for today
+            You have no order history
           </Text>
         </View>
       )}

@@ -28,6 +28,7 @@ const DashboardStackScreen = ({ navigation }) => {
     <Home.Navigator
       screenOptions={{
         headerShown: false,
+        animationEnabled: false,
       }}
     >
       <Home.Screen
@@ -47,6 +48,7 @@ const OrdersStackScreen = () => {
     <OrderStack.Navigator
       screenOptions={{
         headerShown: false,
+        animationEnabled: false,
         headerStyle: {
           backgroundColor: COLORS.appGreen,
         },
@@ -90,6 +92,7 @@ export const HomeNavigation = ({ navigation }) => {
         options={{
           title: getTodaysDate(),
           headerShown: true,
+          animationEnabled: false,
           headerStyle: {
             elevation: 0,
             shadowOpacity: 0,

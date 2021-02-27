@@ -5,14 +5,15 @@ import { Text, TouchableOpacity, Image } from "react-native";
 import { COLORS, SIZES } from "../utils/theme";
 
 // create a component
-const ButtonComponent = ({ text, onPress, color }) => {
+const ButtonComponent = ({ text, onPress, color, left, image,tintColor }) => {
   return (
     <TouchableOpacity
       style={{
+        flexDirection: "row",
         height: 50,
-        width: SIZES.width-70,
+        width: SIZES.width - 70,
         backgroundColor: color,
-        justifyContent: "center",
+        // justifyContent: "flex-end",
         alignItems: "center",
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
@@ -21,9 +22,23 @@ const ButtonComponent = ({ text, onPress, color }) => {
       }}
       onPress={onPress}
     >
-      <Text style={{ color: COLORS.white, fontSize: 18, fontWeight: "bold" }}>
+      <Text
+        style={{
+          color: COLORS.white,
+          fontSize: 18,
+          fontWeight: "bold",
+          flex: 1.5,
+          alignSelf: "center",
+          justifyContent: "center",left:left
+        }}
+      >
         {text}
       </Text>
+      <Image
+        source={image}
+        resizeMode={"contain"}
+        style={{ width: 20, height: 20, marginRight: 15, flex: 0.3 , tintColor:tintColor}}
+      />
     </TouchableOpacity>
   );
 };
