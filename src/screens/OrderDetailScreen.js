@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   Linking,
+  Button,
   Platform,
   Alert,
 } from "react-native";
@@ -23,6 +24,10 @@ const OrderDetailScreen = ({ route, navigation }) => {
   const phoneNumber = route.params.phoneNumber;
   const status = route.params.status;
 
+  const start = "Here";
+  const end = "Necom House";
+  const travelType = "drive";
+
   const dialNumber = () => {
     const args = {
       number: phoneNumber, // String value with the number to call
@@ -34,7 +39,8 @@ const OrderDetailScreen = ({ route, navigation }) => {
 
   const userLocation = { latitude: 6.5886839, longitude: 3.2888395 };
   //const openUserLocation = createOpenLink(userLocation);
-  const openLocation = createOpenLink({ ...userLocation, zoom: 30 });
+  //const openLocation = createOpenLink({ ...userLocation, zoom: 30 });
+  const openLocation = createOpenLink({ travelType, end, provider: "google" });
 
   const sendTextMessage = () => {
     SendSMS.send(
@@ -73,13 +79,12 @@ const OrderDetailScreen = ({ route, navigation }) => {
             source={require("../assets/icons/pin.png")}
             resizeMode={"contain"}
             style={{
-              width: 20,
-              height: 20,
-              marginRight: 15,
-              marginLeft: Platform.OS == "ios" ? 33 : 80,
+              width: 18,
+              height: 15,
+              flex: 0.27,
             }}
           />
-          <Text style={{ fontSize: 16, marginRight: 70 }}>{address}</Text>
+          <Text style={{ fontSize: 16, flex: 1.2, left: -10 }}>{address}</Text>
         </>
       </View>
       <View
@@ -87,13 +92,15 @@ const OrderDetailScreen = ({ route, navigation }) => {
           flexDirection: "row",
           marginTop: 20,
           alignSelf: "flex-start",
+          justifyContent: "center",
+          alignItems: "center",
           paddingHorizontal: 28,
         }}
       >
         <Image
           source={require("../assets/icons/smartphone.png")}
           resizeMode={"contain"}
-          style={{ width: 20, height: 20, marginRight: 15 }}
+          style={{ width: 18, height: 15, marginRight: 15 }}
         />
         <Text style={{ fontSize: 16 }}>{phoneNumber}</Text>
       </View>
@@ -112,7 +119,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
         <DisplayButton
           text="Call"
           onPress={dialNumber}
-          color={COLORS.primary}
+          color={COLORS.blue}
           left={130}
           image={require("../assets/icons/phone.png")}
           tintColor={COLORS.white}

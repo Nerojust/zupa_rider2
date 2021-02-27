@@ -36,26 +36,28 @@ const DashboardScreen = ({ navigation }) => {
     },
   ];
   const renderItem = ({ item }) => (
-    <Order
-      name={item.name}
-      address={item.address}
-      phoneNumber={item.phoneNumber}
-      status={item.status}
-      onPressNavigate={openLocation}
-      onPressCall={()=>dialNumber(item.phoneNumber)}
-      onPressView={() =>
-        navigation.navigate("Orders", {
-          screen: "OrderDetails",
-          params: {
-            id: item.id,
-            name: item.name,
-            address: item.address,
-            phoneNumber: item.phoneNumber,
-            status: item.status,
-          },
-        })
-      }
-    />
+    <TouchableOpacity activeOpacity={0.4}>
+      <Order
+        name={item.name}
+        address={item.address}
+        phoneNumber={item.phoneNumber}
+        status={item.status}
+        onPressNavigate={openLocation}
+        onPressCall={() => dialNumber(item.phoneNumber)}
+        onPressView={() =>
+          navigation.navigate("Orders", {
+            screen: "OrderDetails",
+            params: {
+              id: item.id,
+              name: item.name,
+              address: item.address,
+              phoneNumber: item.phoneNumber,
+              status: item.status,
+            },
+          })
+        }
+      />
+    </TouchableOpacity>
   );
 
   const dialNumber = (phoneNumber) => {
@@ -67,10 +69,9 @@ const DashboardScreen = ({ navigation }) => {
     call(args).catch(console.error);
   };
 
-  const userLocation = { latitude: 6.5886839, longitude: 3.2888395 };
+  const userLocation = { latitude: 6.58884, longitude: 3.287659 };
   //const openUserLocation = createOpenLink(userLocation);
   const openLocation = createOpenLink({ ...userLocation, zoom: 30 });
-
 
   return (
     <View style={styles.container}>

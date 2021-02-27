@@ -12,15 +12,24 @@ const Order = ({
   phoneNumber,
   status,
   onPressNavigate,
-  onPressCall,onPressView
+  onPressCall,
+  onPressView,
 }) => {
   return (
-    <TouchableOpacity onPress={onPressView}>
-      <CardView
-        cardElevation={3}
-        cardMaxElevation={2}
-        cornerRadius={5}
-        style={{ marginBottom: 15 }}
+    <TouchableOpacity onPress={onPressView} activeOpacity={0.6}>
+      <View
+        // cardElevation={3}
+        // cardMaxElevation={2}
+        // cornerRadius={5}
+        style={{
+          marginBottom: 15,
+      
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.5,
+          shadowRadius: 2,
+          elevation: 2,
+        }}
       >
         <View style={styles.bg_view}>
           <View style={styles.mainView}>
@@ -114,7 +123,7 @@ const Order = ({
             </View>
           </View>
         </View>
-      </CardView>
+      </View>
     </TouchableOpacity>
   );
 };
