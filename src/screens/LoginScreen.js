@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   Image,
   StatusBar,
+  ImageBackground,
   Platform,
 } from "react-native";
 import { AuthContext } from "../utils/Context";
@@ -67,80 +68,85 @@ const LoginScreen = ({ navigation }) => {
         backgroundColor={COLORS.primary}
         barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
       />
-      <View style={styles.parentView}>
-        <Image
-          source={require("../assets/icons/zupa.png")}
-          resizeMode={"contain"}
-          style={styles.logoImage}
-        />
-
-        <View style={styles.emailAndPasswordView}>
-          <TextInputComponent
-            placeholder={"Email"}
-            handleTextChange={handleEmailAddress}
-            defaultValue={emailAddress}
-            refInput={emailAddressRef}
-            onSubmitEditing={handleRefFocus}
-            keyboardType={"email-address"}
-            secureTextEntry={false}
-            returnKeyType="next"
+      <ImageBackground
+        source={require("../assets/images/auth_bg.png")}
+        style={styles.image}
+      >
+        <View style={styles.parentView}>
+          <Image
+            source={require("../assets/icons/zupa.png")}
+            resizeMode={"contain"}
+            style={styles.logoImage}
           />
-          <View style={styles.passwordRowView}>
-            <View
-              style={{
-                flex: 1,
-              }}
-            >
-              <TextInputComponent2
-                placeholder={"Password"}
-                handleTextChange={handlePassword}
-                defaultValue={password}
-                refInput={passwordRef}
-                keyboardType={"default"}
-                returnKeyType="done"
-                secureTextEntry={securePassword ? true : false}
+
+          <View style={styles.emailAndPasswordView}>
+            <TextInputComponent
+              placeholder={"Email"}
+              handleTextChange={handleEmailAddress}
+              defaultValue={emailAddress}
+              refInput={emailAddressRef}
+              onSubmitEditing={handleRefFocus}
+              keyboardType={"email-address"}
+              secureTextEntry={false}
+              returnKeyType="next"
+            />
+            <View style={styles.passwordRowView}>
+              <View
+                style={{
+                  flex: 1,
+                }}
+              >
+                <TextInputComponent2
+                  placeholder={"Password"}
+                  handleTextChange={handlePassword}
+                  defaultValue={password}
+                  refInput={passwordRef}
+                  keyboardType={"default"}
+                  returnKeyType="done"
+                  secureTextEntry={securePassword ? true : false}
+                />
+              </View>
+              <TouchableOpacity
+                style={styles.toggleView}
+                onPress={togglePassword}
+              >
+                <TogglePasswordEye securePassword={securePassword} />
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity onPress={gotoForgotPasswordPage}>
+              <Text style={styles.forgotPasswordView}>Forgot Password?</Text>
+            </TouchableOpacity>
+
+            <View style={{ marginTop: 18 }}>
+              <DisplayButton
+                text="Login"
+                onPress={performValidation}
+                color={COLORS.primary}
               />
             </View>
-            <TouchableOpacity
-              style={styles.toggleView}
-              onPress={togglePassword}
-            >
-              <TogglePasswordEye securePassword={securePassword} />
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity onPress={gotoForgotPasswordPage}>
-            <Text style={styles.forgotPasswordView}>Forgot Password?</Text>
-          </TouchableOpacity>
+            <View style={styles.signRowView}>
+              <Text
+                style={{
+                  color: COLORS.black,
 
-          <View style={{ marginTop: 18 }}>
-            <DisplayButton
-              text="Login"
-              onPress={performValidation}
-              color={COLORS.primary}
-            />
-          </View>
-          <View style={styles.signRowView}>
-            <Text
-              style={{
-                color: COLORS.black,
+                  fontSize: 14,
+                  alignSelf: "center",
+                  fontFamily:
+                    Platform.OS == "ios"
+                      ? FONTS.ROBOTO_REGULAR_IOS
+                      : FONTS.ROBOTO_REGULAR,
+                }}
+              >
+                Don't have an account?
+              </Text>
 
-                fontSize: 14,
-                alignSelf: "center",
-                fontFamily:
-                  Platform.OS == "ios"
-                    ? FONTS.ROBOTO_REGULAR_IOS
-                    : FONTS.ROBOTO_REGULAR,
-              }}
-            >
-              Don't have an account?
-            </Text>
-
-            <TouchableOpacity style={{ marginLeft: 5 }}>
-              <Text style={styles.signUp}>Sign Up</Text>
-            </TouchableOpacity>
+              <TouchableOpacity style={{ marginLeft: 5 }}>
+                <Text style={styles.signUp}>Sign Up</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
+      </ImageBackground>
     </View>
   );
 };
@@ -150,16 +156,17 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: COLORS.white,
+    //backgroundColor: COLORS.white,
   },
   parentView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     //width: SIZES.width - 70,
-   
+
     marginHorizontal: 35,
   },
+  image: { width: SIZES.width, height: SIZES.height },
   logoImage: { width: Platform.OS == "ios" ? 190 : 170, height: 40 },
   emailAndPasswordView: {
     alignSelf: "center",

@@ -6,31 +6,68 @@ import {
   StyleSheet,
   SafeAreaView,
   StatusBar,
+  FlatList,
   Image,
+  TouchableOpacity,
+  Alert,
 } from "react-native";
 import { COLORS, FONTS, SIZES } from "../utils/theme";
-import Header from "../components/Header";
-
+import Order from "../components/Order";
 // create a component
 const DashboardScreen = ({ navigation }) => {
+  const dataArray = [
+    {
+      id: 1,
+      name: "Mr Akon Musa",
+      address: "10th Floor, Necom Building, Marina",
+      phoneNumber: "0809379793794",
+      status: false,
+    },
+    {
+      id: 2,
+      name: "Mrs Fola Adeku",
+      address: "No 45, Adesua avenue, off SIWES estate, Lagos.",
+      phoneNumber: "0809379793794",
+      status: false,
+    },
+    
+  ];
+  const renderItem = ({ item }) => (
+    <Order
+      name={item.name}
+      address={item.address}
+      phoneNumber={item.phoneNumber}
+      status={item.status}
+      onPressNavigate={() => Alert.alert("clicked")}
+      onPressCall={() => Alert.alert("clicked")}
+    />
+  );
   return (
     <View style={styles.container}>
       <StatusBar
         backgroundColor={COLORS.blue}
         barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
       />
-      <View style={styles.parentView}>
-        <Text style={styles.nameTextview}>Hello Lawrence!</Text>
-
-        <Image
-          source={require("../assets/images/rider.png")}
-          resizeMode={"contain"}
-          style={styles.image}
+      {dataArray.length > 1 ? (
+        <FlatList
+          data={dataArray}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
         />
-        <Text style={styles.noOrderTextview}>
-          You have no orders assigned for today
-        </Text>
-      </View>
+      ) : (
+        <View style={styles.parentView}>
+          <Text style={styles.nameTextview}>Hello Lawrence!</Text>
+
+          <Image
+            source={require("../assets/images/rider.png")}
+            resizeMode={"contain"}
+            style={styles.image}
+          />
+          <Text style={styles.noOrderTextview}>
+            You have no orders assigned for today
+          </Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -48,6 +85,42 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
     paddingHorizontal: 10,
+  },
+  bg_view: {
+    width: SIZES.width - 20,
+    height: SIZES.width / 2.4,
+    backgroundColor: COLORS.white,
+    justifyContent: "center",
+  },
+  mainView: { padding: 13, flex: 0.7, justifyContent: "center" },
+  actionRowView: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginRight: 12,
+    color: COLORS.blue,
+  },
+  iconImageView: {
+    flexDirection: "row",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  clickButtonView: {
+    flex: 0.5,
+    width: SIZES.width - 20,
+    height: SIZES.width / 7,
+    backgroundColor: COLORS.lightGray5,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  nameView: { fontSize: 18, fontWeight: "bold" },
+  phoneNumber: { fontSize: 15, fontWeight: "bold" },
+  addressView: { fontSize: 14, paddingVertical: 7 },
+  imageStyle: {
+    width: 15,
+    height: 20,
+    opacity: 0.75,
+    tintColor: COLORS.blue,
   },
   image: {
     top: -100,

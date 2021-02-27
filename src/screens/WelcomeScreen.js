@@ -7,6 +7,7 @@ import {
   Platform,
   StatusBar,
   Dimensions,
+  ImageBackground,
   Image,
 } from "react-native";
 import { FONTS, SIZES, COLORS } from "../utils/theme";
@@ -17,26 +18,31 @@ const WelcomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={COLORS.primary} barStyle="light-content" />
-      <View style={styles.header}>
-        <Animatable.Image
-          animation="bounceIn"
-          duraton="1500"
-          source={require("../assets/icons/zupa.png")}
-          style={styles.logo}
-          resizeMode="stretch"
-        />
+      <ImageBackground
+        source={require("../assets/images/auth_bg.png")}
+        style={styles.image}
+      >
+        <View style={styles.header}>
+          <Animatable.Image
+            animation="bounceIn"
+            duraton="1500"
+            source={require("../assets/icons/zupa.png")}
+            style={styles.logo}
+            resizeMode="stretch"
+          />
 
-        <Text style={styles.title}>Rider</Text>
-      </View>
-      <View style={styles.buttonView}>
-        <Text style={styles.text}>Sign in with an account</Text>
+          <Text style={styles.title}>Rider</Text>
+        </View>
+        <View style={styles.buttonView}>
+          <Text style={styles.text}>Sign in with an account</Text>
 
-        <DisplayButton
-          text="Get Started"
-          onPress={() => navigation.push("Login")}
-          color={COLORS.primary}
-        />
-      </View>
+          <DisplayButton
+            text="Get Started"
+            onPress={() => navigation.push("Login")}
+            color={COLORS.primary}
+          />
+        </View>
+      </ImageBackground>
     </View>
   );
 };
@@ -52,7 +58,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
+  image: { width: SIZES.width, height: SIZES.height },
   logo: {
     width: SIZES.width - 140,
     height: height_logo,
