@@ -1,4 +1,4 @@
-import React from "react";
+import React ,{useContext}from "react";
 import { Drawer, Text } from "react-native-paper";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import {
@@ -10,10 +10,15 @@ import {
   SafeAreaView,
   Alert,
 } from "react-native";
+import {AuthContext} from '../utils/Context'
+import { useDispatch } from "react-redux";
 import { DrawerActions } from "@react-navigation/native";
 import { COLORS, SIZES, FONTS } from "../utils/theme";
+import { logoutUser } from "../store/Actions";
 
 export function CustomDrawerContent(props) {
+  const dispatch = useDispatch();
+  const { signOut } = useContext(AuthContext);
   return (
     <SafeAreaView style={styles.drawerBg}>
       <View style={styles.container}>
@@ -109,7 +114,11 @@ export function CustomDrawerContent(props) {
                   },
                   {
                     text: "Yes",
-                    onPress: () => props.navigation.pop(),
+                    onPress: () => {
+                      // props.navigation.navigate("Login");
+                      // dispatch(logoutUser());
+                      signOut()
+                    },
                   },
                 ],
                 { cancelable: true }

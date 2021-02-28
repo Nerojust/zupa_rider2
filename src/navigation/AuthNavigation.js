@@ -5,37 +5,35 @@ import { WelcomeScreen, LoginScreen, ForgotPasswordScreen } from "../screens";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 
-import Tabs from "./tabs";
-
 const Auth = createStackNavigator();
-const AuthStack = () => (
-  <Auth.Navigator
-    screenOptions={{
-      headerShown: false,
-      animationEnabled: false,
-    }}
-    initialRouteName={"Welcome"}
-    name="Auth"
-  >
-    <Auth.Screen name="Welcome" component={WelcomeScreen} />
-    <Auth.Screen name="Login" component={LoginScreen} />
-    <Auth.Screen
-      name="ForgotPassword"
-      component={ForgotPasswordScreen}
-      options={{
-        title: "Reset",
-        headerShown: true,
-        headerStyle: {
-          elevation: 0,
-          shadowOpacity: 0,
-        },
-      }}
-    />
-  </Auth.Navigator>
-);
+
 // create a component
-const AuthScreen = () => {
-  return <AuthStack />;
+const AuthScreen = ({ navigation }) => {
+  return (
+    <Auth.Navigator
+      screenOptions={{
+        headerShown: false,
+        animationEnabled: false,
+      }}
+      //initialRouteName={"Welcome"}
+      //name="Auth"
+    >
+      <Auth.Screen name="Welcome" component={WelcomeScreen} />
+      <Auth.Screen name="Login" component={LoginScreen} />
+      <Auth.Screen
+        name="ForgotPassword"
+        component={ForgotPasswordScreen}
+        options={{
+          title: "Reset",
+          headerShown: true,
+          headerStyle: {
+            elevation: 0,
+            shadowOpacity: 0,
+          },
+        }}
+      />
+    </Auth.Navigator>
+  );
 };
 
 //make this component available to the app

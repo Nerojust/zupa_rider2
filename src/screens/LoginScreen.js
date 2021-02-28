@@ -16,34 +16,36 @@ import {
   ImageBackground,
   Platform,
 } from "react-native";
-import { AuthContext } from "../utils/Context";
 import { COLORS, FONTS, SIZES } from "../utils/theme";
+import { AuthContext } from "../utils/Context";
+import { useDispatch } from "react-redux";
 import TogglePasswordEye from "../components/TogglePassword";
 import LoadingDialog from "../components/LoadingDialog";
 import TextInputComponent from "../components/TextInputComponent";
+import { LOGIN_URL } from "../utils/Urls";
 import TextInputComponent2 from "../components/TextInputComponent2";
 import DisplayButton from "../components/Button";
+import { loginUser, setError } from "../store/Actions";
+
 
 // create a component
 const LoginScreen = ({ navigation }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [securePasswordRe, setSecurePasswordRe] = useState(true);
+  const { signIn } = useContext(AuthContext);
+  const dispatch = useDispatch();
 
-  //const { signIn } = useContext(AuthContext);
-  const [emailAddress, setEmailAddress] = useState("");
-  const [password, setPassword] = useState("");
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
-  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
-  const emailAddressRef = useRef(null);
-  const passwordRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("08069809921");
+  const [pin, setPin] = useState("1234");
+  const phoneNumberRef = useRef(null);
+  const pinRef = useRef(null);
   const [securePassword, setSecurePassword] = useState(true);
   const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(false);
 
-  const handleEmailAddress = (value) => {
-    setEmailAddress(value);
+  const handlePhoneNumber = (value) => {
+    setPhoneNumber(value);
   };
-  const handlePassword = (value) => {
-    setPassword(value);
+  const handlePin = (value) => {
+    setPin(value);
   };
   const togglePassword = () => {
     setSecurePassword(!securePassword);
@@ -58,9 +60,38 @@ const LoginScreen = ({ navigation }) => {
     navigation.push("ForgotPassword");
   };
   const handleRefFocus = () => {
-    passwordRef.current.focus();
+    pinRef.current.focus();
   };
+  const makeLoginRequest = () => {
+    setIsLoading(true);
 
+    fetch(LOGIN_URL, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        phoneNumber: phoneNumber,
+        pin: pin,
+      }),
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        if (responseJson) {
+          //dispatch(loginUser(responseJson));
+          signIn(responseJson);
+        } else {
+          dispatch(setError(responseJson.message));
+        }
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        handleError(error);
+        console.log(error);
+      });
+  };
   return (
     <View style={styles.container}>
       <LoadingDialog loading={isLoading} />
@@ -82,9 +113,9 @@ const LoginScreen = ({ navigation }) => {
           <View style={styles.emailAndPasswordView}>
             <TextInputComponent
               placeholder={"Email"}
-              handleTextChange={handleEmailAddress}
-              defaultValue={emailAddress}
-              refInput={emailAddressRef}
+              handleTextChange={handlePhoneNumber}
+              defaultValue={phoneNumber}
+              refInput={phoneNumberRef}
               onSubmitEditing={handleRefFocus}
               keyboardType={"email-address"}
               secureTextEntry={false}
@@ -98,9 +129,9 @@ const LoginScreen = ({ navigation }) => {
               >
                 <TextInputComponent2
                   placeholder={"Password"}
-                  handleTextChange={handlePassword}
-                  defaultValue={password}
-                  refInput={passwordRef}
+                  handleTextChange={handlePin}
+                  defaultValue={pin}
+                  refInput={pinRef}
                   keyboardType={"default"}
                   returnKeyType="done"
                   secureTextEntry={securePassword ? true : false}
@@ -120,7 +151,7 @@ const LoginScreen = ({ navigation }) => {
             <View style={{ marginTop: 18 }}>
               <DisplayButton
                 text="Login"
-                onPress={performValidation}
+                onPress={makeLoginRequest}
                 color={COLORS.primary}
               />
             </View>

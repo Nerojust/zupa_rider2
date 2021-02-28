@@ -1,3 +1,5 @@
+import AsyncStorage from "@react-native-community/async-storage";
+
 export function handleBackPress() {
   const backAction = () => {
     Alert.alert("Zupa Rider", "Are you sure you want to exit?", [
@@ -97,4 +99,42 @@ export const getTodaysDate = () => {
 
   // Basic usage
   return dateFormat(now, "dS mmmm, yyyy");
+};
+export const storeValue = async (key, value) => {
+  try {
+    await AsyncStorage.setItem(key, JSON.stringify(value));
+    //console.log("stored state", value)
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const deleteValue = async (key) => {
+  try {
+    await AsyncStorage.removeItem(key);
+    //console.log("deleted successfully from storage")
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const removeItemValue = async (key) => {
+  try {
+    await AsyncStorage.removeItem(key);
+    return true;
+  } catch (exception) {
+    return false;
+  }
+};
+
+export const getValue = async (key) => {
+  try {
+    const value = await AsyncStorage.getItem(key);
+    if (value !== null) {
+      return value;
+    } else {
+      console.log("error reading from storage");
+      return value;
+    }
+  } catch (error) {
+    console.log(error);
+  }
 };
