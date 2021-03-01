@@ -1,6 +1,13 @@
 //import liraries
 import React, { Component } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 
 import { COLORS, FONTS, SIZES } from "../utils/theme";
 import CardView from "react-native-cardview";
@@ -17,15 +24,16 @@ const Order = ({
 }) => {
   return (
     <TouchableOpacity onPress={onPressView} activeOpacity={0.6}>
-      <View
-        // cardElevation={3}
-        // cardMaxElevation={2}
-        // cornerRadius={5}
+      <CardView
+        cardElevation={3}
+        cardMaxElevation={2}
+        cornerRadius={6}
+        
         style={{
           marginBottom: 15,
-      
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 2 },
+
+          shadowColor: COLORS.black,
+          shadowOffset: { width: 0, height: Platform.OS == "ios" ? 0.5 : 2 },
           shadowOpacity: 0.5,
           shadowRadius: 2,
           elevation: 2,
@@ -45,7 +53,7 @@ const Order = ({
               >
                 {name}
               </Text>
-              {!status ? (
+              {status == "pending" ? (
                 <View
                   style={{
                     width: 20,
@@ -56,7 +64,18 @@ const Order = ({
                     borderColor: COLORS.gray,
                   }}
                 />
-              ) : (
+              ) : status == "ready for dispatch" ? (
+                <View
+                  style={{
+                    width: 20,
+                    height: 20,
+                    alignSelf: "flex-end",
+                    borderRadius: 10,
+                    borderWidth: 0.5,
+                    borderColor: COLORS.gray,
+                  }}
+                />
+              ) : status == "completed" ? (
                 <Image
                   source={require("../assets/icons/success.png")}
                   resizeMode={"contain"}
@@ -65,6 +84,17 @@ const Order = ({
                     height: 20,
                     opacity: 0.75,
                     alignSelf: "flex-end",
+                  }}
+                />
+              ) : (
+                <View
+                  style={{
+                    width: 20,
+                    height: 20,
+                    alignSelf: "flex-end",
+                    borderRadius: 10,
+                    borderWidth: 0.5,
+                    borderColor: COLORS.red,
                   }}
                 />
               )}
@@ -123,7 +153,7 @@ const Order = ({
             </View>
           </View>
         </View>
-      </View>
+      </CardView>
     </TouchableOpacity>
   );
 };
@@ -139,7 +169,7 @@ const styles = StyleSheet.create({
   bg_view: {
     width: SIZES.width - 20,
     height: SIZES.width / 2.4,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.lightGray1,
     justifyContent: "center",
   },
   mainView: {

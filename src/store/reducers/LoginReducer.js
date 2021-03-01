@@ -20,12 +20,13 @@ import {
         };
   
       case ERROR:
-        console.log("action error is ", action.error)
+        //console.log("action error is ", action.error)
         return { ...state, error: action.error };
   
       case LOGOUT:
         return {
           ...state,
+          loginResults: null,
           userToken: null,
           isLoggedIn: action.isLoggedIn,
         };

@@ -43,7 +43,7 @@ const App = () => {
 
   //returns the new state and a dispatch action
   const [loginState, dispatch] = useReducer(loginReducer, initialState);
-  console.log("Login state is ", loginState);
+  //console.log("Login state is ", loginState);
   const authContext = useMemo(
     () => ({
       signIn: async (responseJson) => {
@@ -52,10 +52,10 @@ const App = () => {
           type: "LOGIN",
           token: responseJson.jwt,
         });
-        storeValue("loginstate", {
-          isLoggedIn: true,
-          loginPayload: responseJson,
-        });
+        // storeValue("loginstate", {
+        //   isLoggedIn: true,
+        //   loginPayload: responseJson,
+        // });
       },
 
       signOut: async () => {
@@ -64,7 +64,7 @@ const App = () => {
           token: null,
           //isLoggedIn: false,
         });
-        deleteValue("loginstate");
+       // deleteValue("loginstate");
       },
     }),
     []

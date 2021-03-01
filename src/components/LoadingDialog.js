@@ -1,14 +1,12 @@
 import React from "react";
-import { ActivityIndicator, Modal, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Modal, StyleSheet, View, Text } from "react-native";
 import { COLORS } from "../utils/theme";
 
 /**
  * create the loading dialog for activities/components.
  * @param {loading} props
  */
-const LoadingDialog = (props) => {
-  const { loading } = props;
-
+const LoadingDialog = ({ loading }) => {
   return (
     <Modal
       transparent={true}
@@ -22,10 +20,13 @@ const LoadingDialog = (props) => {
         <View style={styles.activityIndicatorWrapper}>
           <ActivityIndicator
             animating={loading}
-            size="large"
-            color={COLORS.primary}
+            size="small"
+            color={COLORS.blue}
           />
         </View>
+        <Text style={{ marginTop: 15, color: COLORS.blue, fontSize: 12 }}>
+          Loading, please wait...
+        </Text>
       </View>
     </Modal>
   );
@@ -35,13 +36,14 @@ const styles = StyleSheet.create({
   modalBackground: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "space-around",
-    backgroundColor: COLORS.modalBg,
+    justifyContent: "center",
+    //justifyContent: "space-around",
+    backgroundColor: COLORS.light,
   },
   activityIndicatorWrapper: {
-    backgroundColor: COLORS.lightGray,
-    height: 70,
-    width: 70,
+    backgroundColor: COLORS.white,
+    height: 65,
+    width: 65,
     borderRadius: 10,
     display: "flex",
     alignItems: "center",

@@ -25,7 +25,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
   const status = route.params.status;
 
   const start = "Here";
-  const end = "Necom House";
+  const end = address;
   const travelType = "drive";
 
   const dialNumber = () => {

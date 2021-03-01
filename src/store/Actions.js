@@ -16,6 +16,7 @@ export const saveNetworkState = (status) => {
 };
 
 export const saveOrder = (data) => {
+  //console.log("order action", data)
   return {
     type: ORDER,
     payload: data,

@@ -22,16 +22,18 @@ import { useDispatch } from "react-redux";
 import TogglePasswordEye from "../components/TogglePassword";
 import LoadingDialog from "../components/LoadingDialog";
 import TextInputComponent from "../components/TextInputComponent";
+
+import { GET_RIDER_REQUESTS } from "../utils/Urls";
 import { LOGIN_URL } from "../utils/Urls";
 import TextInputComponent2 from "../components/TextInputComponent2";
 import DisplayButton from "../components/Button";
-import { loginUser, setError } from "../store/Actions";
-
+import { loginUser, saveOrder, setError } from "../store/Actions";
+import { handleError } from "../utils/utils";
 
 // create a component
 const LoginScreen = ({ navigation }) => {
-  const { signIn } = useContext(AuthContext);
   const dispatch = useDispatch();
+  const { signIn } = useContext(AuthContext);
 
   const [isLoading, setIsLoading] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("08069809921");
@@ -39,7 +41,6 @@ const LoginScreen = ({ navigation }) => {
   const phoneNumberRef = useRef(null);
   const pinRef = useRef(null);
   const [securePassword, setSecurePassword] = useState(true);
-  const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(false);
 
   const handlePhoneNumber = (value) => {
     setPhoneNumber(value);
@@ -51,19 +52,27 @@ const LoginScreen = ({ navigation }) => {
     setSecurePassword(!securePassword);
   };
 
-  const performValidation = () => {
-    navigation.navigate("Home", {
-      screen: "Dashboard",
-    });
-  };
+  // const performValidation = () => {
+  //   navigation.navigate("Home", {
+  //     screen: "Dashboard",
+  //   });
+  // };
   const gotoForgotPasswordPage = () => {
     navigation.push("ForgotPassword");
+  };
+  const showLoader = () => {
+    setIsLoading(true);
+  };
+  const dismissLoader = () => {
+    if (isLoading) {
+      setIsLoading(false);
+    }
   };
   const handleRefFocus = () => {
     pinRef.current.focus();
   };
   const makeLoginRequest = () => {
-    setIsLoading(true);
+    showLoader();
 
     fetch(LOGIN_URL, {
       method: "POST",
@@ -78,20 +87,64 @@ const LoginScreen = ({ navigation }) => {
     })
       .then((response) => response.json())
       .then((responseJson) => {
+        //console.log("response is ", responseJson);
+        dismissLoader();
         if (responseJson) {
-          //dispatch(loginUser(responseJson));
-          signIn(responseJson);
+          if (!responseJson.code) {
+            getOrders(responseJson.jwt)
+            dispatch(loginUser(responseJson));
+            signIn(responseJson);
+          } else {
+            dispatch(setError(responseJson.message));
+          }
         } else {
           dispatch(setError(responseJson.message));
         }
-        setIsLoading(false);
+        dismissLoader()
       })
       .catch((error) => {
         setIsLoading(false);
         handleError(error);
-        console.log(error);
+        console.log("here oooo", error);
+        dismissLoader()
       });
   };
+
+  const getOrders = (token) => {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", "Bearer " + token);
+
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+    fetch(GET_RIDER_REQUESTS, requestOptions)
+      .then((response) => response.json())
+      .then((responseJson) => {
+      
+        if (responseJson) {
+          if (!responseJson.code) {
+            dispatch(saveOrder(responseJson[0].dispatch_distribution.dispatches[0]
+              .dispatch_orders))
+            //console.log("data array ", dataArray);
+          } else {
+            alert(responseJson.message);
+          }
+        } else {
+          alert(responseJson.message);
+        }
+        dismissLoader()
+      })
+      .catch((error) => {
+        console.log("error", error);
+        handleError(error);
+        dismissLoader()
+      });
+    
+  };
+
   return (
     <View style={styles.container}>
       <LoadingDialog loading={isLoading} />
@@ -152,7 +205,7 @@ const LoginScreen = ({ navigation }) => {
               <DisplayButton
                 text="Login"
                 onPress={makeLoginRequest}
-                color={COLORS.primary}
+                color={COLORS.blue}
               />
             </View>
             <View style={styles.signRowView}>
@@ -237,7 +290,7 @@ const styles = StyleSheet.create({
     marginTop: 45,
   },
   forgotPasswordView: {
-    color: COLORS.primary,
+    color: COLORS.blue,
     marginTop: 30,
     fontSize: 14,
     alignSelf: "flex-end",
