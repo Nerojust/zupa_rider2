@@ -70,10 +70,16 @@ const DashboardScreen = ({ navigation }) => {
         <Order
           name={item.order.recipien ? item.order.recipien.name : name}
           //address={item.address}
-          phoneNumber={item.order.recipien ? item.order.recipien.phoneNumber : phone}
+          phoneNumber={
+            item.order.recipien ? item.order.recipien.phoneNumber : phone
+          }
           status={item.status}
           onPressNavigate={openLocation}
-          onPressCall={() => dialNumber(item.order.recipien ? item.order.recipien.phoneNumber : phone)}
+          onPressCall={() =>
+            dialNumber(
+              item.order.recipien ? item.order.recipien.phoneNumber : phone
+            )
+          }
           onPressView={() =>
             navigation.navigate("Orders", {
               screen: "OrderDetails",
@@ -81,7 +87,9 @@ const DashboardScreen = ({ navigation }) => {
                 id: item.order.id,
                 name: item.order.recipien ? item.order.recipien.name : name,
                 address: item.order.address || address,
-                phoneNumber: item.order.recipien ? item.order.recipien.phoneNumber : phone,
+                phoneNumber: item.order.recipien
+                  ? item.order.recipien.phoneNumber
+                  : phone,
                 status: item.order.status,
               },
             })
@@ -163,7 +171,7 @@ const DashboardScreen = ({ navigation }) => {
                 : FONTS.ROBOTO_MEDIUM,
           }}
         >
-          Hello {loginData.rider.name}, you have new order/s
+          Hi, {loginData.rider.name},{"\n"} you have new order/s
         </Text>
       ) : null}
 
