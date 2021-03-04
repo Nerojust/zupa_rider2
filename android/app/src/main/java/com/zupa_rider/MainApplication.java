@@ -4,7 +4,10 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+<<<<<<< HEAD
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
+=======
+>>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
 import com.tkporter.sendsms.SendSMSPackage;
 import com.kishanjvaghela.cardview.RNCardViewPackage;
 import com.oblador.vectoricons.VectorIconsPackage;

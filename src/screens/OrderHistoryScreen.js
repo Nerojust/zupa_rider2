@@ -1,5 +1,9 @@
 //import liraries
+<<<<<<< HEAD
 import React, { Component, useEffect, useCallback, useState } from "react";
+=======
+import React, { Component } from "react";
+>>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
 import {
   View,
   Text,
@@ -8,6 +12,7 @@ import {
   StatusBar,
   FlatList,
   Image,
+<<<<<<< HEAD
   RefreshControl,
   TouchableOpacity,
   Alert,
@@ -155,12 +160,62 @@ const OrderHistoryScreen = ({ navigation }) => {
   //const openLocation = createOpenLink({ ...userLocation, zoom: 30 });
   const openLocation = createOpenLink({ travelType, end, provider: "google" });
 
+=======
+  TouchableOpacity,
+  Alert,
+} from "react-native";
+import { COLORS, FONTS, SIZES } from "../utils/theme";
+import Order from "../components/Order";
+// create a component
+const OrderHistoryScreen = ({ navigation }) => {
+  const dataArray = [
+    {
+      id: 1,
+      name: "Mr Okon ",
+      address: "address here",
+      phoneNumber: "0809379793794",
+      status: true,
+    },
+    {
+      id: 2,
+      name: "Baratiit 1",
+      address: "address here",
+      phoneNumber: "0809379793794",
+      status: true,
+    },
+    {
+      id: 3,
+      name: "Nerojust 2",
+      address: "address here",
+      phoneNumber: "0809379793794",
+      status: true,
+    },
+    {
+      id: 4,
+      name: "Nerojust 3",
+      address: "address here",
+      phoneNumber: "0809379793794",
+      status: true,
+    },
+  ];
+  const renderItem = ({ item }) => (
+    <Order
+      name={item.name}
+      address={item.address}
+      phoneNumber={item.phoneNumber}
+      status={item.status}
+      onPressNavigate={() => Alert.alert("clicked")}
+      onPressCall={() => Alert.alert("clicked")}
+    />
+  );
+>>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
   return (
     <View style={styles.container}>
       <StatusBar
         backgroundColor={COLORS.blue}
         barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
       />
+<<<<<<< HEAD
       <LoadingDialog loading={isLoading} />
 
       {newArray && newArray.length > 0 ? (
@@ -177,12 +232,30 @@ const OrderHistoryScreen = ({ navigation }) => {
         <View style={styles.parentView}>
           <Text style={styles.nameTextview}>Hi, {loginData.rider.name}!</Text>
 
+=======
+      {dataArray.length > 1 ? (
+        <FlatList
+          data={dataArray}
+          showsVerticalScrollIndicator={false}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
+        />
+      ) : (
+        <View style={styles.parentView}>
+        
+>>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
           <Image
             source={require("../assets/images/rider.png")}
             resizeMode={"contain"}
             style={styles.image}
           />
+<<<<<<< HEAD
           <Text style={styles.noOrderTextview}>You have no order history</Text>
+=======
+          <Text style={styles.noOrderTextview}>
+            You have no order history
+          </Text>
+>>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
         </View>
       )}
     </View>
@@ -252,7 +325,11 @@ const styles = StyleSheet.create({
     //marginTop:50
   },
   nameTextview: {
+<<<<<<< HEAD
     fontSize: 18,
+=======
+    fontSize: 23,
+>>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
     fontWeight: "500",
     fontFamily:
       Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,

@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-community/async-storage";
 
+<<<<<<< HEAD
 import React, { useState, useContext, useEffect, useRef } from "react";
 import {
   StyleSheet,
@@ -17,6 +18,9 @@ import { AuthContext } from "./Context";
 export function handleBackPress(navigation) {
   const { signOut } = useContext(AuthContext);
 console.log("navigation is", navigation)
+=======
+export function handleBackPress() {
+>>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
   const backAction = () => {
     Alert.alert("Zupa Rider", "Are you sure you want to exit?", [
       {
@@ -24,6 +28,7 @@ console.log("navigation is", navigation)
         onPress: () => null,
         style: "cancel",
       },
+<<<<<<< HEAD
       {
         text: "YES",
         onPress: () => {
@@ -31,12 +36,18 @@ console.log("navigation is", navigation)
           signOut();
         },
       },
+=======
+      { text: "YES", onPress: () => BackHandler.exitApp() },
+>>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
     ]);
     return true;
   };
 
   useEffect(() => {
+<<<<<<< HEAD
    
+=======
+>>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
     BackHandler.addEventListener("hardwareBackPress", backAction);
 
     return () =>

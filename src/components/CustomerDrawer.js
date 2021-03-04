@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useContext } from "react";
+=======
+import React ,{useContext}from "react";
+>>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
 import { Drawer, Text } from "react-native-paper";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import {
@@ -10,7 +14,11 @@ import {
   SafeAreaView,
   Alert,
 } from "react-native";
+<<<<<<< HEAD
 import { AuthContext } from "../utils/Context";
+=======
+import {AuthContext} from '../utils/Context'
+>>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
 import { useDispatch } from "react-redux";
 import { DrawerActions } from "@react-navigation/native";
 import { COLORS, SIZES, FONTS } from "../utils/theme";
@@ -57,7 +65,25 @@ export function CustomDrawerContent(props) {
                 props.navigation.dispatch(DrawerActions.closeDrawer());
               }}
             />
+<<<<<<< HEAD
 
+=======
+            {/* <View style={styles.line} />
+            <DrawerItem
+              icon={({}) => (
+                <Image
+                  source={require("../assets/icons/box.png")}
+                  style={styles.imageStyle1}
+                />
+              )}
+              label="Orders"
+              labelStyle={styles.labelColor}
+              onPress={() => {
+                props.navigation.push("Orders");
+                props.navigation.dispatch(DrawerActions.closeDrawer());
+              }}
+            /> */}
+>>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
             <View style={styles.line} />
             <DrawerItem
               icon={({}) => (
@@ -103,7 +129,11 @@ export function CustomDrawerContent(props) {
                     onPress: () => {
                       // props.navigation.navigate("Login");
                       // dispatch(logoutUser());
+<<<<<<< HEAD
                       signOut();
+=======
+                      signOut()
+>>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
                     },
                   },
                 ],
