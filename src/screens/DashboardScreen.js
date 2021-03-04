@@ -22,11 +22,7 @@ import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
 import { useSelector } from "react-redux";
 import call from "react-native-phone-call";
-<<<<<<< HEAD
 import { handleBackPress, handleError } from "../utils/utils";
-=======
-import { handleError } from "../utils/utils";
->>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
 import { saveOrder } from "../store/Actions";
 // create a component
 const DashboardScreen = ({ navigation }) => {
