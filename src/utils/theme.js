@@ -26,10 +26,7 @@ export const COLORS = {
   darkslateblue: "darkslateblue",
   modalBg: "#00000040",
   blue: "#505DF1",
-<<<<<<< HEAD
   white_transparent:"#00ffff"
-=======
->>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
 };
 export const SIZES = {
   // global sizes

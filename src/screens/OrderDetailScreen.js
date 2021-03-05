@@ -1,9 +1,5 @@
 //import liraries
-<<<<<<< HEAD
 import React, { Component, useState } from "react";
-=======
-import React, { Component } from "react";
->>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
 import {
   View,
   Text,
@@ -21,7 +17,6 @@ import SendSMS from "react-native-sms";
 import call from "react-native-phone-call";
 import openMap from "react-native-open-maps";
 import { createOpenLink } from "react-native-open-maps";
-<<<<<<< HEAD
 
 import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
@@ -29,24 +24,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { saveOrder, setError } from "../store/Actions";
 import { handleError } from "../utils/utils";
 
-=======
-// create a component
->>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
 const OrderDetailScreen = ({ route, navigation }) => {
   const name = route.params.name;
   const address = route.params.address;
   const phoneNumber = route.params.phoneNumber;
   const status = route.params.status;
-<<<<<<< HEAD
   const orderId = route.params.id;
   const [isLoading, setIsLoading] = useState(false);
   const [isMarkComplete, setIsMarkComplete] = useState(false);
   const dispatch = useDispatch();
 
   const loginData = useSelector((state) => state.login.loginResults);
-=======
-
->>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
   const start = "Here";
   const end = address;
   const travelType = "drive";
@@ -85,7 +73,6 @@ const OrderDetailScreen = ({ route, navigation }) => {
       }
     );
   };
-<<<<<<< HEAD
 
   const handleComplete = () => {
     Alert.alert(
@@ -187,10 +174,6 @@ const OrderDetailScreen = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <LoadingDialog loading={isLoading} />
-=======
-  return (
-    <View style={styles.container}>
->>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
       <View
         style={{
           //flex: 1,
@@ -262,7 +245,6 @@ const OrderDetailScreen = ({ route, navigation }) => {
           tintColor={COLORS.white}
         />
       </View>
-<<<<<<< HEAD
       {!isMarkComplete ? (
         <View style={{ marginTop: 30 }}>
           <DisplayButton
@@ -275,18 +257,6 @@ const OrderDetailScreen = ({ route, navigation }) => {
           />
         </View>
       ) : null}
-=======
-      <View style={{ marginTop: 30 }}>
-        <DisplayButton
-          text="Mark as Complete"
-          onPress={() => Alert.alert("Completed")}
-          color={COLORS.darkGreen}
-          left={80}
-          //image={require("../assets/icons/success.png")}
-          //tintColor={COLORS.gray}
-        />
-      </View>
->>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
     </View>
   );
 };

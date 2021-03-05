@@ -4,10 +4,7 @@ import React, {
   useEffect,
   useState,
   useContext,
-<<<<<<< HEAD
   useCallback,
-=======
->>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
   useRef,
 } from "react";
 import {
@@ -26,11 +23,7 @@ import { useDispatch } from "react-redux";
 import TogglePasswordEye from "../components/TogglePassword";
 import LoadingDialog from "../components/LoadingDialog";
 import TextInputComponent from "../components/TextInputComponent";
-<<<<<<< HEAD
 import AnimateLoadingButton from "react-native-animate-loading-button";
-=======
-
->>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
 import { LOGIN_URL } from "../utils/Urls";
 import TextInputComponent2 from "../components/TextInputComponent2";
@@ -42,20 +35,12 @@ import { handleError } from "../utils/utils";
 const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const { signIn } = useContext(AuthContext);
-<<<<<<< HEAD
-=======
-
-  const [isLoading, setIsLoading] = useState(false);
->>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
   const [phoneNumber, setPhoneNumber] = useState("08069809921");
   const [pin, setPin] = useState("1234");
   const phoneNumberRef = useRef(null);
   const pinRef = useRef(null);
   const [securePassword, setSecurePassword] = useState(true);
-<<<<<<< HEAD
   const loadingButton = useRef();
-=======
->>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
 
   const handlePhoneNumber = (value) => {
     setPhoneNumber(value);
@@ -67,7 +52,6 @@ const LoginScreen = ({ navigation }) => {
     setSecurePassword(!securePassword);
   };
 
-<<<<<<< HEAD
   const gotoForgotPasswordPage = () => {
     navigation.push("ForgotPassword");
   };
@@ -78,29 +62,6 @@ const LoginScreen = ({ navigation }) => {
 
   const makeLoginRequest = () => {
     loadingButton.current.showLoading(true);
-=======
-  // const performValidation = () => {
-  //   navigation.navigate("Home", {
-  //     screen: "Dashboard",
-  //   });
-  // };
-  const gotoForgotPasswordPage = () => {
-    navigation.push("ForgotPassword");
-  };
-  const showLoader = () => {
-    setIsLoading(true);
-  };
-  const dismissLoader = () => {
-    if (isLoading) {
-      setIsLoading(false);
-    }
-  };
-  const handleRefFocus = () => {
-    pinRef.current.focus();
-  };
-  const makeLoginRequest = () => {
-    showLoader();
->>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
 
     fetch(LOGIN_URL, {
       method: "POST",
@@ -115,7 +76,6 @@ const LoginScreen = ({ navigation }) => {
     })
       .then((response) => response.json())
       .then((responseJson) => {
-<<<<<<< HEAD
         if (responseJson) {
           if (!responseJson.code) {
             if (responseJson.rider && responseJson.jwt) {
@@ -128,22 +88,12 @@ const LoginScreen = ({ navigation }) => {
             } else {
               dispatch(setError(responseJson.message));
             }
-=======
-        //console.log("response is ", responseJson);
-        dismissLoader();
-        if (responseJson) {
-          if (!responseJson.code) {
-            getOrders(responseJson.jwt)
-            dispatch(loginUser(responseJson));
-            signIn(responseJson);
->>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
           } else {
             dispatch(setError(responseJson.message));
           }
         } else {
           dispatch(setError(responseJson.message));
         }
-<<<<<<< HEAD
         if (loadingButton.current) {
           loadingButton.current.showLoading(false);
         }
@@ -155,59 +105,10 @@ const LoginScreen = ({ navigation }) => {
     return () => {
       loadingButton.current.showLoading(false);
     };
-=======
-        dismissLoader()
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        handleError(error);
-        console.log("here oooo", error);
-        dismissLoader()
-      });
-  };
-
-  const getOrders = (token) => {
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", "Bearer " + token);
-
-    var requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
-    fetch(GET_RIDER_REQUESTS, requestOptions)
-      .then((response) => response.json())
-      .then((responseJson) => {
-      
-        if (responseJson) {
-          if (!responseJson.code) {
-            dispatch(saveOrder(responseJson[0].dispatch_distribution.dispatches[0]
-              .dispatch_orders))
-            //console.log("data array ", dataArray);
-          } else {
-            alert(responseJson.message);
-          }
-        } else {
-          alert(responseJson.message);
-        }
-        dismissLoader()
-      })
-      .catch((error) => {
-        console.log("error", error);
-        handleError(error);
-        dismissLoader()
-      });
-    
->>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
   };
 
   return (
     <View style={styles.container}>
-<<<<<<< HEAD
-=======
-      <LoadingDialog loading={isLoading} />
->>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
       <StatusBar
         backgroundColor={COLORS.primary}
         barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
@@ -262,7 +163,6 @@ const LoginScreen = ({ navigation }) => {
             </TouchableOpacity>
 
             <View style={{ marginTop: 18 }}>
-<<<<<<< HEAD
               <AnimateLoadingButton
                 ref={(c) => (loadingButton.current = c)}
                 width={Platform.OS == "ios" ? 300 : 290}
@@ -290,15 +190,6 @@ const LoginScreen = ({ navigation }) => {
               /> */}
             </View>
             {/* <View style={styles.signRowView}>
-=======
-              <DisplayButton
-                text="Login"
-                onPress={makeLoginRequest}
-                color={COLORS.blue}
-              />
-            </View>
-            <View style={styles.signRowView}>
->>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
               <Text
                 style={{
                   color: COLORS.black,
@@ -317,11 +208,7 @@ const LoginScreen = ({ navigation }) => {
               <TouchableOpacity style={{ marginLeft: 5 }}>
                 <Text style={styles.signUp}>Sign Up</Text>
               </TouchableOpacity>
-<<<<<<< HEAD
             </View> */}
-=======
-            </View>
->>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
           </View>
         </View>
       </ImageBackground>

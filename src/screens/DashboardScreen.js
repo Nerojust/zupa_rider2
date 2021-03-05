@@ -34,7 +34,6 @@ const DashboardScreen = ({ navigation }) => {
   var dataArray = useSelector((state) => state.orders.orders);
   //console.log("order redux is", result);
   let newArray = [];
-  
 
   let name = "Nerojust Adjeks";
   let phone = "08012345678";
@@ -42,25 +41,28 @@ const DashboardScreen = ({ navigation }) => {
 
   const travelType = "drive";
 
-  useEffect(() => {
-    showLoader()
-    getOrders();
-    console.log("order redux is", dataArray);
+  const getPendingOrders = () => {
     for (const item in dataArray) {
       if (Object.hasOwnProperty.call(dataArray, item)) {
         const data = dataArray[item];
-  
+
         if (data.status == "pending") {
           //console.log("data o", data);
           newArray.push(data);
+          console.log("new array is ", newArray);
+          console.log("new length is ", newArray.length);
         }
       }
     }
-    // setDataArray(result);
+  };
+  useEffect(() => {
+    //showLoader()
+    getOrders();
+    getPendingOrders();
     return () => {
       dismissLoader();
     };
-  }, [loginData, dataArray]);
+  }, [loginData]);
 
   //handleBackPress();
 
@@ -152,7 +154,6 @@ const DashboardScreen = ({ navigation }) => {
           if (!responseJson.code) {
             //setDataArray(responseJson[0].dispatch_orders);
             dispatch(saveOrder(responseJson[0].dispatch_orders));
-            //console.log("data array ", dataArray);
           } else {
             alert(responseJson.message);
           }
@@ -168,7 +169,7 @@ const DashboardScreen = ({ navigation }) => {
         //dismissLoader();
         setRefreshing(false);
       });
-   // dismissLoader();
+    // dismissLoader();
   };
 
   return (
@@ -200,15 +201,6 @@ const DashboardScreen = ({ navigation }) => {
       {newArray && newArray.length > 0 ? (
         <FlatList
           data={newArray}
-          // ItemSeparatorComponent={() => (
-          //   <View
-          //     style={{
-          //       height: 1,
-          //       width: "100%",
-          //       backgroundColor: COLORS.lightGray,
-          //     }}
-          //   />
-          // )}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
@@ -287,11 +279,11 @@ const styles = StyleSheet.create({
   image: {
     top: -100,
     width: SIZES.width,
-    height: SIZES.width / 2.5,
+    height: SIZES.width / 3,
   },
   noOrderTextview: {
     fontSize: 18,
-    fontWeight: "500",
+    fontWeight: "400",
     fontFamily:
       Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
     //marginTop:50

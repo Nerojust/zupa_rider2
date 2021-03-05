@@ -10,10 +10,6 @@ target 'zupa_rider' do
 
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
   target 'zupa_riderTests' do
     inherit! :complete
     # Pods for testing

@@ -8,10 +8,7 @@ import {
   OrdersScreen,
   OrderDetailScreen,
   OrderHistoryScreen,
-<<<<<<< HEAD
   OrderHistoryDetailScreen,
-=======
->>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
 } from "../screens";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -22,7 +19,6 @@ import {
 } from "@react-navigation/drawer";
 import { COLORS, FONTS } from "../utils/theme";
 import { DrawerActions } from "@react-navigation/native";
-<<<<<<< HEAD
 import { getTodaysDate, handleBackPress } from "../utils/utils";
 const Drawer = createDrawerNavigator();
 const Home = createStackNavigator();
@@ -167,81 +163,6 @@ export const HomeNavigation = ({ navigation }) => {
         component={OrderDetailScreen}
         options={{
           title: "Order Details",
-=======
-import { getTodaysDate } from "../utils/utils";
-const Drawer = createDrawerNavigator();
-const Home = createStackNavigator();
-const OrderStack = createStackNavigator();
-
-const DashboardStackScreen = ({ navigation }) => {
-  return (
-    <Home.Navigator
-      screenOptions={{
-        headerShown: false,
-        animationEnabled: false,
-      }}
-    >
-      <Home.Screen
-        name="Dashboard"
-        component={DashboardScreen}
-        options={{
-          title: "Dashboard",
-        }}
-      />
-      <Home.Screen name="Orders" component={OrdersStackScreen} />
-      <Home.Screen name="OrderHistory" component={OrderHistoryScreen} />
-    </Home.Navigator>
-  );
-};
-const OrdersStackScreen = () => {
-  return (
-    <OrderStack.Navigator
-      screenOptions={{
-        headerShown: false,
-        animationEnabled: false,
-        headerStyle: {
-          backgroundColor: COLORS.appGreen,
-        },
-        headerTintColor: COLORS.white,
-        headerTitleStyle: {
-          fontWeight: "normal",
-        },
-      }}
-    >
-      <OrderStack.Screen
-        name="Orders"
-        component={OrdersScreen}
-        options={{
-          title: "Orders",
-        }}
-      />
-      <OrderStack.Screen
-        name="OrderDetails"
-        component={OrderDetailScreen}
-        options={{
-          title: "Order Details",
-          animationEnabled: false,
-        }}
-      />
-    </OrderStack.Navigator>
-  );
-};
-
-// create a component
-export const HomeNavigation = ({ navigation }) => {
-  return (
-    <Drawer.Navigator
-      initialRouteName="Dashboard"
-      drawerPosition={"left"}
-      drawerType={"slide"}
-      drawerContent={(props) => <CustomDrawerContent {...props} />}
-    >
-      <Drawer.Screen
-        name="Dashboard"
-        component={DashboardStackScreen}
-        options={{
-          title: getTodaysDate(),
->>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
           headerShown: true,
           animationEnabled: false,
           headerStyle: {
@@ -259,7 +180,6 @@ export const HomeNavigation = ({ navigation }) => {
                 : FONTS.ROBOTO_MEDIUM_IOS,
           },
           headerTitleAlign: "center",
-<<<<<<< HEAD
         }}
       />
       <Home.Screen
@@ -287,25 +207,6 @@ export const HomeNavigation = ({ navigation }) => {
         }}
       />
     </Home.Navigator>
-=======
-          headerLeft: () => (
-            <>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.dispatch(DrawerActions.toggleDrawer());
-                }}
-              >
-                <Image
-                  source={require("../assets/icons/menu.png")}
-                  style={styles.menuIcon}
-                />
-              </TouchableOpacity>
-            </>
-          ),
-        }}
-      />
-    </Drawer.Navigator>
->>>>>>> a4200550e55f78e0d61d1bffddf20331dd979464
   );
 };
 
