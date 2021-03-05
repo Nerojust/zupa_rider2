@@ -1,5 +1,5 @@
 //import liraries
-import React, { Component, useState } from "react";
+import React, { Component, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -17,6 +17,7 @@ import SendSMS from "react-native-sms";
 import call from "react-native-phone-call";
 import openMap from "react-native-open-maps";
 import { createOpenLink } from "react-native-open-maps";
+import AnimateLoadingButton from "react-native-animate-loading-button";
 
 import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
@@ -33,7 +34,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isMarkComplete, setIsMarkComplete] = useState(false);
   const dispatch = useDispatch();
-
+  const loadingButton = useRef();
   const loginData = useSelector((state) => state.login.loginResults);
   const start = "Here";
   const end = address;
@@ -73,7 +74,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
       }
     );
   };
-
+  const handleNothing = () => {};
   const handleComplete = () => {
     Alert.alert(
       "Order Alert",
@@ -102,7 +103,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
     setIsLoading(false);
   };
   const performPatchRequest = () => {
-    showLoader();
+    loadingButton.current.showLoading(true);
     // console.log("order id", orderId);
     fetch(GET_RIDER_REQUESTS + "/" + orderId, {
       method: "PATCH",
@@ -122,17 +123,25 @@ const OrderDetailScreen = ({ route, navigation }) => {
           if (!responseJson.code) {
             getOrders();
           } else {
+            if (loadingButton.current) {
+              loadingButton.current.showLoading(false);
+            }
             dispatch(setError(responseJson.message));
           }
         } else {
+          if (loadingButton.current) {
+            loadingButton.current.showLoading(false);
+          }
           dispatch(setError(responseJson.message));
         }
       })
       .catch((error) => {
-        setIsLoading(false);
+        //setIsLoading(false);
         handleError(error);
         console.log("here oooo", error);
-        dismissLoader();
+        if (loadingButton.current) {
+          loadingButton.current.showLoading(false);
+        }
       });
   };
 
@@ -152,23 +161,25 @@ const OrderDetailScreen = ({ route, navigation }) => {
         if (responseJson) {
           if (!responseJson.code) {
             dispatch(saveOrder(responseJson[0].dispatch_orders));
-            alert("Update is successful");
+
             setIsMarkComplete(true);
           } else {
-            alert(responseJson.message);
+            dispatch(setError(responseJson.message));
           }
         } else {
-          alert(responseJson.message);
+          dispatch(setError(responseJson.message));
         }
-
-        dismissLoader();
+        if (loadingButton.current) {
+          loadingButton.current.showLoading(false);
+        }
       })
       .catch((error) => {
         console.log("error", error);
         handleError(error);
-        dismissLoader();
+        if (loadingButton.current) {
+          loadingButton.current.showLoading(false);
+        }
       });
-    //dismissLoader();
   };
 
   return (
@@ -220,7 +231,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
           text="Navigate"
           onPress={openLocation}
           color={COLORS.gray}
-          left={115}
+          left={110}
           image={require("../assets/icons/pin.png")}
           tintColor={COLORS.white}
         />
@@ -245,7 +256,52 @@ const OrderDetailScreen = ({ route, navigation }) => {
           tintColor={COLORS.white}
         />
       </View>
-      {!isMarkComplete ? (
+      <View style={{ marginTop: 30 }}>
+        {!isMarkComplete ? (
+          <AnimateLoadingButton
+            ref={(c) => (loadingButton.current = c)}
+            width={Platform.OS == "ios" ? 300 : 290}
+            height={50}
+            //borderWidth={30}
+            title="Mark Complete"
+            titleWeight={"700"}
+            titleFontFamily={
+              Platform.OS == "ios"
+                ? FONTS.MONTSERRAT_MEDIUM_IOS
+                : FONTS.MONTSERRAT_MEDIUM
+            }
+            titleFontSize={18}
+            titleColor={COLORS.white}
+            activityIndicatorColor={COLORS.white}
+            backgroundColor={COLORS.blue}
+            borderRadius={10}
+            onPress={handleComplete.bind(this)}
+          />
+        ) : (
+          <AnimateLoadingButton
+            ref={(c) => (loadingButton.current = c)}
+            width={Platform.OS == "ios" ? 300 : 290}
+            height={50}
+            //borderWidth={30}
+
+            title="Completed"
+            titleWeight={"700"}
+            titleFontFamily={
+              Platform.OS == "ios"
+                ? FONTS.MONTSERRAT_MEDIUM_IOS
+                : FONTS.MONTSERRAT_MEDIUM
+            }
+            titleFontSize={18}
+            titleColor={COLORS.white}
+            activityIndicatorColor={COLORS.white}
+            backgroundColor={COLORS.darkGreen}
+            borderRadius={10}
+            onPress={handleNothing.bind(this)}
+          />
+        )}
+      </View>
+
+      {/* {!isMarkComplete ? (
         <View style={{ marginTop: 30 }}>
           <DisplayButton
             text="Mark as Complete"
@@ -256,7 +312,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
             //tintColor={COLORS.gray}
           />
         </View>
-      ) : null}
+      ) : null} */}
     </View>
   );
 };

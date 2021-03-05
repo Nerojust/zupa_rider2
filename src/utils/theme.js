@@ -24,7 +24,7 @@ export const COLORS = {
   lightPink: "#ff00ff",
   blue: "blue",
   darkslateblue: "darkslateblue",
-  modalBg: "#00000040",
+  modalBg: "#00000099",
   blue: "#505DF1",
   white_transparent:"#00ffff"
 };

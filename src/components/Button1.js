@@ -1,13 +1,14 @@
 //import liraries
 import React from "react";
-import { Text, TouchableOpacity, Image } from "react-native";
+import { Text, TouchableOpacity, Image, Platform } from "react-native";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
-import { COLORS, SIZES } from "../utils/theme";
+import { COLORS, SIZES, FONTS } from "../utils/theme";
 
 // create a component
-const ButtonComponent = ({ text, onPress, color, left, image,tintColor }) => {
+const ButtonComponent = ({ text, onPress, color, left, image, tintColor }) => {
   return (
-    <TouchableOpacity
+    <TouchableWithoutFeedback
       style={{
         flexDirection: "row",
         height: 50,
@@ -29,7 +30,12 @@ const ButtonComponent = ({ text, onPress, color, left, image,tintColor }) => {
           fontWeight: "bold",
           flex: 1.5,
           alignSelf: "center",
-          justifyContent: "center",left:left
+          justifyContent: "center",
+          left: left,
+          fontFamily:
+            Platform.OS == "ios"
+              ? FONTS.ROBOTO_MEDIUM_IOS
+              : FONTS.ROBOTO_MEDIUM,
         }}
       >
         {text}
@@ -37,9 +43,15 @@ const ButtonComponent = ({ text, onPress, color, left, image,tintColor }) => {
       <Image
         source={image}
         resizeMode={"contain"}
-        style={{ width: 20, height: 20, marginRight: 15, flex: 0.3 , tintColor:tintColor}}
+        style={{
+          width: 20,
+          height: 20,
+          marginRight: 15,
+          flex: 0.3,
+          tintColor: tintColor,
+        }}
       />
-    </TouchableOpacity>
+    </TouchableWithoutFeedback>
   );
 };
 

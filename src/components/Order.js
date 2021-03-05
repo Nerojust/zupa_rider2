@@ -11,6 +11,7 @@ import {
 
 import { COLORS, FONTS, SIZES } from "../utils/theme";
 import CardView from "react-native-cardview";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 // create a component
 const Order = ({
@@ -23,7 +24,7 @@ const Order = ({
   onPressView,
 }) => {
   return (
-    <TouchableOpacity onPress={onPressView} activeOpacity={0.6}>
+    <TouchableWithoutFeedback onPress={onPressView} >
       <CardView
         cardElevation={3}
         cardMaxElevation={2}
@@ -116,6 +117,7 @@ const Order = ({
               <TouchableOpacity
                 style={styles.clickButtonView}
                 onPress={onPressNavigate}
+                activeOpacity={0.8}
               >
                 <View style={styles.iconImageView}>
                   <Text style={styles.actionRowView}>Navigate</Text>
@@ -140,6 +142,7 @@ const Order = ({
               <TouchableOpacity
                 style={styles.clickButtonView}
                 onPress={onPressCall}
+                activeOpacity={0.8}
               >
                 <View style={styles.iconImageView}>
                   <Text style={styles.actionRowView}>Call</Text>
@@ -154,7 +157,7 @@ const Order = ({
           </View>
         </View>
       </CardView>
-    </TouchableOpacity>
+    </TouchableWithoutFeedback>
   );
 };
 

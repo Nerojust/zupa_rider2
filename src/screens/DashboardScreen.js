@@ -16,7 +16,7 @@ import {
 import { createOpenLink } from "react-native-open-maps";
 import { COLORS, FONTS, SIZES } from "../utils/theme";
 import Order from "../components/Order";
-
+import * as Animatable from "react-native-animatable";
 import { useDispatch } from "react-redux";
 import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
@@ -38,31 +38,17 @@ const DashboardScreen = ({ navigation }) => {
   let name = "Nerojust Adjeks";
   let phone = "08012345678";
   let address = "Necom House";
-
   const travelType = "drive";
 
-  const getPendingOrders = () => {
-    for (const item in dataArray) {
-      if (Object.hasOwnProperty.call(dataArray, item)) {
-        const data = dataArray[item];
+  const [orderArray, setOrderArray] = useState(null);
 
-        if (data.status == "pending") {
-          //console.log("data o", data);
-          newArray.push(data);
-          console.log("new array is ", newArray);
-          console.log("new length is ", newArray.length);
-        }
-      }
-    }
-  };
   useEffect(() => {
-    //showLoader()
-    getOrders();
-    getPendingOrders();
-    return () => {
+    showLoader();
+    setTimeout(() => {
+      getOrders();
       dismissLoader();
-    };
-  }, [loginData]);
+    }, 2000);
+  }, []);
 
   //handleBackPress();
 
@@ -74,10 +60,13 @@ const DashboardScreen = ({ navigation }) => {
   };
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    //showLoader();
-    dispatch(saveOrder([]));
-    getOrders();
-    dismissLoader();
+    newArray.length = 0;
+    setOrderArray([]);
+    showLoader();
+    setTimeout(() => {
+      getOrders();
+      dismissLoader();
+    }, 2000);
     setRefreshing(false);
   }, []);
 
@@ -96,7 +85,7 @@ const DashboardScreen = ({ navigation }) => {
     //console.log("address1", address1)
     let end = address1;
     return (
-      <TouchableOpacity activeOpacity={0.4}>
+
         <Order
           name={item.order.recipient ? item.order.recipient.name : name}
           address={
@@ -121,7 +110,6 @@ const DashboardScreen = ({ navigation }) => {
           onPressView={() =>
             navigation.navigate("OrderDetails", {
               //screen: "OrderDetails",
-
               id: item.id,
               name: item.order.recipient ? item.order.recipient.name : name,
               address: item.order.deliveryLocation
@@ -134,7 +122,6 @@ const DashboardScreen = ({ navigation }) => {
             })
           }
         />
-      </TouchableOpacity>
     );
   };
   const getOrders = () => {
@@ -152,8 +139,19 @@ const DashboardScreen = ({ navigation }) => {
       .then((responseJson) => {
         if (responseJson) {
           if (!responseJson.code) {
-            //setDataArray(responseJson[0].dispatch_orders);
-            dispatch(saveOrder(responseJson[0].dispatch_orders));
+            let responseArray = responseJson[0].dispatch_orders;
+            for (const item in responseArray) {
+              if (Object.hasOwnProperty.call(responseArray, item)) {
+                const data = responseArray[item];
+                if (data.status == "pending") {
+                  //console.log("data o", data);
+                  newArray.push(data);
+                }
+              }
+            }
+
+            setOrderArray(newArray);
+            //dispatch(saveOrder(responseJson[0].dispatch_orders));
           } else {
             alert(responseJson.message);
           }
@@ -182,7 +180,9 @@ const DashboardScreen = ({ navigation }) => {
         loading={isLoading}
         message={"Fetching your orders for today..."}
       />
-      {newArray && newArray.length > 0 ? (
+
+      {/* {console.log("array inside", newArray)} */}
+      {orderArray && orderArray.length > 0 ? (
         <Text
           style={{
             fontSize: 15,
@@ -198,16 +198,18 @@ const DashboardScreen = ({ navigation }) => {
         </Text>
       ) : null}
 
-      {newArray && newArray.length > 0 ? (
-        <FlatList
-          data={newArray}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          keyExtractor={(item) => item.order.id}
-          renderItem={({ item, index }) => renderItem(item)}
-          showsVerticalScrollIndicator={false}
-        />
+      {orderArray && orderArray.length > 0 ? (
+        <Animatable.View animation="fadeIn" duraton="1500" style={{ flex: 1 }}>
+          <FlatList
+            data={orderArray}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+            keyExtractor={(item) => item.order.id}
+            renderItem={({ item, index }) => renderItem(item)}
+            showsVerticalScrollIndicator={false}
+          />
+        </Animatable.View>
       ) : (
         <View style={styles.parentView}>
           <Text style={styles.nameTextview}>Hello {loginData.rider.name}!</Text>

@@ -1,8 +1,8 @@
 //import liraries
 import React from "react";
-import { Text, TouchableOpacity, Image } from "react-native";
+import { Text, TouchableOpacity, Platform, Image } from "react-native";
 
-import { COLORS, SIZES } from "../utils/theme";
+import { COLORS, SIZES, FONTS } from "../utils/theme";
 
 // create a component
 const ButtonComponent = ({ text, onPress, color }) => {
@@ -10,7 +10,7 @@ const ButtonComponent = ({ text, onPress, color }) => {
     <TouchableOpacity
       style={{
         height: 50,
-        width: SIZES.width-70,
+        width: SIZES.width - 70,
         backgroundColor: color,
         justifyContent: "center",
         alignItems: "center",
@@ -21,7 +21,17 @@ const ButtonComponent = ({ text, onPress, color }) => {
       }}
       onPress={onPress}
     >
-      <Text style={{ color: COLORS.white, fontSize: 18, fontWeight: "bold" }}>
+      <Text
+        style={{
+          color: COLORS.white,
+          fontSize: 18,
+          fontWeight: "bold",
+          fontFamily:
+            Platform.OS == "ios"
+              ? FONTS.ROBOTO_MEDIUM_IOS
+              : FONTS.ROBOTO_MEDIUM,
+        }}
+      >
         {text}
       </Text>
     </TouchableOpacity>

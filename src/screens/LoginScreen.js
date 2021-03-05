@@ -81,7 +81,6 @@ const LoginScreen = ({ navigation }) => {
             if (responseJson.rider && responseJson.jwt) {
               dispatch(loginUser(responseJson));
               signIn(responseJson);
-              //console.log("Login response", responseJson);
               return () => {
                 loadingButton.current.showLoading(false);
               };
@@ -93,9 +92,6 @@ const LoginScreen = ({ navigation }) => {
           }
         } else {
           dispatch(setError(responseJson.message));
-        }
-        if (loadingButton.current) {
-          loadingButton.current.showLoading(false);
         }
       })
       .catch((error) => {
@@ -182,12 +178,6 @@ const LoginScreen = ({ navigation }) => {
                 borderRadius={10}
                 onPress={makeLoginRequest.bind(this)}
               />
-
-              {/* <DisplayButton
-                text="Login"
-                onPress={makeLoginRequest}
-                color={COLORS.blue}
-              /> */}
             </View>
             {/* <View style={styles.signRowView}>
               <Text

@@ -24,7 +24,7 @@ const LoadingDialog = ({ loading, message }) => {
             color={COLORS.blue}
           />
         </View>
-        <Text style={{ marginTop: 15, color: COLORS.blue, fontSize: 12 }}>
+        <Text style={{ marginTop: 15, color: COLORS.white, fontSize: 12 }}>
           {message}
         </Text>
       </View>
