@@ -16,7 +16,7 @@ import { AuthContext } from "./Context";
 
 export function handleBackPress(navigation) {
   const { signOut } = useContext(AuthContext);
-console.log("navigation is", navigation)
+  console.log("navigation is", navigation);
   const backAction = () => {
     Alert.alert("Zupa Rider", "Are you sure you want to exit?", [
       {
@@ -36,7 +36,6 @@ console.log("navigation is", navigation)
   };
 
   useEffect(() => {
-   
     BackHandler.addEventListener("hardwareBackPress", backAction);
 
     return () =>
@@ -116,12 +115,16 @@ export function getReadableDateAndTime(stringDate) {
   return parseInt(y) + " year" + (parseInt(y) > 1 ? "s" : "") + " ago";
 }
 
-export const getTodaysDate = () => {
+export const getTodaysDate = (date) => {
   var dateFormat = require("dateformat");
   var now = new Date();
 
   // Basic usage
-  return dateFormat(now, "dS mmmm, yyyy");
+  if (!date) {
+    return dateFormat(now, "dS mmmm, yyyy");
+  }else{
+    return dateFormat(date, "dS mmmm, yyyy hh:MM TT");
+  }
 };
 export const storeValue = async (key, value) => {
   try {

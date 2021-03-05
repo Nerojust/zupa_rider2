@@ -14,7 +14,7 @@ import CardView from "react-native-cardview";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 // create a component
-const Order = ({
+const Order1 = ({
   name,
   address,
   phoneNumber,
@@ -22,18 +22,18 @@ const Order = ({
   onPressNavigate,
   onPressCall,
   onPressView,
+  date,
 }) => {
   return (
-    <TouchableWithoutFeedback onPress={onPressView} >
+    <TouchableWithoutFeedback onPress={onPressView}>
       <CardView
         //cardElevation={3}
         cardMaxElevation={2}
         cornerRadius={6}
-        
         style={{
           marginBottom: 15,
 
-          //shadowColor: COLORS.black,
+          shadowColor: COLORS.black,
           shadowOffset: { width: 0, height: Platform.OS == "ios" ? 0.5 : 2 },
           shadowOpacity: 0.5,
           shadowRadius: 2,
@@ -109,6 +109,9 @@ const Order = ({
             </Text>
             <Text selectable={true} style={styles.phoneNumber}>
               {phoneNumber}
+            </Text>
+            <Text selectable={true} style={styles.dateView}>
+              {date}
             </Text>
           </View>
 
@@ -203,6 +206,12 @@ const styles = StyleSheet.create({
   },
   nameView: { fontSize: 18, fontWeight: "bold" },
   phoneNumber: { fontSize: 15, fontWeight: "bold" },
+  dateView: {
+    fontSize: 13,
+    fontWeight: "normal",
+    marginTop: 5,
+    color: COLORS.gray1,
+  },
   addressView: { fontSize: 14, paddingVertical: 7, color: COLORS.gray1 },
   imageStyle: {
     width: 15,
@@ -213,4 +222,4 @@ const styles = StyleSheet.create({
 });
 
 //make this component available to the app
-export default Order;
+export default Order1;

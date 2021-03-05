@@ -15,14 +15,14 @@ import {
 
 import { createOpenLink } from "react-native-open-maps";
 import { COLORS, FONTS, SIZES } from "../utils/theme";
-import Order from "../components/Order";
+import Order1 from "../components/Order1";
 
 import { useDispatch } from "react-redux";
 import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
 import { useSelector } from "react-redux";
 import call from "react-native-phone-call";
-import { handleError } from "../utils/utils";
+import { getReadableDateAndTime, getTodaysDate, handleError } from "../utils/utils";
 import { saveOrder } from "../store/Actions";
 // create a component
 const OrderHistoryScreen = ({ navigation }) => {
@@ -32,7 +32,7 @@ const OrderHistoryScreen = ({ navigation }) => {
   const loginData = useSelector((state) => state.login.loginResults);
   //console.log("login data is ", loginData)
   var dataArray = useSelector((state) => state.orders.orders);
-  //console.log("order redux is", dataArray);
+  console.log("order redux is", dataArray);
   let newArray = [];
   for (const item in dataArray) {
     if (Object.hasOwnProperty.call(dataArray, item)) {
@@ -67,7 +67,7 @@ const OrderHistoryScreen = ({ navigation }) => {
   const renderItem = (item) => {
     return (
       <TouchableOpacity activeOpacity={0.4}>
-        <Order
+        <Order1
           name={item.order.recipient ? item.order.recipient.name : name}
           address={
             item.order.deliveryLocation
@@ -78,6 +78,7 @@ const OrderHistoryScreen = ({ navigation }) => {
             item.order.recipient ? item.order.recipient.phoneNumber : phone
           }
           status={item.status}
+          date={getTodaysDate(item.updatedAt)}
           onPressNavigate={openLocation}
           onPressCall={() =>
             dialNumber(
@@ -150,9 +151,6 @@ const OrderHistoryScreen = ({ navigation }) => {
     call(args).catch(console.error);
   };
 
-  const userLocation = { latitude: 6.5886839, longitude: 3.2888395 };
-  //const openUserLocation = createOpenLink(userLocation);
-  //const openLocation = createOpenLink({ ...userLocation, zoom: 30 });
   const openLocation = createOpenLink({ travelType, end, provider: "google" });
 
   return (

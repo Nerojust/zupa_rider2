@@ -151,7 +151,7 @@ const DashboardScreen = ({ navigation }) => {
             }
 
             setOrderArray(newArray);
-            //dispatch(saveOrder(responseJson[0].dispatch_orders));
+            dispatch(saveOrder(responseJson[0].dispatch_orders));
           } else {
             alert(responseJson.message);
           }

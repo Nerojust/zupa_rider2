@@ -49,9 +49,6 @@ const OrderDetailScreen = ({ route, navigation }) => {
     call(args).catch(console.error);
   };
 
-  const userLocation = { latitude: 6.5886839, longitude: 3.2888395 };
-  //const openUserLocation = createOpenLink(userLocation);
-  //const openLocation = createOpenLink({ ...userLocation, zoom: 30 });
   const openLocation = createOpenLink({ travelType, end, provider: "google" });
 
   const sendTextMessage = () => {
@@ -96,15 +93,10 @@ const OrderDetailScreen = ({ route, navigation }) => {
       { cancelable: true }
     );
   };
-  const showLoader = () => {
-    setIsLoading(true);
-  };
-  const dismissLoader = () => {
-    setIsLoading(false);
-  };
+
   const performPatchRequest = () => {
     loadingButton.current.showLoading(true);
-    // console.log("order id", orderId);
+
     fetch(GET_RIDER_REQUESTS + "/" + orderId, {
       method: "PATCH",
       headers: {
@@ -118,7 +110,6 @@ const OrderDetailScreen = ({ route, navigation }) => {
     })
       .then((response) => response.json())
       .then((responseJson) => {
-        //console.log("response is ", responseJson);
         if (responseJson) {
           if (!responseJson.code) {
             getOrders();
@@ -136,7 +127,6 @@ const OrderDetailScreen = ({ route, navigation }) => {
         }
       })
       .catch((error) => {
-        //setIsLoading(false);
         handleError(error);
         console.log("here oooo", error);
         if (loadingButton.current) {
@@ -164,10 +154,12 @@ const OrderDetailScreen = ({ route, navigation }) => {
 
             setIsMarkComplete(true);
           } else {
+            setIsMarkComplete(false);
             dispatch(setError(responseJson.message));
           }
         } else {
           dispatch(setError(responseJson.message));
+          setIsMarkComplete(false);
         }
         if (loadingButton.current) {
           loadingButton.current.showLoading(false);
@@ -176,6 +168,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
       .catch((error) => {
         console.log("error", error);
         handleError(error);
+        setIsMarkComplete(false);
         if (loadingButton.current) {
           loadingButton.current.showLoading(false);
         }
@@ -184,7 +177,6 @@ const OrderDetailScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <LoadingDialog loading={isLoading} />
       <View
         style={{
           //flex: 1,
