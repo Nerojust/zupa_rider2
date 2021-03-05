@@ -32,9 +32,19 @@ const DashboardScreen = ({ navigation }) => {
   const loginData = useSelector((state) => state.login.loginResults);
   //console.log("login data is ", loginData)
   var dataArray = useSelector((state) => state.orders.orders);
-  //console.log("order redux is", result);
+  //console.log("dashboard redux is", dataArray);
   let newArray = [];
-
+  let responseArray = dataArray
+           
+  for (const item in responseArray) {
+    if (Object.hasOwnProperty.call(responseArray, item)) {
+      const data = responseArray[item];
+      if (data.status == "pending") {
+        //console.log("data o", data);
+        newArray.push(data);
+      }
+    }
+  }
   let name = "Nerojust Adjeks";
   let phone = "08012345678";
   let address = "Necom House";
@@ -59,13 +69,14 @@ const DashboardScreen = ({ navigation }) => {
     setIsLoading(false);
   };
   const onRefresh = useCallback(() => {
-    setRefreshing(true);
+    //setRefreshing(true);
     newArray.length = 0;
-    setOrderArray([]);
+    //setOrderArray([]);
     showLoader();
     setTimeout(() => {
       getOrders();
       dismissLoader();
+      setRefreshing(false)
     }, 2000);
     setRefreshing(false);
   }, []);
@@ -85,43 +96,42 @@ const DashboardScreen = ({ navigation }) => {
     //console.log("address1", address1)
     let end = address1;
     return (
-
-        <Order
-          name={item.order.recipient ? item.order.recipient.name : name}
-          address={
-            item.order.deliveryLocation
-              ? item.order.deliveryLocation.address
-              : address
-          }
-          phoneNumber={
+      <Order
+        name={item.order.recipient ? item.order.recipient.name : name}
+        address={
+          item.order.deliveryLocation
+            ? item.order.deliveryLocation.address
+            : address
+        }
+        phoneNumber={
+          item.order.recipient ? item.order.recipient.phoneNumber : phone
+        }
+        status={item.status}
+        onPressNavigate={createOpenLink({
+          travelType,
+          end,
+          provider: "google",
+        })}
+        onPressCall={() =>
+          dialNumber(
             item.order.recipient ? item.order.recipient.phoneNumber : phone
-          }
-          status={item.status}
-          onPressNavigate={createOpenLink({
-            travelType,
-            end,
-            provider: "google",
-          })}
-          onPressCall={() =>
-            dialNumber(
-              item.order.recipient ? item.order.recipient.phoneNumber : phone
-            )
-          }
-          onPressView={() =>
-            navigation.navigate("OrderDetails", {
-              //screen: "OrderDetails",
-              id: item.id,
-              name: item.order.recipient ? item.order.recipient.name : name,
-              address: item.order.deliveryLocation
-                ? item.order.deliveryLocation.address
-                : address,
-              phoneNumber: item.order.recipient
-                ? item.order.recipient.phoneNumber
-                : phone,
-              status: item.order.status,
-            })
-          }
-        />
+          )
+        }
+        onPressView={() =>
+          navigation.navigate("OrderDetails", {
+            //screen: "OrderDetails",
+            id: item.id,
+            name: item.order.recipient ? item.order.recipient.name : name,
+            address: item.order.deliveryLocation
+              ? item.order.deliveryLocation.address
+              : address,
+            phoneNumber: item.order.recipient
+              ? item.order.recipient.phoneNumber
+              : phone,
+            status: item.order.status,
+          })
+        }
+      />
     );
   };
   const getOrders = () => {
@@ -139,7 +149,10 @@ const DashboardScreen = ({ navigation }) => {
       .then((responseJson) => {
         if (responseJson) {
           if (!responseJson.code) {
-            let responseArray = responseJson[0].dispatch_orders;
+            newArray.length = 0;
+            dispatch(saveOrder(responseJson[0].dispatch_orders));
+            let responseArray = dataArray
+           
             for (const item in responseArray) {
               if (Object.hasOwnProperty.call(responseArray, item)) {
                 const data = responseArray[item];
@@ -149,9 +162,8 @@ const DashboardScreen = ({ navigation }) => {
                 }
               }
             }
-
-            setOrderArray(newArray);
-            dispatch(saveOrder(responseJson[0].dispatch_orders));
+setRefreshing(false)
+            //setOrderArray(newArray);
           } else {
             alert(responseJson.message);
           }
@@ -182,7 +194,7 @@ const DashboardScreen = ({ navigation }) => {
       />
 
       {/* {console.log("array inside", newArray)} */}
-      {orderArray && orderArray.length > 0 ? (
+      {newArray && newArray.length > 0 ? (
         <Text
           style={{
             fontSize: 15,
@@ -198,10 +210,10 @@ const DashboardScreen = ({ navigation }) => {
         </Text>
       ) : null}
 
-      {orderArray && orderArray.length > 0 ? (
+      {newArray && newArray.length > 0 ? (
         <Animatable.View animation="fadeIn" duraton="1500" style={{ flex: 1 }}>
           <FlatList
-            data={orderArray}
+            data={newArray}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }

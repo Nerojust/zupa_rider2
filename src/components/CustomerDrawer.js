@@ -22,7 +22,10 @@ export function CustomDrawerContent(props) {
   return (
     <SafeAreaView style={styles.drawerBg}>
       <View style={styles.container}>
-        <TouchableOpacity onPress={() => props.navigation.toggleDrawer()}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => props.navigation.toggleDrawer()}
+        >
           <Image
             source={require("../assets/icons/zupa.png")}
             style={styles.menuIcon}
@@ -41,8 +44,69 @@ export function CustomDrawerContent(props) {
       </View>
       <View style={styles.drawerBg2}>
         <DrawerContentScrollView {...props}>
+          {/* <Drawer.Section>
+          <View>
+            <View
+              style={{
+                flex: 0.3,
+                flexDirection: "row",
+                marginTop: 30,
+                marginHorizontal: 20,
+                alignItems: "center",
+              }}
+              onPress={() => {
+                props.navigation.push("Dashboard");
+                props.navigation.dispatch(DrawerActions.closeDrawer());
+              }}
+            >
+              <Image
+                source={require("../assets/icons/home.png")}
+                style={styles.imageStyle1}
+              />
+
+              <Text
+                style={{
+                  marginLeft: 27,
+                  color: COLORS.blue,
+                  alignSelf: "center",
+                }}
+              >
+                Home
+              </Text>
+            </View>
+            <View
+              style={{
+                flex: 0.3,
+                flexDirection: "row",
+                marginTop: 30,
+                marginHorizontal: 20,
+                alignItems: "center",
+              }}
+              onPress={() => {
+                console.log("clicked 2")
+                props.navigation.push("OrderHistory");
+                props.navigation.dispatch(DrawerActions.closeDrawer());
+              }}
+            >
+              <Image
+                source={require("../assets/icons/deliver.png")}
+                style={styles.imageStyle1}
+              />
+
+              <Text
+                style={{
+                  marginLeft: 27,
+                  color: COLORS.blue,
+                  alignSelf: "center",
+                }}
+              >
+                Order History
+              </Text>
+            </View>
+          </View>
+          </Drawer.Section> */}
           <Drawer.Section>
-            <View style={styles.line} />
+            {/* <View style={styles.line} />
             <DrawerItem
               icon={({}) => (
                 <Image
@@ -50,26 +114,29 @@ export function CustomDrawerContent(props) {
                   style={styles.imageStyle1}
                 />
               )}
+              activeOpacity={0.8}
               label="Home"
               labelStyle={styles.labelColor}
               onPress={() => {
                 props.navigation.push("Dashboard");
                 props.navigation.dispatch(DrawerActions.closeDrawer());
               }}
-            />
+            /> */}
             <View style={styles.line} />
             <DrawerItem
-              icon={({}) => (
+              icon={() => (
                 <Image
                   source={require("../assets/icons/deliver.png")}
                   style={styles.imageStyle1}
                 />
               )}
+              //activeOpacity={0.8}
               label="Order History"
               labelStyle={styles.labelColor}
               onPress={() => {
-                props.navigation.push("OrderHistory");
+                
                 props.navigation.dispatch(DrawerActions.closeDrawer());
+                props.navigation.push("OrderHistory");
               }}
             />
           </Drawer.Section>

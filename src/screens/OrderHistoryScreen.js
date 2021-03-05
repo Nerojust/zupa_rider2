@@ -32,7 +32,7 @@ const OrderHistoryScreen = ({ navigation }) => {
   const loginData = useSelector((state) => state.login.loginResults);
   //console.log("login data is ", loginData)
   var dataArray = useSelector((state) => state.orders.orders);
-  console.log("order redux is", dataArray);
+  //console.log("order redux is", dataArray);
   let newArray = [];
   for (const item in dataArray) {
     if (Object.hasOwnProperty.call(dataArray, item)) {
@@ -66,7 +66,7 @@ const OrderHistoryScreen = ({ navigation }) => {
 
   const renderItem = (item) => {
     return (
-      <TouchableOpacity activeOpacity={0.4}>
+
         <Order1
           name={item.order.recipient ? item.order.recipient.name : name}
           address={
@@ -99,7 +99,6 @@ const OrderHistoryScreen = ({ navigation }) => {
             })
           }
         />
-      </TouchableOpacity>
     );
   };
   const getOrders = () => {

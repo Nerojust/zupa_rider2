@@ -24,139 +24,121 @@ const Order = ({
   onPressView,
 }) => {
   return (
-    <TouchableWithoutFeedback onPress={onPressView} >
-      <CardView
-        //cardElevation={3}
-        cardMaxElevation={2}
-        cornerRadius={6}
-        
-        style={{
-          marginBottom: 15,
-
-          //shadowColor: COLORS.black,
-          shadowOffset: { width: 0, height: Platform.OS == "ios" ? 0.5 : 2 },
-          shadowOpacity: 0.5,
-          shadowRadius: 2,
-          elevation: 2,
-        }}
-      >
-        <View style={styles.bg_view}>
-          <View style={styles.mainView}>
+    <TouchableWithoutFeedback onPress={onPressView}>
+      <View style={styles.mainView}>
+        <View
+          style={{
+            flexDirection: "row",
+          }}
+        >
+          <Text
+            ellipsizeMode={"tail"}
+            numberOfLines={1}
+            style={[styles.nameView, { flex: 1 }]}
+          >
+            {name}
+          </Text>
+          {status == "pending" ? (
             <View
               style={{
-                flexDirection: "row",
+                width: 20,
+                height: 20,
+                alignSelf: "flex-end",
+                borderRadius: 10,
+                borderWidth: 0.5,
+                borderColor: COLORS.gray,
               }}
-            >
-              <Text
-                ellipsizeMode={"tail"}
-                numberOfLines={1}
-                style={[styles.nameView, { flex: 1 }]}
-              >
-                {name}
-              </Text>
-              {status == "pending" ? (
-                <View
-                  style={{
-                    width: 20,
-                    height: 20,
-                    alignSelf: "flex-end",
-                    borderRadius: 10,
-                    borderWidth: 0.5,
-                    borderColor: COLORS.gray,
-                  }}
-                />
-              ) : status == "ready for dispatch" ? (
-                <View
-                  style={{
-                    width: 20,
-                    height: 20,
-                    alignSelf: "flex-end",
-                    borderRadius: 10,
-                    borderWidth: 0.5,
-                    borderColor: COLORS.gray,
-                  }}
-                />
-              ) : status == "completed" ? (
-                <Image
-                  source={require("../assets/icons/success.png")}
-                  resizeMode={"contain"}
-                  style={{
-                    width: 20,
-                    height: 20,
-                    opacity: 0.75,
-                    alignSelf: "flex-end",
-                  }}
-                />
-              ) : (
-                <View
-                  style={{
-                    width: 20,
-                    height: 20,
-                    alignSelf: "flex-end",
-                    borderRadius: 10,
-                    borderWidth: 0.5,
-                    borderColor: COLORS.red,
-                  }}
-                />
-              )}
-            </View>
-            <Text
-              style={styles.addressView}
-              ellipsizeMode={"tail"}
-              numberOfLines={2}
-            >
-              {address}
-            </Text>
-            <Text selectable={true} style={styles.phoneNumber}>
-              {phoneNumber}
-            </Text>
-          </View>
-
-          <View style={{ flex: 0.5 }}>
-            <View style={{ flexDirection: "row" }}>
-              <TouchableOpacity
-                style={styles.clickButtonView}
-                onPress={onPressNavigate}
-                activeOpacity={0.8}
-              >
-                <View style={styles.iconImageView}>
-                  <Text style={styles.actionRowView}>Navigate</Text>
-                  <Image
-                    source={require("../assets/icons/pin.png")}
-                    resizeMode={"contain"}
-                    style={styles.imageStyle}
-                  />
-                </View>
-              </TouchableOpacity>
-
-              <View
-                style={{
-                  height: "100%",
-                  width: 0.5,
-                  backgroundColor: COLORS.lightGray,
-                  //marginVertical: 12,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              />
-              <TouchableOpacity
-                style={styles.clickButtonView}
-                onPress={onPressCall}
-                activeOpacity={0.8}
-              >
-                <View style={styles.iconImageView}>
-                  <Text style={styles.actionRowView}>Call</Text>
-                  <Image
-                    source={require("../assets/icons/smartphone.png")}
-                    resizeMode={"contain"}
-                    style={styles.imageStyle}
-                  />
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
+            />
+          ) : status == "ready for dispatch" ? (
+            <View
+              style={{
+                width: 20,
+                height: 20,
+                alignSelf: "flex-end",
+                borderRadius: 10,
+                borderWidth: 0.5,
+                borderColor: COLORS.gray,
+              }}
+            />
+          ) : status == "completed" ? (
+            <Image
+              source={require("../assets/icons/success.png")}
+              resizeMode={"contain"}
+              style={{
+                width: 20,
+                height: 20,
+                opacity: 0.75,
+                alignSelf: "flex-end",
+              }}
+            />
+          ) : (
+            <View
+              style={{
+                width: 20,
+                height: 20,
+                alignSelf: "flex-end",
+                borderRadius: 10,
+                borderWidth: 0.5,
+                borderColor: COLORS.red,
+              }}
+            />
+          )}
         </View>
-      </CardView>
+        <Text
+          style={styles.addressView}
+          ellipsizeMode={"tail"}
+          numberOfLines={2}
+        >
+          {address}
+        </Text>
+        <Text selectable={true} style={styles.phoneNumber}>
+          {phoneNumber}
+        </Text>
+      </View>
+
+      <View style={{ flex: 0.5 }}>
+        <View style={{ flexDirection: "row" }}>
+          <TouchableOpacity
+            style={styles.clickButtonView}
+            onPress={onPressNavigate}
+            activeOpacity={0.8}
+          >
+            <View style={styles.iconImageView}>
+              <Text style={styles.actionRowView}>Navigate</Text>
+              <Image
+                source={require("../assets/icons/pin.png")}
+                resizeMode={"contain"}
+                style={styles.imageStyle}
+              />
+            </View>
+          </TouchableOpacity>
+
+          <View
+            style={{
+              height: "100%",
+              width: 0.5,
+              backgroundColor: COLORS.lightGray,
+              //marginVertical: 12,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          />
+          <TouchableOpacity
+            style={styles.clickButtonView}
+            onPress={onPressCall}
+            activeOpacity={0.8}
+          >
+            <View style={styles.iconImageView}>
+              <Text style={styles.actionRowView}>Call</Text>
+              <Image
+                source={require("../assets/icons/smartphone.png")}
+                resizeMode={"contain"}
+                style={styles.imageStyle}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
     </TouchableWithoutFeedback>
   );
 };
@@ -169,16 +151,14 @@ const styles = StyleSheet.create({
     flex: 1,
     //paddingHorizontal: 10,
   },
-  bg_view: {
-    width: SIZES.width - 20,
-    height: SIZES.width / 2.4,
-    backgroundColor: COLORS.lightGray1,
-    justifyContent: "center",
-  },
+
   mainView: {
-    paddingTop: 10,
+    marginTop: 6,
+    width: SIZES.width - 20,
+    height: SIZES.width / 3.5,
+    backgroundColor: COLORS.lightGray4,
     paddingHorizontal: 15,
-    flex: 1,
+
     justifyContent: "center",
   },
   actionRowView: {

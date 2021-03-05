@@ -123,7 +123,7 @@ export const getTodaysDate = (date) => {
   if (!date) {
     return dateFormat(now, "dS mmmm, yyyy");
   }else{
-    return dateFormat(date, "dS mmmm, yyyy hh:MM TT");
+    return dateFormat(date, "dS mmmm, yyyy @ hh:MM TT");
   }
 };
 export const storeValue = async (key, value) => {

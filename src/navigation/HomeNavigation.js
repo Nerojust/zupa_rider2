@@ -27,7 +27,7 @@ const History = createStackNavigator();
 const DrawerStackScreen = ({ navigation }) => {
   return (
     <Drawer.Navigator
-      initialRouteName="Dashboard"
+      //initialRouteName="Dashboard"
       drawerPosition={"left"}
       drawerType={"slide"}
       drawerContent={(props) => <CustomDrawerContent {...props} />}
@@ -70,15 +70,6 @@ const DrawerStackScreen = ({ navigation }) => {
           ),
         }}
       />
-
-      {/* <Drawer.Screen
-        name="OrderHistory"
-        component={OrderHistoryScreen}
-        options={{
-          title: "Order History",
-          animationEnabled: false,
-        }}
-      /> */}
     </Drawer.Navigator>
   );
 };
