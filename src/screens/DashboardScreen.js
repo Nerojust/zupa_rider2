@@ -34,8 +34,8 @@ const DashboardScreen = ({ navigation }) => {
   var dataArray = useSelector((state) => state.orders.orders);
   //console.log("dashboard redux is", dataArray);
   let newArray = [];
-  let responseArray = dataArray
-           
+  let responseArray = dataArray;
+
   for (const item in responseArray) {
     if (Object.hasOwnProperty.call(responseArray, item)) {
       const data = responseArray[item];
@@ -76,7 +76,7 @@ const DashboardScreen = ({ navigation }) => {
     setTimeout(() => {
       getOrders();
       dismissLoader();
-      setRefreshing(false)
+      setRefreshing(false);
     }, 2000);
     setRefreshing(false);
   }, []);
@@ -151,8 +151,8 @@ const DashboardScreen = ({ navigation }) => {
           if (!responseJson.code) {
             newArray.length = 0;
             dispatch(saveOrder(responseJson[0].dispatch_orders));
-            let responseArray = dataArray
-           
+            let responseArray = dataArray;
+
             for (const item in responseArray) {
               if (Object.hasOwnProperty.call(responseArray, item)) {
                 const data = responseArray[item];
@@ -162,7 +162,7 @@ const DashboardScreen = ({ navigation }) => {
                 }
               }
             }
-setRefreshing(false)
+            setRefreshing(false);
             //setOrderArray(newArray);
           } else {
             alert(responseJson.message);
@@ -193,8 +193,7 @@ setRefreshing(false)
         message={"Fetching your orders for today..."}
       />
 
-      {/* {console.log("array inside", newArray)} */}
-      {newArray && newArray.length > 0 ? (
+      {!isLoading && newArray && newArray.length > 0 ? (
         <Text
           style={{
             fontSize: 15,
@@ -210,32 +209,36 @@ setRefreshing(false)
         </Text>
       ) : null}
 
-      {newArray && newArray.length > 0 ? (
+      {!isLoading ? (
         <Animatable.View animation="fadeIn" duraton="1500" style={{ flex: 1 }}>
-          <FlatList
-            data={newArray}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-            keyExtractor={(item) => item.order.id}
-            renderItem={({ item, index }) => renderItem(item)}
-            showsVerticalScrollIndicator={false}
-          />
-        </Animatable.View>
-      ) : (
-        <View style={styles.parentView}>
-          <Text style={styles.nameTextview}>Hello {loginData.rider.name}!</Text>
+          {newArray.length > 0 ? (
+            <FlatList
+              data={newArray}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+              keyExtractor={(item) => item.order.id}
+              renderItem={({ item, index }) => renderItem(item)}
+              showsVerticalScrollIndicator={false}
+            />
+          ) : (
+            <View style={styles.parentView}>
+              <Text style={styles.nameTextview}>
+                Hello {loginData.rider.name}!
+              </Text>
 
-          <Image
-            source={require("../assets/images/rider.png")}
-            resizeMode={"contain"}
-            style={styles.image}
-          />
-          <Text style={styles.noOrderTextview}>
-            You have no orders assigned for today
-          </Text>
-        </View>
-      )}
+              <Image
+                source={require("../assets/images/rider.png")}
+                resizeMode={"contain"}
+                style={styles.image}
+              />
+              <Text style={styles.noOrderTextview}>
+                You have no orders {"\n"} assigned for today
+              </Text>
+            </View>
+          )}
+        </Animatable.View>
+      ) : null}
     </View>
   );
 };
@@ -296,15 +299,15 @@ const styles = StyleSheet.create({
     height: SIZES.width / 3,
   },
   noOrderTextview: {
-    fontSize: 18,
-    fontWeight: "400",
+    fontSize: 14,
+    fontWeight: "300",
     fontFamily:
       Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
     //marginTop:50
   },
   nameTextview: {
-    fontSize: 23,
-    fontWeight: "500",
+    fontSize: 18,
+    fontWeight: "400",
     fontFamily:
       Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
     flex: 0.5,
