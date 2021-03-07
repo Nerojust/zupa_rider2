@@ -50,7 +50,8 @@ const DashboardScreen = ({ navigation }) => {
   let address = "Necom House";
   const travelType = "drive";
 
-  const [orderArray, setOrderArray] = useState(null);
+  const [orderArray, setOrderArray] = useState([]);
+  const [isResultOrderEmpty, setIsResultOrderEmpty] = useState(false);
 
   useEffect(() => {
     showLoader();
@@ -58,7 +59,7 @@ const DashboardScreen = ({ navigation }) => {
       getOrders();
       dismissLoader();
     }, 2000);
-  }, []);
+  }, [isResultOrderEmpty]);
 
   //handleBackPress();
 
@@ -149,21 +150,13 @@ const DashboardScreen = ({ navigation }) => {
       .then((responseJson) => {
         if (responseJson) {
           if (!responseJson.code) {
-            newArray.length = 0;
-            dispatch(saveOrder(responseJson[0].dispatch_orders));
-            let responseArray = dataArray;
+            //newArray.length = 0;
+            //dispatch(saveOrder(responseJson[0].dispatch_orders));
 
-            for (const item in responseArray) {
-              if (Object.hasOwnProperty.call(responseArray, item)) {
-                const data = responseArray[item];
-                if (data.status == "pending") {
-                  //console.log("data o", data);
-                  newArray.push(data);
-                }
-              }
-            }
+            setOrderArray(responseJson[0].dispatch_orders);
+
             setRefreshing(false);
-            //setOrderArray(newArray);
+            //console.log("new array is ", newArray);
           } else {
             alert(responseJson.message);
           }
@@ -193,7 +186,7 @@ const DashboardScreen = ({ navigation }) => {
         message={"Fetching your orders for today..."}
       />
 
-      {!isLoading && newArray && newArray.length > 0 ? (
+      {!isLoading && orderArray && orderArray.length > 0 ? (
         <Text
           style={{
             fontSize: 15,
@@ -209,35 +202,31 @@ const DashboardScreen = ({ navigation }) => {
         </Text>
       ) : null}
 
-      {!isLoading ? (
+      {!isLoading && orderArray.length > 0 ? (
         <Animatable.View animation="fadeIn" duraton="1500" style={{ flex: 1 }}>
-          {newArray.length > 0 ? (
-            <FlatList
-              data={newArray}
-              refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-              }
-              keyExtractor={(item) => item.order.id}
-              renderItem={({ item, index }) => renderItem(item)}
-              showsVerticalScrollIndicator={false}
-            />
-          ) : (
-            <View style={styles.parentView}>
-              <Text style={styles.nameTextview}>
-                Hello {loginData.rider.name}!
-              </Text>
-
-              <Image
-                source={require("../assets/images/rider.png")}
-                resizeMode={"contain"}
-                style={styles.image}
-              />
-              <Text style={styles.noOrderTextview}>
-                You have no orders {"\n"} assigned for today
-              </Text>
-            </View>
-          )}
+          <FlatList
+            data={orderArray}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+            keyExtractor={(item) => item.order.id}
+            renderItem={({ item, index }) => renderItem(item)}
+            showsVerticalScrollIndicator={false}
+          />
         </Animatable.View>
+      ) : !isLoading && orderArray.length == 0 ? (
+        <View style={styles.parentView}>
+          <Text style={styles.nameTextview}>Hello {loginData.rider.name}!</Text>
+
+          <Image
+            source={require("../assets/images/rider.png")}
+            resizeMode={"contain"}
+            style={styles.image}
+          />
+          <Text style={styles.noOrderTextview}>
+            You have no orders {"\n"} assigned for today
+          </Text>
+        </View>
       ) : null}
     </View>
   );

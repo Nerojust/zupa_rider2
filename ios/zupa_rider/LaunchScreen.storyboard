@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -26,6 +27,7 @@
                             <constraint firstAttribute="trailing" secondItem="Duq-KB-iyp" secondAttribute="trailing" id="U2a-SS-D7O"/>
                             <constraint firstItem="Duq-KB-iyp" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="sSV-x2-thg"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="jn4-ia-MgX"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -34,6 +36,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="image" width="375" height="562.5"/>
+        <image name="image" width="679" height="1470"/>
     </resources>
 </document>
