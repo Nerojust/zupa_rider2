@@ -1,7 +1,7 @@
 //import liraries
 import React, { Component } from "react";
 import { View, Text, StyleSheet, TextInput } from "react-native";
-import { COLORS, SIZES } from "../utils/theme";
+import { COLORS, SIZES,FONTS } from "../utils/theme";
 
 // create a component
 const TextInputComponent = ({
@@ -44,6 +44,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
+    fontFamily:
+      Platform.OS == "ios" ? FONTS.ROBOTO_REGULAR_IOS : FONTS.ROBOTO_REGULAR,
     borderBottomLeftRadius: 10,
     fontSize: 17,alignSelf:'center',
     width: SIZES.width - 70,

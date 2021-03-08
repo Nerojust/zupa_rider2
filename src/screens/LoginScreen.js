@@ -93,14 +93,13 @@ const LoginScreen = ({ navigation }) => {
         } else {
           dispatch(setError(responseJson.message));
         }
+        loadingButton.current.showLoading(false);
       })
       .catch((error) => {
         handleError(error);
         console.log("here oooo", error);
+        loadingButton.current.showLoading(false);
       });
-    return () => {
-      loadingButton.current.showLoading(false);
-    };
   };
 
   return (
@@ -154,7 +153,10 @@ const LoginScreen = ({ navigation }) => {
                 <TogglePasswordEye securePassword={securePassword} />
               </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={gotoForgotPasswordPage}>
+            <TouchableOpacity
+              onPress={gotoForgotPasswordPage}
+              activeOpacity={0.8}
+            >
               <Text style={styles.forgotPasswordView}>Forgot Password?</Text>
             </TouchableOpacity>
 
@@ -171,7 +173,7 @@ const LoginScreen = ({ navigation }) => {
                     ? FONTS.MONTSERRAT_MEDIUM_IOS
                     : FONTS.MONTSERRAT_MEDIUM
                 }
-                titleFontSize={18}
+                titleFontSize={16}
                 titleColor={COLORS.white}
                 activityIndicatorColor={COLORS.white}
                 backgroundColor={COLORS.blue}

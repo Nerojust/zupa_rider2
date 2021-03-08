@@ -21,8 +21,14 @@ import { useDispatch } from "react-redux";
 import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
 import { useSelector } from "react-redux";
+import NoConnection from "../components/NoConnection";
 import call from "react-native-phone-call";
-import { handleBackPress, handleError } from "../utils/utils";
+import {
+  checkNetworkConnection,
+  handleBackPress,
+  handleError,
+  isNetworkAvailable,
+} from "../utils/utils";
 import { saveOrder } from "../store/Actions";
 // create a component
 const DashboardScreen = ({ navigation }) => {
@@ -33,6 +39,9 @@ const DashboardScreen = ({ navigation }) => {
   //console.log("login data is ", loginData)
   var dataArray = useSelector((state) => state.orders.orders);
   //console.log("dashboard redux is", dataArray);
+  const [isNetworkAvailable, setisNetworkAvailable] = useState(false);
+
+  checkNetworkConnection(setisNetworkAvailable);
   let newArray = [];
   let responseArray = dataArray;
 
@@ -120,7 +129,6 @@ const DashboardScreen = ({ navigation }) => {
         }
         onPressView={() =>
           navigation.navigate("OrderDetails", {
-            //screen: "OrderDetails",
             id: item.id,
             name: item.order.recipient ? item.order.recipient.name : name,
             address: item.order.deliveryLocation
@@ -150,13 +158,23 @@ const DashboardScreen = ({ navigation }) => {
       .then((responseJson) => {
         if (responseJson) {
           if (!responseJson.code) {
-            //newArray.length = 0;
+            let arrayResult = responseJson[0].dispatch_orders;
+            newArray.length = 0;
             //dispatch(saveOrder(responseJson[0].dispatch_orders));
-
-            setOrderArray(responseJson[0].dispatch_orders);
-
-            setRefreshing(false);
-            //console.log("new array is ", newArray);
+            for (const item in arrayResult) {
+              if (Object.hasOwnProperty.call(arrayResult, item)) {
+                const data = arrayResult[item];
+                if (data.status == "pending") {
+                  //console.log("data o", data);
+                  newArray.push(data);
+                }
+              }
+            }
+            setOrderArray(newArray);
+            if (refreshing) {
+              setRefreshing(false);
+            }
+            // console.log("new array is ", newArray);
           } else {
             alert(responseJson.message);
           }
@@ -172,7 +190,6 @@ const DashboardScreen = ({ navigation }) => {
         //dismissLoader();
         setRefreshing(false);
       });
-    // dismissLoader();
   };
 
   return (
@@ -185,49 +202,63 @@ const DashboardScreen = ({ navigation }) => {
         loading={isLoading}
         message={"Fetching your orders for today..."}
       />
+      {isNetworkAvailable ? (
+        <>
+          {!isLoading && orderArray && orderArray.length > 0 ? (
+            <Text
+              style={{
+                fontSize: 15,
+                paddingVertical: 20,
+                marginHorizontal: 20,
+                fontFamily:
+                  Platform.OS == "ios"
+                    ? FONTS.ROBOTO_MEDIUM_IOS
+                    : FONTS.ROBOTO_MEDIUM,
+              }}
+            >
+              Hi, {loginData.rider.name},{"\n"} you have new order/s
+            </Text>
+          ) : null}
 
-      {!isLoading && orderArray && orderArray.length > 0 ? (
-        <Text
-          style={{
-            fontSize: 15,
-            paddingVertical: 20,
-            marginHorizontal: 20,
-            fontFamily:
-              Platform.OS == "ios"
-                ? FONTS.ROBOTO_MEDIUM_IOS
-                : FONTS.ROBOTO_MEDIUM,
-          }}
-        >
-          Hi, {loginData.rider.name},{"\n"} you have new order/s
-        </Text>
-      ) : null}
+          {!isLoading && orderArray.length > 0 ? (
+            <Animatable.View
+              animation="fadeIn"
+              duraton="1500"
+              style={{ flex: 1 }}
+            >
+              <FlatList
+                data={orderArray}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                  />
+                }
+                keyExtractor={(item) => item.order.id}
+                renderItem={({ item, index }) => renderItem(item)}
+                showsVerticalScrollIndicator={false}
+              />
+            </Animatable.View>
+          ) : !isLoading && orderArray.length == 0 ? (
+            <View style={styles.parentView}>
+              <Text style={styles.nameTextview}>
+                Hello {loginData.rider.name}!
+              </Text>
 
-      {!isLoading && orderArray.length > 0 ? (
-        <Animatable.View animation="fadeIn" duraton="1500" style={{ flex: 1 }}>
-          <FlatList
-            data={orderArray}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-            keyExtractor={(item) => item.order.id}
-            renderItem={({ item, index }) => renderItem(item)}
-            showsVerticalScrollIndicator={false}
-          />
-        </Animatable.View>
-      ) : !isLoading && orderArray.length == 0 ? (
-        <View style={styles.parentView}>
-          <Text style={styles.nameTextview}>Hello {loginData.rider.name}!</Text>
-
-          <Image
-            source={require("../assets/images/rider.png")}
-            resizeMode={"contain"}
-            style={styles.image}
-          />
-          <Text style={styles.noOrderTextview}>
-            You have no orders {"\n"} assigned for today
-          </Text>
-        </View>
-      ) : null}
+              <Image
+                source={require("../assets/images/rider.png")}
+                resizeMode={"contain"}
+                style={styles.image}
+              />
+              <Text style={styles.noOrderTextview}>
+                You have no orders {"\n"} assigned for today
+              </Text>
+            </View>
+          ) : null}
+        </>
+      ) : (
+        <NoConnection onPressAction={getOrders} />
+      )}
     </View>
   );
 };

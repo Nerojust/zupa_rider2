@@ -24,8 +24,8 @@ const Order = ({
   onPressView,
 }) => {
   return (
-    <TouchableWithoutFeedback onPress={onPressView}>
-      <View style={styles.mainView}>
+    <>
+      <TouchableWithoutFeedback style={styles.mainView} onPress={onPressView}>
         <View
           style={{
             flexDirection: "row",
@@ -94,7 +94,7 @@ const Order = ({
         <Text selectable={true} style={styles.phoneNumber}>
           {phoneNumber}
         </Text>
-      </View>
+      </TouchableWithoutFeedback>
 
       <View style={{ flex: 0.5 }}>
         <View style={{ flexDirection: "row" }}>
@@ -139,7 +139,7 @@ const Order = ({
           </TouchableOpacity>
         </View>
       </View>
-    </TouchableWithoutFeedback>
+    </>
   );
 };
 
@@ -149,7 +149,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flex: 1,
-    //paddingHorizontal: 10,
   },
 
   mainView: {

@@ -24,8 +24,8 @@ const ButtonComponent = ({ text, onPress, color }) => {
       <Text
         style={{
           color: COLORS.white,
-          fontSize: 18,
-          fontWeight: "bold",
+          fontSize: 16,
+          //fontWeight: "bold",
           fontFamily:
             Platform.OS == "ios"
               ? FONTS.ROBOTO_MEDIUM_IOS

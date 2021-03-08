@@ -33,9 +33,7 @@ const ButtonComponent = ({ text, onPress, color, left, image, tintColor }) => {
           justifyContent: "center",
           left: left,
           fontFamily:
-            Platform.OS == "ios"
-              ? FONTS.ROBOTO_MEDIUM_IOS
-              : FONTS.ROBOTO_MEDIUM,
+          Platform.OS == "ios" ? FONTS.ROBOTO_THIN_IOS : FONTS.ROBOTO_THIN
         }}
       >
         {text}

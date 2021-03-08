@@ -11,12 +11,12 @@ import {
   Image,
   StatusBar,
 } from "react-native";
-
+import NetInfo from "@react-native-community/netinfo";
 import { AuthContext } from "./Context";
 
 export function handleBackPress(navigation) {
   const { signOut } = useContext(AuthContext);
-  console.log("navigation is", navigation);
+  //console.log("navigation is", navigation);
   const backAction = () => {
     Alert.alert("Zupa Rider", "Are you sure you want to exit?", [
       {
@@ -75,7 +75,7 @@ export const validateEmail = (email) => {
 export const checkNetworkConnection = (setisNetworkAvailable) => {
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
-      //console.log("Is connected?", state.isConnected);
+      console.log("Is connected?", state.isConnected);
       setisNetworkAvailable(state.isConnected);
     });
     return () => {
@@ -122,7 +122,7 @@ export const getTodaysDate = (date) => {
   // Basic usage
   if (!date) {
     return dateFormat(now, "dS mmmm, yyyy");
-  }else{
+  } else {
     return dateFormat(date, "dS mmmm, yyyy @ hh:MM TT");
   }
 };

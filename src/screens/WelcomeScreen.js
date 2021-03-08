@@ -37,9 +37,9 @@ const WelcomeScreen = ({ navigation }) => {
           <Text style={styles.text}>Sign in with an account</Text>
 
           <DisplayButton
-            text="Get Started"
+            text="Get started"
             onPress={() => navigation.push("Login")}
-            color={COLORS.primary}
+            color={COLORS.blue}
           />
         </View>
       </ImageBackground>
@@ -74,8 +74,9 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "grey",
-    marginBottom: 20,
+    marginBottom: 15,
     justifyContent: "center",
+    fontSize:13,
     alignSelf: "center",
     fontFamily:
       Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,

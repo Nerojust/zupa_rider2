@@ -1,10 +1,7 @@
 //import liraries
 import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { Colors } from "../utils/Color";
-import { SvgComponent } from "./SvgComponent";
-import NoNetworkSvg from "./svgs/NoNetworkSvg";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { COLORS, SIZES, FONTS } from "../utils/theme";
 
 // create a component
 const NoConnection = (props) => {
@@ -13,9 +10,12 @@ const NoConnection = (props) => {
       <Text
         style={{
           fontSize: 17,
-          color: Colors.appGreen,
+          color: COLORS.gray,
           marginBottom: 50,
-          fontFamily: "roboto_light",
+          fontFamily:
+            Platform.OS == "ios"
+              ? FONTS.ROBOTO_MEDIUM_IOS
+              : FONTS.ROBOTO_MEDIUM,
         }}
       >
         No network detected
@@ -24,8 +24,11 @@ const NoConnection = (props) => {
         <Text
           style={{
             fontSize: 17,
-            color: Colors.appGreen,
-            fontFamily: "roboto_light",
+            color: COLORS.blue,
+            fontFamily:
+            Platform.OS == "ios"
+              ? FONTS.ROBOTO_MEDIUM_IOS
+              : FONTS.ROBOTO_MEDIUM,
           }}
         >
           Click to Retry

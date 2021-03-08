@@ -222,10 +222,10 @@ const OrderDetailScreen = ({ route, navigation }) => {
         <DisplayButton
           text="Navigate"
           onPress={openLocation}
-          color={COLORS.gray}
+          color={COLORS.blue}
           left={110}
           image={require("../assets/icons/pin.png")}
-          tintColor={COLORS.white}
+          tintColor={COLORS.lightGray3}
         />
       </View>
       <View style={{ marginTop: 30 }}>
@@ -235,17 +235,17 @@ const OrderDetailScreen = ({ route, navigation }) => {
           color={COLORS.blue}
           left={130}
           image={require("../assets/icons/phone.png")}
-          tintColor={COLORS.white}
+          tintColor={COLORS.lightGray3}
         />
       </View>
       <View style={{ marginTop: 30 }}>
         <DisplayButton
           text="Text"
           onPress={sendTextMessage}
-          color={COLORS.secondary}
-          left={130}
+          color={COLORS.blue}
+          left={129}
           image={require("../assets/icons/smartphone.png")}
-          tintColor={COLORS.white}
+          tintColor={COLORS.lightGray3}
         />
       </View>
       <View style={{ marginTop: 30 }}>
@@ -258,14 +258,12 @@ const OrderDetailScreen = ({ route, navigation }) => {
             title="Mark Complete"
             titleWeight={"700"}
             titleFontFamily={
-              Platform.OS == "ios"
-                ? FONTS.MONTSERRAT_MEDIUM_IOS
-                : FONTS.MONTSERRAT_MEDIUM
+              Platform.OS == "ios" ? FONTS.MONTSERRAT_MEDIUM_IOS : FONTS.ROBOTO_THIN
             }
             titleFontSize={18}
             titleColor={COLORS.white}
             activityIndicatorColor={COLORS.white}
-            backgroundColor={COLORS.blue}
+            backgroundColor={COLORS.green1}
             borderRadius={10}
             onPress={handleComplete.bind(this)}
           />
@@ -274,14 +272,10 @@ const OrderDetailScreen = ({ route, navigation }) => {
             ref={(c) => (loadingButton.current = c)}
             width={Platform.OS == "ios" ? 300 : 290}
             height={50}
-            //borderWidth={30}
-
             title="Completed"
             titleWeight={"700"}
             titleFontFamily={
-              Platform.OS == "ios"
-                ? FONTS.MONTSERRAT_MEDIUM_IOS
-                : FONTS.MONTSERRAT_MEDIUM
+              Platform.OS == "ios" ? FONTS.ROBOTO_THIN_IOS : FONTS.ROBOTO_THIN
             }
             titleFontSize={18}
             titleColor={COLORS.white}
