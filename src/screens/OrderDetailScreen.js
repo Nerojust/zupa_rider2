@@ -23,7 +23,7 @@ import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
 import { useDispatch, useSelector } from "react-redux";
 import { saveOrder, setError } from "../store/Actions";
-import { handleError } from "../utils/utils";
+import { getTodaysDate, handleError } from "../utils/utils";
 
 const OrderDetailScreen = ({ route, navigation }) => {
   const name = route.params.name;
@@ -31,6 +31,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
   const phoneNumber = route.params.phoneNumber;
   const status = route.params.status;
   const orderId = route.params.id;
+  const date = route.params.date;
   const [isLoading, setIsLoading] = useState(false);
   const [isMarkComplete, setIsMarkComplete] = useState(false);
   const dispatch = useDispatch();
@@ -181,7 +182,35 @@ const OrderDetailScreen = ({ route, navigation }) => {
         style={{
           //flex: 1,
           flexDirection: "row",
-          marginTop: 35,
+          marginTop: 15,
+          alignItems: "center",
+          justifyContent: "flex-start",
+          paddingHorizontal: 5,
+        }}
+      >
+        <>
+          <Image
+            source={require("../assets/icons/calendar.png")}
+            resizeMode={"contain"}
+            style={{
+              width: 18,
+              height: 15,
+              flex: 0.37,
+            }}
+          />
+          <Text
+            selectable={true}
+            style={{ fontSize: 16, flex: 1.9, left: -10 }}
+          >
+            {getTodaysDate(date)}
+          </Text>
+        </>
+      </View>
+      <View
+        style={{
+          //flex: 1,
+          flexDirection: "row",
+          marginTop: 15,
           alignItems: "center",
           justifyContent: "flex-start",
           paddingHorizontal: 5,
@@ -197,9 +226,15 @@ const OrderDetailScreen = ({ route, navigation }) => {
               flex: 0.37,
             }}
           />
-          <Text style={{ fontSize: 16, flex: 1.9, left: -10 }}>{address}</Text>
+          <Text
+            selectable={true}
+            style={{ fontSize: 16, flex: 1.9, left: -10 }}
+          >
+            {address}
+          </Text>
         </>
       </View>
+
       <View
         style={{
           flexDirection: "row",
@@ -207,15 +242,17 @@ const OrderDetailScreen = ({ route, navigation }) => {
           alignSelf: "flex-start",
           justifyContent: "center",
           alignItems: "center",
-          paddingHorizontal: 28,
+          paddingHorizontal: 5,
         }}
       >
         <Image
           source={require("../assets/icons/smartphone.png")}
           resizeMode={"contain"}
-          style={{ width: 18, height: 15, marginRight: 15 }}
+          style={{ width: 18, height: 15, flex: 0.37 }}
         />
-        <Text style={{ fontSize: 16 }}>{phoneNumber}</Text>
+        <Text selectable={true} style={{ fontSize: 16, flex: 1.9, left: -10 }}>
+          {phoneNumber}
+        </Text>
       </View>
 
       <View style={{ marginTop: 40 }}>
@@ -315,6 +352,14 @@ const styles = StyleSheet.create({
     //justifyContent: 'center',
     alignItems: "center",
     backgroundColor: COLORS.white,
+  },
+  dateView: {
+    fontSize: 15,
+    fontWeight: "normal",
+    marginTop: 15,
+    color: COLORS.gray1,
+    alignSelf: "flex-start",
+    marginLeft: 30,
   },
 });
 
