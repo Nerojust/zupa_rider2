@@ -72,6 +72,7 @@ const OrderHistoryScreen = ({ navigation }) => {
     setIsLoading(false);
   };
   const onRefresh = useCallback(() => {
+    setOrderArray([]);
     showLoader();
     setTimeout(() => {
       getOrders();
@@ -188,63 +189,57 @@ const OrderHistoryScreen = ({ navigation }) => {
         loading={isLoading}
         message={"Fetching your orders for today..."}
       />
-      {isNetworkAvailable ? (
-        <>
-          {!isLoading && orderArray && orderArray.length > 0 ? (
-            <Text
-              style={{
-                fontSize: 15,
-                paddingVertical: 20,
-                marginHorizontal: 20,
-                fontFamily:
-                  Platform.OS == "ios"
-                    ? FONTS.ROBOTO_MEDIUM_IOS
-                    : FONTS.ROBOTO_MEDIUM,
-              }}
-            >
-              Hi, {loginData.rider.name},{"\n"} you have new order/s
+
+      <>
+        {!isLoading && orderArray && orderArray.length > 0 ? (
+          <Text
+            style={{
+              fontSize: 15,
+              paddingVertical: 20,
+              marginHorizontal: 20,
+              fontFamily:
+                Platform.OS == "ios"
+                  ? FONTS.ROBOTO_MEDIUM_IOS
+                  : FONTS.ROBOTO_MEDIUM,
+            }}
+          >
+            Hi, {loginData.rider.name},{"\n"} you have new order/s
+          </Text>
+        ) : null}
+
+        {!isLoading && orderArray.length > 0 ? (
+          <Animatable.View
+            animation="fadeInUp"
+            duraton="1500"
+            style={{ flex: 1 }}
+          >
+            <FlatList
+              data={orderArray}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+              keyExtractor={(item) => item.dispatch_orders[0].id}
+              renderItem={({ item, index }) => renderItem(item)}
+              showsVerticalScrollIndicator={false}
+            />
+          </Animatable.View>
+        ) : isResultOrderEmpty ? (
+          <View style={styles.parentView}>
+            <Text style={styles.nameTextview}>
+              Hello {loginData.rider.name}!
             </Text>
-          ) : null}
 
-          {!isLoading && orderArray.length > 0 ? (
-            <Animatable.View
-              animation="fadeIn"
-              duraton="1500"
-              style={{ flex: 1 }}
-            >
-              <FlatList
-                data={orderArray}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                  />
-                }
-                keyExtractor={(item) => item.dispatch_orders[0].id}
-                renderItem={({ item, index }) => renderItem(item)}
-                showsVerticalScrollIndicator={false}
-              />
-            </Animatable.View>
-          ) : isResultOrderEmpty ? (
-            <View style={styles.parentView}>
-              <Text style={styles.nameTextview}>
-                Hello {loginData.rider.name}!
-              </Text>
-
-              <Image
-                source={require("../assets/images/rider.png")}
-                resizeMode={"contain"}
-                style={styles.image}
-              />
-              <Text style={styles.noOrderTextview}>
-                You have no orders {"\n"} assigned for today
-              </Text>
-            </View>
-          ) : null}
-        </>
-      ) : (
-        <NoConnection onPressAction={getOrders} />
-      )}
+            <Image
+              source={require("../assets/images/rider.png")}
+              resizeMode={"contain"}
+              style={styles.image}
+            />
+            <Text style={styles.noOrderTextview}>
+              You have no orders {"\n"} assigned for today
+            </Text>
+          </View>
+        ) : null}
+      </>
     </View>
   );
 };
