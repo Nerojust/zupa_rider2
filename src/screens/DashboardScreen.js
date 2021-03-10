@@ -25,6 +25,7 @@ import NoConnection from "../components/NoConnection";
 import call from "react-native-phone-call";
 import {
   checkNetworkConnection,
+  getReadableDateAndTime,
   handleBackPress,
   handleError,
   isNetworkAvailable,
@@ -42,8 +43,6 @@ const DashboardScreen = ({ navigation }) => {
   const [isNetworkAvailable, setisNetworkAvailable] = useState(false);
 
   checkNetworkConnection(setisNetworkAvailable);
-  let newArray = [];
-  let responseArray = dataArray;
 
   let name = "Nerojust Adjeks";
   let phone = "08012345678";
@@ -90,45 +89,51 @@ const DashboardScreen = ({ navigation }) => {
   };
   const renderItem = (data) => {
     let item = data.dispatch_orders[0];
-    let address1 = item.order.deliveryLocation
-      ? item.order.deliveryLocation.address
-      : address;
-    //console.log("address1", address1)
-    let end = address1;
-    return (
-      <Order
-        name={item.order.customer.name ? item.order.customer.name : name}
-        address={item.order.customer ? item.order.customer.address : address}
-        phoneNumber={
-          item.order.customer ? item.order.customer.phoneNumber : phone
-        }
-        status={item.status}
-        onPressNavigate={createOpenLink({
-          travelType,
-          end,
-          provider: "google",
-        })}
-        onPressCall={() =>
-          dialNumber(
+    //console.log("Item is ", item);
+
+    if (item.order) {
+      let address1 =
+        item.order && item.order.customer
+          ? item.order.customer.address
+          : address;
+      //console.log("address1", address1)
+      let end = address1;
+      return (
+        <Order
+          name={item.order.customer.name ? item.order.customer.name : name}
+          address={item.order.customer ? item.order.customer.address : address}
+          phoneNumber={
             item.order.customer ? item.order.customer.phoneNumber : phone
-          )
-        }
-        onPressView={() =>
-          navigation.navigate("OrderDetails", {
-            id: item.id,
-            name: item.order.customer ? item.order.customer.name : name,
-            address: item.order.customer
-              ? item.order.customer.address
-              : address,
-            phoneNumber: item.order.customer
-              ? item.order.customer.phoneNumber
-              : phone,
-            status: item.order.status,
-            date : item.updatedAt
-          })
-        }
-      />
-    );
+          }
+          status={item.status}
+          date={getReadableDateAndTime(item.updatedAt)}
+          onPressNavigate={createOpenLink({
+            travelType,
+            end,
+            provider: "google",
+          })}
+          onPressCall={() =>
+            dialNumber(
+              item.order.customer ? item.order.customer.phoneNumber : phone
+            )
+          }
+          onPressView={() =>
+            navigation.navigate("OrderDetails", {
+              id: item.id,
+              name: item.order.customer ? item.order.customer.name : name,
+              address: item.order.customer
+                ? item.order.customer.address
+                : address,
+              phoneNumber: item.order.customer
+                ? item.order.customer.phoneNumber
+                : phone,
+              status: item.status,
+              date: item.updatedAt,
+            })
+          }
+        />
+      );
+    }
   };
   const getOrders = () => {
     var myHeaders = new Headers();

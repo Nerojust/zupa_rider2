@@ -17,13 +17,16 @@ import SendSMS from "react-native-sms";
 import call from "react-native-phone-call";
 import openMap from "react-native-open-maps";
 import { createOpenLink } from "react-native-open-maps";
+import { getTodaysDate } from "../utils/utils";
 // create a component
 const OrderHistoryDetailScreen = ({ route, navigation }) => {
   const name = route.params.name;
   const address = route.params.address;
   const phoneNumber = route.params.phoneNumber;
   const status = route.params.status;
+  const date = route.params.date;
 
+  console.log("status ", status);
   const end = address;
   const travelType = "drive";
 
@@ -67,7 +70,35 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
         style={{
           //flex: 1,
           flexDirection: "row",
-          marginTop: 35,
+          marginTop: 15,
+          alignItems: "center",
+          justifyContent: "flex-start",
+          paddingHorizontal: 5,
+        }}
+      >
+        <>
+          <Image
+            source={require("../assets/icons/calendar.png")}
+            resizeMode={"contain"}
+            style={{
+              width: 18,
+              height: 15,
+              flex: 0.37,
+            }}
+          />
+          <Text
+            selectable={true}
+            style={{ fontSize: 16, flex: 1.9, left: -10 }}
+          >
+            {getTodaysDate(date)}
+          </Text>
+        </>
+      </View>
+      <View
+        style={{
+          //flex: 1,
+          flexDirection: "row",
+          marginTop: 17,
           alignItems: "center",
           justifyContent: "flex-start",
           paddingHorizontal: 5,
@@ -134,15 +165,12 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
           tintColor={COLORS.white}
         />
       </View>
-      {status != "completed" ? (
+      {status == "completed" ? (
         <View style={{ marginTop: 30 }}>
           <DisplayButton
-            text="Mark as Complete"
-            onPress={() => Alert.alert("Completed")}
-            color={COLORS.darkGreen}
+            text="Completed"
+            color={COLORS.green1}
             left={SIZES.width / 3 - 5}
-            //image={require("../assets/icons/success.png")}
-            //tintColor={COLORS.gray}
           />
         </View>
       ) : null}

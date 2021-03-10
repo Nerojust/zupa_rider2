@@ -15,14 +15,22 @@ import {
 
 import { createOpenLink } from "react-native-open-maps";
 import { COLORS, FONTS, SIZES } from "../utils/theme";
-import Order1 from "../components/Order1";
-
+import Order from "../components/Order";
+import * as Animatable from "react-native-animatable";
 import { useDispatch } from "react-redux";
 import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
 import { useSelector } from "react-redux";
+import NoConnection from "../components/NoConnection";
 import call from "react-native-phone-call";
-import { getReadableDateAndTime, getTodaysDate, handleError } from "../utils/utils";
+import {
+  checkNetworkConnection,
+  getReadableDateAndTime,
+  getTodaysDate,
+  handleBackPress,
+  handleError,
+  isNetworkAvailable,
+} from "../utils/utils";
 import { saveOrder } from "../store/Actions";
 // create a component
 const OrderHistoryScreen = ({ navigation }) => {
@@ -32,22 +40,30 @@ const OrderHistoryScreen = ({ navigation }) => {
   const loginData = useSelector((state) => state.login.loginResults);
   //console.log("login data is ", loginData)
   var dataArray = useSelector((state) => state.orders.orders);
-  //console.log("order redux is", dataArray);
+  //console.log("dashboard redux is", dataArray);
+  const [isNetworkAvailable, setisNetworkAvailable] = useState(false);
+
+  checkNetworkConnection(setisNetworkAvailable);
   let newArray = [];
-  for (const item in dataArray) {
-    if (Object.hasOwnProperty.call(dataArray, item)) {
-      const data = dataArray[item];
-      //console.log("data o", data)
-      if (data.status != "pending") newArray.push(data);
-    }
-  }
-  //console.log("new array",newArray)
+  let responseArray = dataArray;
 
   let name = "Nerojust Adjeks";
   let phone = "08012345678";
   let address = "Necom House";
-  let end = address;
   const travelType = "drive";
+
+  const [orderArray, setOrderArray] = useState([]);
+  const [isResultOrderEmpty, setIsResultOrderEmpty] = useState(false);
+
+  useEffect(() => {
+    showLoader();
+    setTimeout(() => {
+      getOrders();
+      dismissLoader();
+    }, 1000);
+  }, []);
+
+  //handleBackPress();
 
   const showLoader = () => {
     setIsLoading(true);
@@ -56,50 +72,71 @@ const OrderHistoryScreen = ({ navigation }) => {
     setIsLoading(false);
   };
   const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    //showLoader();
-    dispatch(saveOrder([]));
-    getOrders();
-    dismissLoader();
+    showLoader();
+    setTimeout(() => {
+      getOrders();
+      dismissLoader();
+      setRefreshing(false);
+    }, 1000);
+
     setRefreshing(false);
   }, []);
 
-  const renderItem = (item) => {
-    return (
+  const dialNumber = (phoneNumber) => {
+    const args = {
+      number: phoneNumber, // String value with the number to call
+      prompt: true, // Optional boolean property. Determines if the user should be prompt prior to the call
+    };
 
-        <Order1
-          name={item.order.recipient ? item.order.recipient.name : name}
-          address={
-            item.order.deliveryLocation
-              ? item.order.deliveryLocation.address
-              : address
-          }
+    call(args).catch(console.error);
+  };
+  const renderItem = (data) => {
+    let item = data.dispatch_orders[0];
+    console.log("Item is ", item);
+
+    if (item.order) {
+      let address1 =
+        item.order && item.order.customer
+          ? item.order.customer.address
+          : address;
+      //console.log("address1", address1)
+      let end = address1;
+      return (
+        <Order
+          name={item.order.customer.name ? item.order.customer.name : name}
+          address={item.order.customer ? item.order.customer.address : address}
           phoneNumber={
-            item.order.recipient ? item.order.recipient.phoneNumber : phone
+            item.order.customer ? item.order.customer.phoneNumber : phone
           }
           status={item.status}
-          date={getTodaysDate(item.updatedAt)}
-          onPressNavigate={openLocation}
+          date={getReadableDateAndTime(item.updatedAt)}
+          onPressNavigate={createOpenLink({
+            travelType,
+            end,
+            provider: "google",
+          })}
           onPressCall={() =>
             dialNumber(
-              item.order.recipien ? item.order.recipien.phoneNumber : phone
+              item.order.customer ? item.order.customer.phoneNumber : phone
             )
           }
           onPressView={() =>
             navigation.navigate("OrderHistoryDetails", {
-              id: item.order.id,
-              name: item.order.recipient ? item.order.recipient.name : name,
-              address: item.order.deliveryLocation
-                ? item.order.deliveryLocation.address
+              id: item.id,
+              name: item.order.customer ? item.order.customer.name : name,
+              address: item.order.customer
+                ? item.order.customer.address
                 : address,
-              phoneNumber: item.order.recipient
-                ? item.order.recipient.phoneNumber
+              phoneNumber: item.order.customer
+                ? item.order.customer.phoneNumber
                 : phone,
               status: item.status,
+              date: item.updatedAt,
             })
           }
         />
-    );
+      );
+    }
   };
   const getOrders = () => {
     var myHeaders = new Headers();
@@ -111,18 +148,20 @@ const OrderHistoryScreen = ({ navigation }) => {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(GET_RIDER_REQUESTS, requestOptions)
+    fetch(GET_RIDER_REQUESTS + "/?status=completed", requestOptions)
       .then((response) => response.json())
       .then((responseJson) => {
         if (responseJson) {
           if (!responseJson.code) {
-            dispatch(
-              saveOrder(
-                responseJson[0].dispatch_distribution.dispatches[0]
-                  .dispatch_orders
-              )
-            );
-            //console.log("data array ", dataArray);
+            if (responseJson.length > 0) {
+              setOrderArray(responseJson);
+            } else {
+              setIsResultOrderEmpty(true);
+            }
+            if (refreshing) {
+              setRefreshing(false);
+            }
+            // console.log("new array is ", newArray);
           } else {
             alert(responseJson.message);
           }
@@ -130,27 +169,14 @@ const OrderHistoryScreen = ({ navigation }) => {
           alert(responseJson.message);
         }
         setRefreshing(false);
-        dismissLoader();
+        // dismissLoader();
       })
       .catch((error) => {
         console.log("error", error);
         handleError(error);
-        dismissLoader();
         setRefreshing(false);
       });
-    dismissLoader();
   };
-
-  const dialNumber = (phoneNumber) => {
-    const args = {
-      number: phoneNumber, // String value with the number to call
-      prompt: true, // Optional boolean property. Determines if the user should be prompt prior to the call
-    };
-
-    call(args).catch(console.error);
-  };
-
-  const openLocation = createOpenLink({ travelType, end, provider: "google" });
 
   return (
     <View style={styles.container}>
@@ -158,29 +184,66 @@ const OrderHistoryScreen = ({ navigation }) => {
         backgroundColor={COLORS.blue}
         barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
       />
-      <LoadingDialog loading={isLoading} />
+      <LoadingDialog
+        loading={isLoading}
+        message={"Fetching your orders for today..."}
+      />
+      {isNetworkAvailable ? (
+        <>
+          {!isLoading && orderArray && orderArray.length > 0 ? (
+            <Text
+              style={{
+                fontSize: 15,
+                paddingVertical: 20,
+                marginHorizontal: 20,
+                fontFamily:
+                  Platform.OS == "ios"
+                    ? FONTS.ROBOTO_MEDIUM_IOS
+                    : FONTS.ROBOTO_MEDIUM,
+              }}
+            >
+              Hi, {loginData.rider.name},{"\n"} you have new order/s
+            </Text>
+          ) : null}
 
-      {newArray && newArray.length > 0 ? (
-        <FlatList
-          data={newArray}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          keyExtractor={(item) => item.order.id}
-          renderItem={({ item, index }) => renderItem(item)}
-          showsVerticalScrollIndicator={false}
-        />
+          {!isLoading && orderArray.length > 0 ? (
+            <Animatable.View
+              animation="fadeIn"
+              duraton="1500"
+              style={{ flex: 1 }}
+            >
+              <FlatList
+                data={orderArray}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                  />
+                }
+                keyExtractor={(item) => item.dispatch_orders[0].id}
+                renderItem={({ item, index }) => renderItem(item)}
+                showsVerticalScrollIndicator={false}
+              />
+            </Animatable.View>
+          ) : isResultOrderEmpty ? (
+            <View style={styles.parentView}>
+              <Text style={styles.nameTextview}>
+                Hello {loginData.rider.name}!
+              </Text>
+
+              <Image
+                source={require("../assets/images/rider.png")}
+                resizeMode={"contain"}
+                style={styles.image}
+              />
+              <Text style={styles.noOrderTextview}>
+                You have no orders {"\n"} assigned for today
+              </Text>
+            </View>
+          ) : null}
+        </>
       ) : (
-        <View style={styles.parentView}>
-          <Text style={styles.nameTextview}>Hi, {loginData.rider.name}!</Text>
-
-          <Image
-            source={require("../assets/images/rider.png")}
-            resizeMode={"contain"}
-            style={styles.image}
-          />
-          <Text style={styles.noOrderTextview}>You have no order history</Text>
-        </View>
+        <NoConnection onPressAction={getOrders} />
       )}
     </View>
   );
@@ -239,18 +302,18 @@ const styles = StyleSheet.create({
   image: {
     top: -100,
     width: SIZES.width,
-    height: SIZES.width / 2.5,
+    height: SIZES.width / 3,
   },
   noOrderTextview: {
-    fontSize: 18,
-    fontWeight: "500",
+    fontSize: 14,
+    fontWeight: "300",
     fontFamily:
       Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
     //marginTop:50
   },
   nameTextview: {
     fontSize: 18,
-    fontWeight: "500",
+    fontWeight: "400",
     fontFamily:
       Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
     flex: 0.5,

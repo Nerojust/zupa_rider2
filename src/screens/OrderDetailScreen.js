@@ -210,7 +210,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
         style={{
           //flex: 1,
           flexDirection: "row",
-          marginTop: 15,
+          marginTop: 17,
           alignItems: "center",
           justifyContent: "flex-start",
           paddingHorizontal: 5,

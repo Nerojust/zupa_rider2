@@ -21,6 +21,7 @@ const Order = ({
   onPressNavigate,
   onPressCall,
   onPressView,
+  date,
 }) => {
   return (
     <>
@@ -92,6 +93,9 @@ const Order = ({
         </Text>
         <Text selectable={true} style={styles.phoneNumber}>
           {phoneNumber}
+        </Text>
+        <Text selectable={true} style={styles.dateView}>
+          {date}
         </Text>
       </TouchableWithoutFeedback>
 
@@ -187,6 +191,12 @@ const styles = StyleSheet.create({
     height: 20,
     opacity: 0.75,
     tintColor: COLORS.blue,
+  },
+  dateView: {
+    fontSize: 13,
+    fontWeight: "normal",
+    marginTop: 5,
+    color: COLORS.gray1,
   },
 });
 
