@@ -10,7 +10,6 @@ import {
 } from "react-native";
 
 import { COLORS, FONTS, SIZES } from "../utils/theme";
-import CardView from "react-native-cardview";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 // create a component

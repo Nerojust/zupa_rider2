@@ -33,7 +33,7 @@ const ButtonComponent = ({ text, onPress, color, left, image, tintColor }) => {
           justifyContent: "center",
           left: left,
           fontFamily:
-          Platform.OS == "ios" ? FONTS.ROBOTO_THIN_IOS : FONTS.ROBOTO_THIN
+          Platform.OS == "ios" ? FONTS.VARELA_ROUND_REGULAR_IOS : FONTS.ROBOTO_THIN
         }}
       >
         {text}
@@ -44,8 +44,8 @@ const ButtonComponent = ({ text, onPress, color, left, image, tintColor }) => {
         style={{
           width: 20,
           height: 20,
-          marginRight: 15,
-          flex: 0.3,
+          //marginRight: 15,
+          flex: 0.5,
           tintColor: tintColor,
         }}
       />

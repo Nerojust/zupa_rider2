@@ -194,10 +194,10 @@ const OrderDetailScreen = ({ route, navigation }) => {
             style={{
               width: 18,
               height: 15,
-              flex: 0.27,
+              flex: 0.37,
             }}
           />
-          <Text style={{ fontSize: 16, flex: 1.2, left: -10 }}>{address}</Text>
+          <Text style={{ fontSize: 16, flex: 1.9, left: -10 }}>{address}</Text>
         </>
       </View>
       <View
@@ -223,7 +223,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
           text="Navigate"
           onPress={openLocation}
           color={COLORS.blue}
-          left={110}
+          left={SIZES.width / 3 - 5}
           image={require("../assets/icons/pin.png")}
           tintColor={COLORS.lightGray3}
         />
@@ -233,7 +233,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
           text="Call"
           onPress={dialNumber}
           color={COLORS.blue}
-          left={130}
+          left={SIZES.width / 3 - 5}
           image={require("../assets/icons/phone.png")}
           tintColor={COLORS.lightGray3}
         />
@@ -243,56 +243,61 @@ const OrderDetailScreen = ({ route, navigation }) => {
           text="Text"
           onPress={sendTextMessage}
           color={COLORS.blue}
-          left={129}
+          left={SIZES.width / 3 - 5}
           image={require("../assets/icons/smartphone.png")}
           tintColor={COLORS.lightGray3}
         />
       </View>
-      <View style={{ marginTop: 30 }}>
+      <View style={{ marginTop: 30, width: SIZES.width - 70 }}>
         {!isMarkComplete ? (
           <AnimateLoadingButton
             ref={(c) => (loadingButton.current = c)}
-            width={Platform.OS == "ios" ? 300 : 290}
+            width={SIZES.width - 70}
             height={50}
             //borderWidth={30}
             title="Mark Complete"
             titleWeight={"700"}
             titleFontFamily={
-              Platform.OS == "ios" ? FONTS.MONTSERRAT_MEDIUM_IOS : FONTS.ROBOTO_THIN
+              Platform.OS == "ios"
+                ? FONTS.MONTSERRAT_MEDIUM_IOS
+                : FONTS.ROBOTO_THIN
             }
             titleFontSize={18}
             titleColor={COLORS.white}
             activityIndicatorColor={COLORS.white}
-            backgroundColor={COLORS.green1}
+            backgroundColor={COLORS.blue}
             borderRadius={10}
             onPress={handleComplete.bind(this)}
           />
         ) : (
           <AnimateLoadingButton
             ref={(c) => (loadingButton.current = c)}
-            width={Platform.OS == "ios" ? 300 : 290}
+            width={SIZES.width - 70}
             height={50}
             title="Completed"
             titleWeight={"700"}
             titleFontFamily={
-              Platform.OS == "ios" ? FONTS.ROBOTO_THIN_IOS : FONTS.ROBOTO_THIN
+              Platform.OS == "ios"
+                ? FONTS.MONTSERRAT_MEDIUM_IOS
+                : FONTS.ROBOTO_THIN
             }
             titleFontSize={18}
             titleColor={COLORS.white}
             activityIndicatorColor={COLORS.white}
-            backgroundColor={COLORS.darkGreen}
+            // tintColor={COLORS.gray}
+            backgroundColor={COLORS.green3}
             borderRadius={10}
             onPress={handleNothing.bind(this)}
           />
         )}
       </View>
-
-      {/* {!isMarkComplete ? (
+      {/* 
+      {!isMarkComplete ? (
         <View style={{ marginTop: 30 }}>
           <DisplayButton
             text="Mark as Complete"
             onPress={handleComplete}
-            color={COLORS.darkGreen}
+            color={COLORS.green3}
             left={80}
             //image={require("../assets/icons/success.png")}
             //tintColor={COLORS.gray}

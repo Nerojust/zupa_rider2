@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     fontSize:13,
     alignSelf: "center",
     fontFamily:
-      Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
+      Platform.OS == "ios" ? FONTS.VARELA_ROUND_REGULAR_IOS : FONTS.ROBOTO_MEDIUM,
   },
   buttonView: {
     flex: 0.5,

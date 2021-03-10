@@ -80,10 +80,10 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
             style={{
               width: 18,
               height: 15,
-              flex: 0.27,
+              flex: 0.37,
             }}
           />
-          <Text style={{ fontSize: 16, flex: 1.2, left: -10 }}>{address}</Text>
+          <Text style={{ fontSize: 16, flex: 1.9, left: -10 }}>{address}</Text>
         </>
       </View>
       <View
@@ -108,8 +108,8 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
         <DisplayButton
           text="Navigate"
           onPress={openLocation}
-          color={COLORS.gray}
-          left={115}
+          color={COLORS.blue}
+          left={SIZES.width / 3 - 5}
           image={require("../assets/icons/pin.png")}
           tintColor={COLORS.white}
         />
@@ -119,7 +119,7 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
           text="Call"
           onPress={dialNumber}
           color={COLORS.blue}
-          left={130}
+          left={SIZES.width / 3 - 5}
           image={require("../assets/icons/phone.png")}
           tintColor={COLORS.white}
         />
@@ -128,8 +128,8 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
         <DisplayButton
           text="Text"
           onPress={sendTextMessage}
-          color={COLORS.secondary}
-          left={130}
+          color={COLORS.blue}
+          left={SIZES.width / 3 - 5}
           image={require("../assets/icons/smartphone.png")}
           tintColor={COLORS.white}
         />
@@ -140,7 +140,7 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
             text="Mark as Complete"
             onPress={() => Alert.alert("Completed")}
             color={COLORS.darkGreen}
-            left={80}
+            left={SIZES.width / 3 - 5}
             //image={require("../assets/icons/success.png")}
             //tintColor={COLORS.gray}
           />

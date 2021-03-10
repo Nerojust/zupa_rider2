@@ -77,6 +77,7 @@ const LoginScreen = ({ navigation }) => {
       .then((response) => response.json())
       .then((responseJson) => {
         if (responseJson) {
+          //console.log("login response", responseJson)
           if (!responseJson.code) {
             if (responseJson.rider && responseJson.jwt) {
               dispatch(loginUser(responseJson));
