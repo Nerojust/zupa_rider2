@@ -10,11 +10,11 @@ const ButtonComponent = ({ text, onPress, color, left, image, tintColor }) => {
   return (
     <TouchableWithoutFeedback
       style={{
-        flexDirection: "row",
+       // flexDirection: "row",
         height: 50,
         width: SIZES.width - 70,
         backgroundColor: color,
-        // justifyContent: "flex-end",
+       justifyContent: 'center',
         alignItems: "center",
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
@@ -28,17 +28,17 @@ const ButtonComponent = ({ text, onPress, color, left, image, tintColor }) => {
           color: COLORS.white,
           fontSize: 18,
           fontWeight: "bold",
-          flex: 1.5,
+          //flex: 1.5,
           alignSelf: "center",
           justifyContent: "center",
-          left: left,
+          //left: left,
           fontFamily:
-          Platform.OS == "ios" ? FONTS.VARELA_ROUND_REGULAR_IOS : FONTS.ROBOTO_THIN
+          Platform.OS == "ios" ? FONTS.ROBOTO_THIN_IOS : FONTS.ROBOTO_THIN
         }}
       >
         {text}
       </Text>
-      <Image
+      {/* <Image
         source={image}
         resizeMode={"contain"}
         style={{
@@ -48,7 +48,7 @@ const ButtonComponent = ({ text, onPress, color, left, image, tintColor }) => {
           flex: 0.5,
           tintColor: tintColor,
         }}
-      />
+      /> */}
     </TouchableWithoutFeedback>
   );
 };

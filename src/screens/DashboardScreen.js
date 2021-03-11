@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   StatusBar,
   FlatList,
+  Button,
   Image,
   RefreshControl,
   TouchableOpacity,
@@ -21,6 +22,7 @@ import { useDispatch } from "react-redux";
 import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
 import { useSelector } from "react-redux";
+import DatePicker from "react-native-datepicker";
 import NoConnection from "../components/NoConnection";
 import call from "react-native-phone-call";
 import {
@@ -61,6 +63,7 @@ const DashboardScreen = ({ navigation }) => {
   }, []);
 
   //handleBackPress();
+  const [date, setDate] = useState(new Date());
 
   const showLoader = () => {
     setIsLoading(true);
@@ -69,7 +72,7 @@ const DashboardScreen = ({ navigation }) => {
     setIsLoading(false);
   };
   const onRefresh = useCallback(() => {
-    setOrderArray([])
+    setOrderArray([]);
     showLoader();
     setTimeout(() => {
       getOrders();
@@ -186,7 +189,32 @@ const DashboardScreen = ({ navigation }) => {
         loading={isLoading}
         message={"Fetching your orders for today..."}
       />
-
+      <DatePicker
+        style={{ width: 200 }}
+        date={date}
+        mode="date"
+        placeholder="select date"
+        format="YYYY-MM-DD"
+        minDate="2021-01-01"
+        maxDate="2022-06-01"
+        confirmBtnText="Confirm"
+        cancelBtnText="Cancel"
+        customStyles={{
+          dateIcon: {
+            position: "absolute",
+            left: 0,
+            top: 4,
+            marginLeft: 0,
+          },
+          dateInput: {
+            marginLeft: 36,
+          },
+          // ... You can check the source to find the other keys.
+        }}
+        onDateChange={(date) => {
+          setDate(date);
+        }}
+      />
       <>
         {!isLoading && orderArray && orderArray.length > 0 ? (
           <Text
