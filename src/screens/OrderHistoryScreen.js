@@ -12,7 +12,6 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-
 import { createOpenLink } from "react-native-open-maps";
 import { COLORS, FONTS, SIZES } from "../utils/theme";
 import Order from "../components/Order";
@@ -42,7 +41,7 @@ const OrderHistoryScreen = ({ navigation }) => {
   var dataArray = useSelector((state) => state.orders.orders);
   //console.log("dashboard redux is", dataArray);
   const [isNetworkAvailable, setisNetworkAvailable] = useState(false);
-
+  const [date, setDate] = useState(new Date())
   checkNetworkConnection(setisNetworkAvailable);
   let newArray = [];
   let responseArray = dataArray;
@@ -178,7 +177,9 @@ const OrderHistoryScreen = ({ navigation }) => {
         setRefreshing(false);
       });
   };
-
+  const handleDateChange = (date) => {
+    setStartDate(date);
+  };
   return (
     <View style={styles.container}>
       <StatusBar
@@ -189,7 +190,7 @@ const OrderHistoryScreen = ({ navigation }) => {
         loading={isLoading}
         message={"Fetching your orders for today..."}
       />
-
+     
       <>
         {!isLoading && orderArray && orderArray.length > 0 ? (
           <Text
