@@ -10,7 +10,9 @@ export default function Main() {
   LogBox.ignoreLogs([
     "Animated: `useNativeDriver`",
     "Warning: DatePickerIOS has been merged with DatePickerAndroid and will be removed in a future release",
+    "Warning: DatePickerAndroid has been merged with DatePickerIOS and will be removed in a future release",
     "Warning: componentWillReceiveProps has been renamed",
+    "Require cycle: node_modules/react-native-popup-dialog/dist/type.js",
   ]);
   return <App />;
 }

@@ -75,7 +75,7 @@ export const validateEmail = (email) => {
 export const checkNetworkConnection = (setisNetworkAvailable) => {
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
-      console.log("Is connected?", state.isConnected);
+      //console.log("Is connected?", state.isConnected);
       setisNetworkAvailable(state.isConnected);
     });
     return () => {

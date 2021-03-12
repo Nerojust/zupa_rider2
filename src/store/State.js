@@ -4,10 +4,7 @@ export const initialState = {
   isNetworkAvailable: false,
   error: "",
   loginResults: [],
-  fullName: null,
-  username: null,
-  emailAddress: null,
-  password: null,
   orders: [],
   userToken: "",
+  isSearchClicked:false
 };

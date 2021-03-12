@@ -6,12 +6,20 @@ import {
   StyleSheet,
   SafeAreaView,
   StatusBar,
+  Button,
   FlatList,
   Image,
   RefreshControl,
   TouchableOpacity,
   Alert,
 } from "react-native";
+import Dialog, {
+  DialogFooter,
+  DialogButton,
+  DialogContent,
+  SlideAnimation,
+  DialogTitle,
+} from "react-native-popup-dialog";
 import { createOpenLink } from "react-native-open-maps";
 import { COLORS, FONTS, SIZES } from "../utils/theme";
 import Order from "../components/Order";
@@ -20,6 +28,7 @@ import { useDispatch } from "react-redux";
 import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
 import { useSelector } from "react-redux";
+import DatePicker from "react-native-datepicker";
 import NoConnection from "../components/NoConnection";
 import call from "react-native-phone-call";
 import {
@@ -30,7 +39,7 @@ import {
   handleError,
   isNetworkAvailable,
 } from "../utils/utils";
-import { saveOrder } from "../store/Actions";
+import { saveOrder, saveSearchState } from "../store/Actions";
 // create a component
 const OrderHistoryScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -38,19 +47,21 @@ const OrderHistoryScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const loginData = useSelector((state) => state.login.loginResults);
   //console.log("login data is ", loginData)
+  var isSearch = useSelector((state) => state.search.isSearchClicked);
+  //console.log("redux search", isSearch);
   var dataArray = useSelector((state) => state.orders.orders);
   //console.log("dashboard redux is", dataArray);
   const [isNetworkAvailable, setisNetworkAvailable] = useState(false);
-  const [date, setDate] = useState(new Date())
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   checkNetworkConnection(setisNetworkAvailable);
-  let newArray = [];
-  let responseArray = dataArray;
+  let todaysDate = new Date();
 
   let name = "Nerojust Adjeks";
   let phone = "08012345678";
   let address = "Necom House";
   const travelType = "drive";
-
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [orderArray, setOrderArray] = useState([]);
   const [isResultOrderEmpty, setIsResultOrderEmpty] = useState(false);
 
@@ -92,7 +103,7 @@ const OrderHistoryScreen = ({ navigation }) => {
   };
   const renderItem = (data) => {
     let item = data.dispatch_orders[0];
-    console.log("Item is ", item);
+    //console.log("Item is ", item);
 
     if (item.order) {
       let address1 =
@@ -138,7 +149,7 @@ const OrderHistoryScreen = ({ navigation }) => {
       );
     }
   };
-  const getOrders = () => {
+  const getOrders = (url) => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", "Bearer " + loginData.jwt);
@@ -148,12 +159,16 @@ const OrderHistoryScreen = ({ navigation }) => {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(GET_RIDER_REQUESTS + "/?status=completed", requestOptions)
+    let urlAdd = url ? url : "/?status=completed";
+    let fullUrl = GET_RIDER_REQUESTS + urlAdd;
+    console.log("url is", fullUrl);
+    fetch(fullUrl, requestOptions)
       .then((response) => response.json())
       .then((responseJson) => {
         if (responseJson) {
           if (!responseJson.code) {
             if (responseJson.length > 0) {
+              console.log("Array size is", responseJson.length);
               setOrderArray(responseJson);
             } else {
               setIsResultOrderEmpty(true);
@@ -177,8 +192,65 @@ const OrderHistoryScreen = ({ navigation }) => {
         setRefreshing(false);
       });
   };
-  const handleDateChange = (date) => {
-    setStartDate(date);
+  const handleDismissDialog = () => {
+    setIsDialogVisible(false);
+  };
+  const handleSearch = () => {
+    //setOrderArray([])
+    setIsDialogVisible(false);
+    showLoader();
+    setTimeout(() => {
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("Authorization", "Bearer " + loginData.jwt);
+
+      var requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow",
+      };
+
+      fetch(
+        GET_RIDER_REQUESTS +
+          "/?status=completed&startDate=" +
+          startDate +
+          "&endDate=" +
+          endDate,
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then((responseJson) => {
+          if (responseJson) {
+            if (!responseJson.code) {
+              if (responseJson.length > 0) {
+                console.log("Date query array length is", responseJson.length);
+                console.log("Date query array is", responseJson);
+                setOrderArray(responseJson);
+              } else {
+                setIsResultOrderEmpty(true);
+              }
+              if (refreshing) {
+                setRefreshing(false);
+              }
+              // console.log("new array is ", newArray);
+            } else {
+              alert(responseJson.message);
+            }
+          } else {
+            alert(responseJson.message);
+          }
+          setRefreshing(false);
+          // dismissLoader();
+        })
+        .catch((error) => {
+          console.log("error", error);
+          handleError(error);
+          setRefreshing(false);
+        });
+      dismissLoader();
+    }, 1000);
+    setStartDate("");
+    setEndDate("");
   };
   return (
     <View style={styles.container}>
@@ -188,24 +260,201 @@ const OrderHistoryScreen = ({ navigation }) => {
       />
       <LoadingDialog
         loading={isLoading}
-        message={"Fetching your orders for today..."}
+        message={"Fetching your orders..."}
       />
-     
-      <>
-        {!isLoading && orderArray && orderArray.length > 0 ? (
+
+      <Dialog
+        visible={isDialogVisible}
+        dialogAnimation={
+          new SlideAnimation({
+            slideFrom: "top",
+          })
+        }
+        onTouchOutside={handleDismissDialog}
+        dialogTitle={
           <Text
             style={{
+              alignSelf: "center",
               fontSize: 15,
               paddingVertical: 20,
-              marginHorizontal: 20,
-              fontFamily:
-                Platform.OS == "ios"
-                  ? FONTS.ROBOTO_MEDIUM_IOS
-                  : FONTS.ROBOTO_MEDIUM,
+              fontWeight: "bold",
             }}
           >
-            Hi, {loginData.rider.name},{"\n"} you have new order/s
+            Select Date Range
           </Text>
+        }
+        footer={
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+              marginBottom: 20,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 15,
+                color: COLORS.gray,
+                alignSelf: "center",
+                fontWeight: "bold",
+              }}
+              onPress={handleDismissDialog}
+            >
+              Cancel
+            </Text>
+            <Text
+              style={{
+                fontWeight: "bold",
+                fontSize: 15,
+                color: COLORS.blue,
+                alignSelf: "center",
+              }}
+              onPress={handleSearch}
+            >
+              Search
+            </Text>
+          </View>
+        }
+      >
+        <DialogContent>
+          <View style={{ flexDirection: "row", paddingHorizontal: 10 }}>
+            <View
+              style={{
+                marginRight: 10,
+                height: 50,
+                backgroundColor: COLORS.lightGray1,
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 5,
+              }}
+            >
+              <DatePicker
+                style={{ width: 100 }}
+                date={startDate}
+                mode="date"
+                placeholder="Start date"
+                format="YYYY-MM-DD"
+                minDate="2020-01-01"
+                androidMode={"spinner"}
+                maxDate={todaysDate}
+                confirmBtnText="Confirm"
+                showIcon={false}
+                cancelBtnText="Cancel"
+                customStyles={{
+                  // dateIcon: {
+                  //   position: "absolute",
+                  //   left: 0,
+                  //   top: 4,
+                  //   marginLeft: 0,
+                  // },
+                  dateInput: {
+                    borderColor: COLORS.transparent,
+                  },
+                }}
+                onDateChange={(date) => {
+                  setStartDate(date);
+                }}
+              />
+            </View>
+            <View
+              style={{
+                marginLeft: 10,
+                height: 50,
+                backgroundColor: COLORS.lightGray1,
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 5,
+              }}
+            >
+              <DatePicker
+                style={{ width: 100 }}
+                date={endDate}
+                mode="date"
+                placeholder="End date"
+                format="YYYY-MM-DD"
+                minDate="2020-01-01"
+                androidMode={"spinner"}
+                maxDate={todaysDate}
+                confirmBtnText="Confirm"
+                showIcon={false}
+                cancelBtnText="Cancel"
+                customStyles={{
+                  // dateIcon: {
+                  //   position: "absolute",
+                  //   left: 0,
+                  //   top: 4,
+                  //   marginLeft: 0,
+                  // },
+                  dateInput: {
+                    borderColor: COLORS.transparent,
+                  },
+                }}
+                onDateChange={(date) => {
+                  setEndDate(date);
+                }}
+              />
+            </View>
+          </View>
+        </DialogContent>
+      </Dialog>
+
+      <>
+        {!isLoading && orderArray && orderArray.length > 0 ? (
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              paddingVertical: 10,
+            }}
+          >
+            <View style={{ left: -30 }}>
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontWeight: "bold",
+                  fontFamily:
+                    Platform.OS == "ios"
+                      ? FONTS.ROBOTO_MEDIUM_IOS
+                      : FONTS.MONTSERRAT_BLACK,
+                }}
+              >
+                Hi, {loginData.rider.name},
+              </Text>
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontWeight: "bold",
+                  fontFamily:
+                    Platform.OS == "ios"
+                      ? FONTS.ROBOTO_MEDIUM_IOS
+                      : FONTS.ROBOTO_THIN,
+                }}
+              >
+                you have new order/s
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => setIsDialogVisible(true)}
+              style={{
+                left: 30,
+                flexDirection: "row",
+                justifyContent: "center",
+              }}
+              activeOpacity={0.75}
+            >
+              <Text
+                style={{ color: COLORS.gray1, marginRight: 4, fontSize: 13 }}
+              >
+                Search
+              </Text>
+              <Image
+                source={require("../assets/icons/search.png")}
+                style={styles.searchIcon}
+              />
+            </TouchableOpacity>
+          </View>
         ) : null}
 
         {!isLoading && orderArray.length > 0 ? (
@@ -313,6 +562,12 @@ const styles = StyleSheet.create({
     fontFamily:
       Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
     flex: 0.5,
+  },
+  searchIcon: {
+    width: 20,
+    height: 20,
+    // alignSelf: "flex-end",
+    tintColor: COLORS.lightGray3,
   },
 });
 

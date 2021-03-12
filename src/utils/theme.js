@@ -30,6 +30,7 @@ export const COLORS = {
   darkslateblue: "darkslateblue",
   modalBg: "#00000099",
   modalBg1: "#00000029",
+  transparent: "#00000000",
   blue: "#505DF1",
   white_transparent: "#00ffff",
 };

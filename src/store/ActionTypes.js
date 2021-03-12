@@ -6,3 +6,4 @@ export const LOGOUT = "LOGOUT";
 export const LOGIN_ERROR = "LOGIN_ERROR";
 export const ERROR = "ERROR";
 export const ORDER = "ORDER";
+export const SEARCH = "SEARCH";

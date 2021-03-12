@@ -6,6 +6,7 @@ import {
   ERROR,
   ISNETWORK_AVAIALBLE,
   ORDER,
+  SEARCH,
 } from "./ActionTypes";
 
 export const saveNetworkState = (status) => {
@@ -31,6 +32,13 @@ export const setError = (error) => {
   };
 };
 
+export const saveSearchState = (state) => {
+  //console.log("data", data)
+  return {
+    type: SEARCH,
+    isSearch: state,
+  };
+};
 export const loginUser = (data) => {
   //console.log("data", data)
   return {
