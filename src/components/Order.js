@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   mainView: {
     marginTop: 6,
     width: SIZES.width - 20,
-    height: SIZES.width / 3.5,
+    height: SIZES.width /3.3,
     backgroundColor: COLORS.lightGray4,
     paddingHorizontal: 15,
 
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     tintColor: COLORS.blue,
   },
   dateView: {
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: "normal",
     marginTop: 5,
     color: COLORS.gray1,

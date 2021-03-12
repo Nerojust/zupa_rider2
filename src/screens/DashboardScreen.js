@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   StatusBar,
   FlatList,
+  Button,
   Image,
   RefreshControl,
   TouchableOpacity,
@@ -21,6 +22,7 @@ import { useDispatch } from "react-redux";
 import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
 import { useSelector } from "react-redux";
+import DatePicker from "react-native-datepicker";
 import NoConnection from "../components/NoConnection";
 import call from "react-native-phone-call";
 import {
@@ -61,6 +63,7 @@ const DashboardScreen = ({ navigation }) => {
   }, []);
 
   //handleBackPress();
+  const [date, setDate] = useState(new Date());
 
   const showLoader = () => {
     setIsLoading(true);
@@ -69,6 +72,7 @@ const DashboardScreen = ({ navigation }) => {
     setIsLoading(false);
   };
   const onRefresh = useCallback(() => {
+    setOrderArray([]);
     showLoader();
     setTimeout(() => {
       getOrders();
@@ -185,63 +189,82 @@ const DashboardScreen = ({ navigation }) => {
         loading={isLoading}
         message={"Fetching your orders for today..."}
       />
-      {isNetworkAvailable ? (
-        <>
-          {!isLoading && orderArray && orderArray.length > 0 ? (
-            <Text
-              style={{
-                fontSize: 15,
-                paddingVertical: 20,
-                marginHorizontal: 20,
-                fontFamily:
-                  Platform.OS == "ios"
-                    ? FONTS.ROBOTO_MEDIUM_IOS
-                    : FONTS.ROBOTO_MEDIUM,
-              }}
-            >
-              Hi, {loginData.rider.name},{"\n"} you have new order/s
+      <DatePicker
+        style={{ width: 200 }}
+        date={date}
+        mode="date"
+        placeholder="select date"
+        format="YYYY-MM-DD"
+        minDate="2021-01-01"
+        maxDate="2022-06-01"
+        confirmBtnText="Confirm"
+        cancelBtnText="Cancel"
+        customStyles={{
+          dateIcon: {
+            position: "absolute",
+            left: 0,
+            top: 4,
+            marginLeft: 0,
+          },
+          dateInput: {
+            marginLeft: 36,
+          },
+          // ... You can check the source to find the other keys.
+        }}
+        onDateChange={(date) => {
+          setDate(date);
+        }}
+      />
+      <>
+        {!isLoading && orderArray && orderArray.length > 0 ? (
+          <Text
+            style={{
+              fontSize: 15,
+              paddingVertical: 20,
+              marginHorizontal: 20,
+              fontFamily:
+                Platform.OS == "ios"
+                  ? FONTS.ROBOTO_MEDIUM_IOS
+                  : FONTS.ROBOTO_MEDIUM,
+            }}
+          >
+            Hi, {loginData.rider.name},{"\n"} you have new order/s
+          </Text>
+        ) : null}
+
+        {orderArray && orderArray.length > 0 ? (
+          <Animatable.View
+            animation="fadeInUp"
+            duraton="1500"
+            style={{ flex: 1 }}
+          >
+            <FlatList
+              data={orderArray}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+              keyExtractor={(item) => item.dispatch_orders[0].id}
+              renderItem={({ item, index }) => renderItem(item)}
+              showsVerticalScrollIndicator={false}
+            />
+          </Animatable.View>
+        ) : isResultOrderEmpty ? (
+          <View style={styles.parentView}>
+            <Text style={styles.nameTextview}>
+              Hello {loginData.rider.name}!
             </Text>
-          ) : null}
 
-          {!isLoading && orderArray.length > 0 ? (
-            <Animatable.View
-              animation="fadeIn"
-              duraton="1500"
-              style={{ flex: 1 }}
-            >
-              <FlatList
-                data={orderArray}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                  />
-                }
-                keyExtractor={(item) => item.dispatch_orders[0].id}
-                renderItem={({ item, index }) => renderItem(item)}
-                showsVerticalScrollIndicator={false}
-              />
-            </Animatable.View>
-          ) : isResultOrderEmpty ? (
-            <View style={styles.parentView}>
-              <Text style={styles.nameTextview}>
-                Hello {loginData.rider.name}!
-              </Text>
-
-              <Image
-                source={require("../assets/images/rider.png")}
-                resizeMode={"contain"}
-                style={styles.image}
-              />
-              <Text style={styles.noOrderTextview}>
-                You have no orders {"\n"} assigned for today
-              </Text>
-            </View>
-          ) : null}
-        </>
-      ) : (
-        <NoConnection onPressAction={getOrders} />
-      )}
+            <Image
+              source={require("../assets/images/rider.png")}
+              resizeMode={"contain"}
+              style={styles.image}
+            />
+            <Text style={styles.noOrderTextview}>
+              You have no orders {"\n"} assigned for today
+            </Text>
+          </View>
+        ) : null}
+      </>
     </View>
   );
 };

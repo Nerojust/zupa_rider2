@@ -261,7 +261,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
           onPress={openLocation}
           color={COLORS.blue}
           left={SIZES.width / 3 - 5}
-          image={require("../assets/icons/pin.png")}
+          //image={require("../assets/icons/pin.png")}
           tintColor={COLORS.lightGray3}
         />
       </View>
@@ -271,7 +271,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
           onPress={dialNumber}
           color={COLORS.blue}
           left={SIZES.width / 3 - 5}
-          image={require("../assets/icons/phone.png")}
+          //image={require("../assets/icons/phone.png")}
           tintColor={COLORS.lightGray3}
         />
       </View>
@@ -296,7 +296,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
             titleWeight={"700"}
             titleFontFamily={
               Platform.OS == "ios"
-                ? FONTS.MONTSERRAT_MEDIUM_IOS
+                ? FONTS.ROBOTO_BLACK_IOS
                 : FONTS.ROBOTO_THIN
             }
             titleFontSize={18}
@@ -315,7 +315,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
             titleWeight={"700"}
             titleFontFamily={
               Platform.OS == "ios"
-                ? FONTS.MONTSERRAT_MEDIUM_IOS
+                ? FONTS.ROBOTO_BLACK_IOS
                 : FONTS.ROBOTO_THIN
             }
             titleFontSize={18}

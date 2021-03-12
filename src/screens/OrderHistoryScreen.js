@@ -12,7 +12,6 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-
 import { createOpenLink } from "react-native-open-maps";
 import { COLORS, FONTS, SIZES } from "../utils/theme";
 import Order from "../components/Order";
@@ -42,7 +41,7 @@ const OrderHistoryScreen = ({ navigation }) => {
   var dataArray = useSelector((state) => state.orders.orders);
   //console.log("dashboard redux is", dataArray);
   const [isNetworkAvailable, setisNetworkAvailable] = useState(false);
-
+  const [date, setDate] = useState(new Date())
   checkNetworkConnection(setisNetworkAvailable);
   let newArray = [];
   let responseArray = dataArray;
@@ -72,6 +71,7 @@ const OrderHistoryScreen = ({ navigation }) => {
     setIsLoading(false);
   };
   const onRefresh = useCallback(() => {
+    setOrderArray([]);
     showLoader();
     setTimeout(() => {
       getOrders();
@@ -177,7 +177,9 @@ const OrderHistoryScreen = ({ navigation }) => {
         setRefreshing(false);
       });
   };
-
+  const handleDateChange = (date) => {
+    setStartDate(date);
+  };
   return (
     <View style={styles.container}>
       <StatusBar
@@ -188,63 +190,57 @@ const OrderHistoryScreen = ({ navigation }) => {
         loading={isLoading}
         message={"Fetching your orders for today..."}
       />
-      {isNetworkAvailable ? (
-        <>
-          {!isLoading && orderArray && orderArray.length > 0 ? (
-            <Text
-              style={{
-                fontSize: 15,
-                paddingVertical: 20,
-                marginHorizontal: 20,
-                fontFamily:
-                  Platform.OS == "ios"
-                    ? FONTS.ROBOTO_MEDIUM_IOS
-                    : FONTS.ROBOTO_MEDIUM,
-              }}
-            >
-              Hi, {loginData.rider.name},{"\n"} you have new order/s
+     
+      <>
+        {!isLoading && orderArray && orderArray.length > 0 ? (
+          <Text
+            style={{
+              fontSize: 15,
+              paddingVertical: 20,
+              marginHorizontal: 20,
+              fontFamily:
+                Platform.OS == "ios"
+                  ? FONTS.ROBOTO_MEDIUM_IOS
+                  : FONTS.ROBOTO_MEDIUM,
+            }}
+          >
+            Hi, {loginData.rider.name},{"\n"} you have new order/s
+          </Text>
+        ) : null}
+
+        {!isLoading && orderArray.length > 0 ? (
+          <Animatable.View
+            animation="fadeInUp"
+            duraton="1500"
+            style={{ flex: 1 }}
+          >
+            <FlatList
+              data={orderArray}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+              keyExtractor={(item) => item.dispatch_orders[0].id}
+              renderItem={({ item, index }) => renderItem(item)}
+              showsVerticalScrollIndicator={false}
+            />
+          </Animatable.View>
+        ) : isResultOrderEmpty ? (
+          <View style={styles.parentView}>
+            <Text style={styles.nameTextview}>
+              Hello {loginData.rider.name}!
             </Text>
-          ) : null}
 
-          {!isLoading && orderArray.length > 0 ? (
-            <Animatable.View
-              animation="fadeIn"
-              duraton="1500"
-              style={{ flex: 1 }}
-            >
-              <FlatList
-                data={orderArray}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                  />
-                }
-                keyExtractor={(item) => item.dispatch_orders[0].id}
-                renderItem={({ item, index }) => renderItem(item)}
-                showsVerticalScrollIndicator={false}
-              />
-            </Animatable.View>
-          ) : isResultOrderEmpty ? (
-            <View style={styles.parentView}>
-              <Text style={styles.nameTextview}>
-                Hello {loginData.rider.name}!
-              </Text>
-
-              <Image
-                source={require("../assets/images/rider.png")}
-                resizeMode={"contain"}
-                style={styles.image}
-              />
-              <Text style={styles.noOrderTextview}>
-                You have no orders {"\n"} assigned for today
-              </Text>
-            </View>
-          ) : null}
-        </>
-      ) : (
-        <NoConnection onPressAction={getOrders} />
-      )}
+            <Image
+              source={require("../assets/images/rider.png")}
+              resizeMode={"contain"}
+              style={styles.image}
+            />
+            <Text style={styles.noOrderTextview}>
+              You have no orders {"\n"} assigned for today
+            </Text>
+          </View>
+        ) : null}
+      </>
     </View>
   );
 };
