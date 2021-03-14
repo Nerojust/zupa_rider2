@@ -22,6 +22,7 @@ const Order = ({
   onPressCall,
   onPressView,
   date,
+  quantityPress,
 }) => {
   return (
     <View style={{ flex: 1, justifyContent: "center", marginBottom: 10 }}>
@@ -88,16 +89,18 @@ const Order = ({
           >
             {address}
           </Text>
+
           <Text selectable={true} style={styles.phoneNumber}>
             {phoneNumber}
           </Text>
+
           <Text selectable={true} style={styles.dateView}>
             {date}
           </Text>
         </TouchableWithoutFeedback>
       </View>
 
-      <View style={{ flexDirection: "row" , height:SIZES.width/7.3}}>
+      <View style={{ flexDirection: "row", height: SIZES.width / 7.3 }}>
         <TouchableOpacity
           style={styles.clickButtonView}
           onPress={onPressNavigate}
@@ -117,6 +120,7 @@ const Order = ({
           style={{
             //height: "100%",
             width: 0.5,
+            height: "90%",
             backgroundColor: COLORS.lightGray,
             //marginVertical: 12,
             justifyContent: "center",
@@ -138,6 +142,43 @@ const Order = ({
           </View>
         </TouchableOpacity>
       </View>
+      <TouchableOpacity
+        onPress={quantityPress}
+        activeOpacity={0.7}
+        style={{
+          top: Platform.OS == "ios" ? -105 : -100,
+          left:
+            Platform.OS == "ios" ? SIZES.width / 2 + 103 : SIZES.width / 2 + 97,
+        }}
+      >
+        {/* <View style={{ flexDirection: "row" }}>
+          <Text
+            style={{
+              color: COLORS.gray1,
+              fontWeight: "300",
+              marginRight: 7,
+              fontSize: 14,
+            }}
+          >
+            Qty
+          </Text>
+          <View
+            style={{
+              width: 20,
+              height: 20,
+              alignSelf: "flex-end",
+              borderRadius: 10,
+              borderWidth: 0.5,
+              justifyContent: "center",
+              alignItems: "center",
+              borderColor: COLORS.blue,
+              backgroundColor: COLORS.blue,
+            }}
+          >
+            <Text style={{ color: COLORS.white, fontWeight: "bold" }}>3</Text>
+          </View>
+        </View> */}
+      </TouchableOpacity>
     </View>
   );
 };
@@ -185,8 +226,8 @@ const styles = StyleSheet.create({
     marginTop: 7,
     flex: 0.6,
   },
-  nameView: { fontSize: 16, fontWeight: "bold"},
-  phoneNumber: { fontSize: 15, fontWeight: "bold", flex:0.5 },
+  nameView: { fontSize: 16, fontWeight: "bold" },
+  phoneNumber: { fontSize: 15, fontWeight: "bold", flex: 0.5 },
   addressView: {
     fontSize: 13,
     paddingVertical: 5,
@@ -203,7 +244,8 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "normal",
     marginTop: 3,
-    color: COLORS.gray1,flex:0.4
+    color: COLORS.gray1,
+    flex: 0.4,
   },
 });
 

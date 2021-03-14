@@ -13,7 +13,13 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-
+import Dialog, {
+  DialogFooter,
+  DialogButton,
+  DialogContent,
+  SlideAnimation,
+  DialogTitle,
+} from "react-native-popup-dialog";
 import { createOpenLink } from "react-native-open-maps";
 import { COLORS, FONTS, SIZES } from "../utils/theme";
 import Order from "../components/Order";
@@ -22,7 +28,7 @@ import { useDispatch } from "react-redux";
 import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
 import { useSelector } from "react-redux";
-
+import { testDataArray } from "../utils/Data";
 import NoConnection from "../components/NoConnection";
 import call from "react-native-phone-call";
 import {
@@ -40,11 +46,13 @@ const DashboardScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const loginData = useSelector((state) => state.login.loginResults);
   //console.log("login data is ", loginData)
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
+
   var dataArray = useSelector((state) => state.orders.orders);
   //console.log("dashboard redux is", dataArray);
   const [isNetworkAvailable, setisNetworkAvailable] = useState(false);
 
-  checkNetworkConnection(setisNetworkAvailable);
+  //checkNetworkConnection(setisNetworkAvailable);
 
   let name = "Nerojust Adjeks";
   let phone = "08012345678";
@@ -57,13 +65,15 @@ const DashboardScreen = ({ navigation }) => {
   useEffect(() => {
     showLoader();
     setTimeout(() => {
+      //setOrderArray(testDataArray);
       getOrders();
+    }, 1200);
+    setTimeout(() => {
       dismissLoader();
-    }, 1000);
+    }, 3000);
   }, []);
 
   //handleBackPress();
-  const [date, setDate] = useState(new Date());
 
   const showLoader = () => {
     setIsLoading(true);
@@ -74,13 +84,16 @@ const DashboardScreen = ({ navigation }) => {
   const onRefresh = useCallback(() => {
     setOrderArray([]);
     showLoader();
-    setTimeout(() => {
-      getOrders();
-      dismissLoader();
-      setRefreshing(false);
-    }, 1000);
 
-    setRefreshing(false);
+    setTimeout(() => {
+      //setOrderArray(testDataArray);
+      //put back cos of test
+      getOrders();
+    }, 1200);
+    setTimeout(() => {
+      setRefreshing(false);
+      dismissLoader();
+    }, 2000);
   }, []);
 
   const dialNumber = (phoneNumber) => {
@@ -91,6 +104,13 @@ const DashboardScreen = ({ navigation }) => {
 
     call(args).catch(console.error);
   };
+  const handleDismissDialog = () => {
+    setIsDialogVisible(false);
+  };
+  const quantityPress = () => {
+    setIsDialogVisible(true);
+  };
+
   const renderItem = (data) => {
     let item = data.dispatch_orders[0];
     //console.log("Item is ", item);
@@ -111,6 +131,7 @@ const DashboardScreen = ({ navigation }) => {
           }
           status={item.status}
           date={getReadableDateAndTime(item.updatedAt)}
+          quantityPress={() => setIsDialogVisible(true)}
           onPressNavigate={createOpenLink({
             travelType,
             end,
@@ -139,6 +160,7 @@ const DashboardScreen = ({ navigation }) => {
       );
     }
   };
+
   const getOrders = () => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -177,6 +199,7 @@ const DashboardScreen = ({ navigation }) => {
         handleError(error);
         setRefreshing(false);
       });
+    dismissLoader();
   };
 
   return (
@@ -211,7 +234,7 @@ const DashboardScreen = ({ navigation }) => {
         {orderArray && orderArray.length > 0 ? (
           <Animatable.View
             animation="fadeInUp"
-            duraton="1500"
+            duraton="500"
             style={{ flex: 1 }}
           >
             <FlatList

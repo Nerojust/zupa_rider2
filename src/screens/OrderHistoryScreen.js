@@ -69,8 +69,12 @@ const OrderHistoryScreen = ({ navigation }) => {
     showLoader();
     setTimeout(() => {
       getOrders();
-      dismissLoader();
+      //dismissLoader();
     }, 1000);
+    setTimeout(() => {
+      // getOrders();
+      dismissLoader();
+    }, 2000);
   }, []);
 
   //handleBackPress();
@@ -247,8 +251,12 @@ const OrderHistoryScreen = ({ navigation }) => {
           handleError(error);
           setRefreshing(false);
         });
+      //dismissLoader();
+    }, 100);
+    setTimeout(() => {
+      // getOrders();
       dismissLoader();
-    }, 1000);
+    }, 4000);
     setStartDate("");
     setEndDate("");
   };
@@ -457,7 +465,7 @@ const OrderHistoryScreen = ({ navigation }) => {
           </View>
         ) : null}
 
-        {!isLoading && orderArray.length > 0 ? (
+        {orderArray && orderArray.length > 0 ? (
           <Animatable.View
             animation="fadeInUp"
             duraton="1500"
