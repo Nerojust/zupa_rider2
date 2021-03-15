@@ -14,7 +14,6 @@ import {
 import { COLORS, FONTS, SIZES } from "../utils/theme";
 import DisplayButton from "../components/Button1";
 import SendSMS from "react-native-sms";
-import call from "react-native-phone-call";
 import openMap from "react-native-open-maps";
 import { createOpenLink } from "react-native-open-maps";
 import AnimateLoadingButton from "react-native-animate-loading-button";
@@ -23,7 +22,7 @@ import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
 import { useDispatch, useSelector } from "react-redux";
 import { saveOrder, setError } from "../store/Actions";
-import { getTodaysDate, handleError } from "../utils/utils";
+import { dialNumber, getTodaysDate, handleError } from "../utils/utils";
 
 const OrderDetailScreen = ({ route, navigation }) => {
   const name = route.params.name;
@@ -40,15 +39,6 @@ const OrderDetailScreen = ({ route, navigation }) => {
   const start = "Here";
   const end = address;
   const travelType = "drive";
-
-  const dialNumber = () => {
-    const args = {
-      number: phoneNumber, // String value with the number to call
-      prompt: true, // Optional boolean property. Determines if the user should be prompt prior to the call
-    };
-
-    call(args).catch(console.error);
-  };
 
   const openLocation = createOpenLink({ travelType, end, provider: "google" });
 
@@ -268,7 +258,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
       <View style={{ marginTop: 30 }}>
         <DisplayButton
           text="Call"
-          onPress={dialNumber}
+          onPress={() => dialNumber(phoneNumber)}
           color={COLORS.blue}
           left={SIZES.width / 3 - 5}
           //image={require("../assets/icons/phone.png")}
@@ -295,9 +285,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
             title="Mark Complete"
             titleWeight={"700"}
             titleFontFamily={
-              Platform.OS == "ios"
-                ? FONTS.ROBOTO_BLACK_IOS
-                : FONTS.ROBOTO_THIN
+              Platform.OS == "ios" ? FONTS.ROBOTO_BLACK_IOS : FONTS.ROBOTO_THIN
             }
             titleFontSize={18}
             titleColor={COLORS.white}
@@ -314,9 +302,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
             title="Completed"
             titleWeight={"700"}
             titleFontFamily={
-              Platform.OS == "ios"
-                ? FONTS.ROBOTO_BLACK_IOS
-                : FONTS.ROBOTO_THIN
+              Platform.OS == "ios" ? FONTS.ROBOTO_BLACK_IOS : FONTS.ROBOTO_THIN
             }
             titleFontSize={18}
             titleColor={COLORS.white}

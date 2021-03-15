@@ -54,7 +54,7 @@ const OrderHistoryScreen = ({ navigation }) => {
   const [isNetworkAvailable, setisNetworkAvailable] = useState(false);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  checkNetworkConnection(setisNetworkAvailable);
+  //checkNetworkConnection(setisNetworkAvailable);
   let todaysDate = new Date();
 
   let name = "Nerojust Adjeks";
@@ -66,15 +66,7 @@ const OrderHistoryScreen = ({ navigation }) => {
   const [isResultOrderEmpty, setIsResultOrderEmpty] = useState(false);
 
   useEffect(() => {
-    showLoader();
-    setTimeout(() => {
-      getOrders();
-      //dismissLoader();
-    }, 1000);
-    setTimeout(() => {
-      // getOrders();
-      dismissLoader();
-    }, 2000);
+    getOrders();
   }, []);
 
   //handleBackPress();
@@ -88,13 +80,17 @@ const OrderHistoryScreen = ({ navigation }) => {
   const onRefresh = useCallback(() => {
     setOrderArray([]);
     showLoader();
+
     setTimeout(() => {
       getOrders();
-      dismissLoader();
-      setRefreshing(false);
-    }, 1000);
-
-    setRefreshing(false);
+    }, 2000);
+    setTimeout(() => {
+      // getOrders();
+      if (orderArray) {
+        setRefreshing(false);
+        dismissLoader();
+      }
+    }, 2000);
   }, []);
 
   const dialNumber = (phoneNumber) => {
@@ -154,6 +150,10 @@ const OrderHistoryScreen = ({ navigation }) => {
     }
   };
   const getOrders = (url) => {
+    setTimeout(() => {
+      showLoader();
+    }, 100);
+
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", "Bearer " + loginData.jwt);
@@ -266,10 +266,7 @@ const OrderHistoryScreen = ({ navigation }) => {
         backgroundColor={COLORS.blue}
         barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
       />
-      <LoadingDialog
-        loading={isLoading}
-        message={"Fetching your orders..."}
-      />
+      <LoadingDialog loading={isLoading} message={"Fetching your orders..."} />
 
       <Dialog
         visible={isDialogVisible}

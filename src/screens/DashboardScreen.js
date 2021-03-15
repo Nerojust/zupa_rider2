@@ -30,9 +30,9 @@ import { GET_RIDER_REQUESTS } from "../utils/Urls";
 import { useSelector } from "react-redux";
 import { testDataArray } from "../utils/Data";
 import NoConnection from "../components/NoConnection";
-import call from "react-native-phone-call";
 import {
   checkNetworkConnection,
+  dialNumber,
   getReadableDateAndTime,
   handleBackPress,
   handleError,
@@ -50,9 +50,6 @@ const DashboardScreen = ({ navigation }) => {
 
   var dataArray = useSelector((state) => state.orders.orders);
   //console.log("dashboard redux is", dataArray);
-  const [isNetworkAvailable, setisNetworkAvailable] = useState(false);
-
-  //checkNetworkConnection(setisNetworkAvailable);
 
   let name = "Nerojust Adjeks";
   let phone = "08012345678";
@@ -63,14 +60,7 @@ const DashboardScreen = ({ navigation }) => {
   const [isResultOrderEmpty, setIsResultOrderEmpty] = useState(false);
 
   useEffect(() => {
-    showLoader();
-    setTimeout(() => {
-      //setOrderArray(testDataArray);
-      getOrders();
-    }, 1200);
-    setTimeout(() => {
-      dismissLoader();
-    }, 3000);
+    getOrders();
   }, []);
 
   //handleBackPress();
@@ -87,29 +77,13 @@ const DashboardScreen = ({ navigation }) => {
 
     setTimeout(() => {
       //setOrderArray(testDataArray);
-      //put back cos of test
       getOrders();
-    }, 1200);
+    }, 2000);
     setTimeout(() => {
       setRefreshing(false);
       dismissLoader();
     }, 2000);
   }, []);
-
-  const dialNumber = (phoneNumber) => {
-    const args = {
-      number: phoneNumber, // String value with the number to call
-      prompt: true, // Optional boolean property. Determines if the user should be prompt prior to the call
-    };
-
-    call(args).catch(console.error);
-  };
-  const handleDismissDialog = () => {
-    setIsDialogVisible(false);
-  };
-  const quantityPress = () => {
-    setIsDialogVisible(true);
-  };
 
   const renderItem = (data) => {
     let item = data.dispatch_orders[0];
@@ -162,6 +136,10 @@ const DashboardScreen = ({ navigation }) => {
   };
 
   const getOrders = () => {
+    setTimeout(() => {
+      showLoader();
+    }, 100);
+
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", "Bearer " + loginData.jwt);
@@ -178,6 +156,9 @@ const DashboardScreen = ({ navigation }) => {
           if (!responseJson.code) {
             if (responseJson.length > 0) {
               setOrderArray(responseJson);
+              if (orderArray) {
+                dismissLoader();
+              }
             } else {
               setIsResultOrderEmpty(true);
             }
@@ -192,7 +173,7 @@ const DashboardScreen = ({ navigation }) => {
           alert(responseJson.message);
         }
         setRefreshing(false);
-        // dismissLoader();
+        dismissLoader();
       })
       .catch((error) => {
         console.log("error", error);

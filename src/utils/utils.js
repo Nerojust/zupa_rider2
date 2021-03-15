@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
 import { AuthContext } from "./Context";
+import call from "react-native-phone-call";
 
 export function handleBackPress(navigation) {
   const { signOut } = useContext(AuthContext);
@@ -42,6 +43,15 @@ export function handleBackPress(navigation) {
       BackHandler.removeEventListener("hardwareBackPress", backAction);
   }, []);
 }
+
+export const dialNumber = (phoneNumber) => {
+  const args = {
+    number: phoneNumber, // String value with the number to call
+    prompt: true, // Optional boolean property. Determines if the user should be prompt prior to the call
+  };
+
+  call(args).catch(console.error);
+};
 
 export const validatePassword = (password) => {
   const pass = /^[a-zA-Z0-9.,\\s]{3,40}$/;
