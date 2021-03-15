@@ -50,7 +50,7 @@ const DashboardScreen = ({ navigation }) => {
 
   var dataArray = useSelector((state) => state.orders.orders);
   //console.log("dashboard redux is", dataArray);
-
+  const fullURL = GET_RIDER_REQUESTS + "/?status=pending";
   let name = "Nerojust Adjeks";
   let phone = "08012345678";
   let address = "Necom House";
@@ -70,19 +70,13 @@ const DashboardScreen = ({ navigation }) => {
   };
   const dismissLoader = () => {
     setIsLoading(false);
+
+    setRefreshing(false);
   };
   const onRefresh = useCallback(() => {
     setOrderArray([]);
-    showLoader();
 
-    setTimeout(() => {
-      //setOrderArray(testDataArray);
-      getOrders();
-    }, 2000);
-    setTimeout(() => {
-      setRefreshing(false);
-      dismissLoader();
-    }, 2000);
+    getOrders();
   }, []);
 
   const renderItem = (data) => {
@@ -149,7 +143,7 @@ const DashboardScreen = ({ navigation }) => {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(GET_RIDER_REQUESTS + "/?status=pending", requestOptions)
+    fetch(fullURL, requestOptions)
       .then((response) => response.json())
       .then((responseJson) => {
         if (responseJson) {
@@ -162,9 +156,6 @@ const DashboardScreen = ({ navigation }) => {
             } else {
               setIsResultOrderEmpty(true);
             }
-            if (refreshing) {
-              setRefreshing(false);
-            }
             // console.log("new array is ", newArray);
           } else {
             alert(responseJson.message);
@@ -176,7 +167,7 @@ const DashboardScreen = ({ navigation }) => {
         dismissLoader();
       })
       .catch((error) => {
-        console.log("error", error);
+        console.log("error block", error);
         handleError(error);
         setRefreshing(false);
       });

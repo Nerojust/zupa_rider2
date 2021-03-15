@@ -12,6 +12,7 @@ import {
   RefreshControl,
   TouchableOpacity,
   Alert,
+  Platform,
 } from "react-native";
 import Dialog, {
   DialogFooter,
@@ -30,9 +31,9 @@ import { GET_RIDER_REQUESTS } from "../utils/Urls";
 import { useSelector } from "react-redux";
 import DatePicker from "react-native-datepicker";
 import NoConnection from "../components/NoConnection";
-import call from "react-native-phone-call";
 import {
   checkNetworkConnection,
+  dialNumber,
   getReadableDateAndTime,
   getTodaysDate,
   handleBackPress,
@@ -54,7 +55,6 @@ const OrderHistoryScreen = ({ navigation }) => {
   const [isNetworkAvailable, setisNetworkAvailable] = useState(false);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  //checkNetworkConnection(setisNetworkAvailable);
   let todaysDate = new Date();
 
   let name = "Nerojust Adjeks";
@@ -79,28 +79,8 @@ const OrderHistoryScreen = ({ navigation }) => {
   };
   const onRefresh = useCallback(() => {
     setOrderArray([]);
-    showLoader();
-
-    setTimeout(() => {
-      getOrders();
-    }, 2000);
-    setTimeout(() => {
-      // getOrders();
-      if (orderArray) {
-        setRefreshing(false);
-        dismissLoader();
-      }
-    }, 2000);
+    getOrders();
   }, []);
-
-  const dialNumber = (phoneNumber) => {
-    const args = {
-      number: phoneNumber, // String value with the number to call
-      prompt: true, // Optional boolean property. Determines if the user should be prompt prior to the call
-    };
-
-    call(args).catch(console.error);
-  };
   const renderItem = (data) => {
     let item = data.dispatch_orders[0];
     //console.log("Item is ", item);
@@ -174,6 +154,9 @@ const OrderHistoryScreen = ({ navigation }) => {
             if (responseJson.length > 0) {
               console.log("Array size is", responseJson.length);
               setOrderArray(responseJson);
+              if (orderArray) {
+                dismissLoader();
+              }
             } else {
               setIsResultOrderEmpty(true);
             }
@@ -188,19 +171,23 @@ const OrderHistoryScreen = ({ navigation }) => {
           alert(responseJson.message);
         }
         setRefreshing(false);
-        // dismissLoader();
+        dismissLoader();
       })
       .catch((error) => {
         console.log("error", error);
         handleError(error);
         setRefreshing(false);
       });
+    dismissLoader();
   };
   const handleDismissDialog = () => {
-    setIsDialogVisible(false);
+    if (isDialogVisible) {
+      setIsDialogVisible(false);
+    }
   };
+
   const handleSearch = () => {
-    //setOrderArray([])
+    setOrderArray([]);
     setIsDialogVisible(false);
     showLoader();
     setTimeout(() => {
@@ -411,46 +398,58 @@ const OrderHistoryScreen = ({ navigation }) => {
               flexDirection: "row",
               justifyContent: "center",
               alignItems: "center",
-              paddingVertical: 10,
+              paddingVertical: 15,
             }}
           >
-            <View style={{ left: -30 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                flex: 1,
+                marginLeft: 15,
+                alignItems: "center",
+              }}
+            >
               <Text
                 style={{
                   fontSize: 15,
-                  fontWeight: "bold",
+                  color: COLORS.gray1,
+                  marginRight: 5,
                   fontFamily:
                     Platform.OS == "ios"
                       ? FONTS.ROBOTO_MEDIUM_IOS
-                      : FONTS.MONTSERRAT_BLACK,
+                      : FONTS.ROBOTO_MEDIUM,
                 }}
               >
-                Hi, {loginData.rider.name},
+                Record count:
               </Text>
               <Text
                 style={{
                   fontSize: 15,
-                  fontWeight: "bold",
                   fontFamily:
                     Platform.OS == "ios"
                       ? FONTS.ROBOTO_MEDIUM_IOS
-                      : FONTS.ROBOTO_THIN,
+                      : FONTS.ROBOTO_MEDIUM,
                 }}
               >
-                you have new order/s
+                {orderArray.length}
               </Text>
             </View>
+
             <TouchableOpacity
               onPress={() => setIsDialogVisible(true)}
               style={{
-                left: 30,
+                flex: 0.5,
                 flexDirection: "row",
                 justifyContent: "center",
               }}
               activeOpacity={0.75}
             >
               <Text
-                style={{ color: COLORS.gray1, marginRight: 4, fontSize: 13 }}
+                style={{
+                  color: COLORS.gray1,
+                  marginRight: Platform.OS == "ios" ? 5 : 10,
+                  fontSize: 13,
+                }}
               >
                 Search
               </Text>
@@ -490,7 +489,7 @@ const OrderHistoryScreen = ({ navigation }) => {
               style={styles.image}
             />
             <Text style={styles.noOrderTextview}>
-              You have no orders {"\n"} assigned for today
+              You have no order history
             </Text>
           </View>
         ) : null}
@@ -569,8 +568,8 @@ const styles = StyleSheet.create({
     flex: 0.5,
   },
   searchIcon: {
-    width: 20,
-    height: 20,
+    width: 19,
+    height: 19,
     // alignSelf: "flex-end",
     tintColor: COLORS.lightGray3,
   },

@@ -30,15 +30,6 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
   const end = address;
   const travelType = "drive";
 
-  const dialNumber = () => {
-    const args = {
-      number: phoneNumber, // String value with the number to call
-      prompt: true, // Optional boolean property. Determines if the user should be prompted prior to the call
-    };
-
-    call(args).catch(console.error);
-  };
-
   const userLocation = { latitude: 6.5886839, longitude: 3.2888395 };
   //const openUserLocation = createOpenLink(userLocation);
   //const openLocation = createOpenLink({ ...userLocation, zoom: 30 });
@@ -148,7 +139,7 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
       <View style={{ marginTop: 30 }}>
         <DisplayButton
           text="Call"
-          onPress={dialNumber}
+          onPress={() => dialNumber(phoneNumber)}
           color={COLORS.blue}
           left={SIZES.width / 3 - 5}
           image={require("../assets/icons/phone.png")}
