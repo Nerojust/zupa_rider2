@@ -22,7 +22,7 @@ const Order1 = ({
   onPressCall,
   onPressView,
   date,
-  quantityPress,
+  pressStart,
 }) => {
   return (
     <View style={{ justifyContent: "center", marginBottom: 10 }}>
@@ -50,7 +50,7 @@ const Order1 = ({
           >
             Single Order
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity activeOpacity={0.6} onPress={pressStart}>
             <Text
               style={{
                 fontSize: 17,

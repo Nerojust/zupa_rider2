@@ -145,7 +145,10 @@ const DashboardScreen = ({ navigation }) => {
                 >
                   Batch Order
                 </Text>
-                <TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={0.6}
+                  onPress={() => alert("Starting journey...")}
+                >
                   <Text
                     style={{
                       fontSize: 17,
@@ -195,6 +198,7 @@ const DashboardScreen = ({ navigation }) => {
               item.order.customer ? item.order.customer.phoneNumber : phone
             )
           }
+          pressStart={() => alert("Starting journey...")}
           onPressView={() =>
             navigation.navigate("OrderDetails", {
               id: item.id,

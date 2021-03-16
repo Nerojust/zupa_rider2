@@ -193,7 +193,7 @@ const OrderHistoryScreen = ({ navigation }) => {
       if (endDate != "" && endDate != null) {
         if (startDate.localeCompare(endDate)) {
           setOrderArray([]);
-          setIsDialogVisible(false);
+          handleDismissDialog();
           showLoader();
 
           setTimeout(() => {
@@ -253,7 +253,7 @@ const OrderHistoryScreen = ({ navigation }) => {
                 setRefreshing(false);
               });
             dismissLoader();
-          }, 0);
+          }, 50);
 
           setTimeout(() => {
             dismissLoader();
@@ -295,7 +295,7 @@ const OrderHistoryScreen = ({ navigation }) => {
               fontWeight: "bold",
             }}
           >
-            Select Date Range
+            Filter by date
           </Text>
         }
         footer={
@@ -305,30 +305,33 @@ const OrderHistoryScreen = ({ navigation }) => {
               justifyContent: "space-around",
               alignItems: "center",
               marginBottom: 20,
+              marginTop: 10,
             }}
           >
-            <Text
-              style={{
-                fontSize: 15,
-                color: COLORS.gray,
-                alignSelf: "center",
-                fontWeight: "bold",
-              }}
-              onPress={handleDismissDialog}
-            >
-              Cancel
-            </Text>
-            <Text
-              style={{
-                fontWeight: "bold",
-                fontSize: 15,
-                color: COLORS.blue,
-                alignSelf: "center",
-              }}
-              onPress={handleSearch}
-            >
-              Search
-            </Text>
+            <TouchableOpacity onPress={handleDismissDialog} activeOpacity={0.7}>
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: COLORS.gray,
+                  alignSelf: "center",
+                  fontWeight: "bold",
+                }}
+              >
+                Cancel
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleSearch} activeOpacity={0.6}>
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  fontSize: 15,
+                  color: COLORS.blue,
+                  alignSelf: "center",
+                }}
+              >
+                Search
+              </Text>
+            </TouchableOpacity>
           </View>
         }
       >
@@ -512,9 +515,7 @@ const OrderHistoryScreen = ({ navigation }) => {
               resizeMode={"contain"}
               style={styles.image}
             />
-            <Text style={styles.noOrderTextview}>
-              No record found
-            </Text>
+            <Text style={styles.noOrderTextview}>No record found</Text>
             <TouchableOpacity
               activeOpacity={0.7}
               style={{
