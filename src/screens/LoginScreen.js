@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
   forgotPasswordView: {
     color: COLORS.blue,
     marginTop: 30,
-    fontSize: 14,
+    fontSize: 13,
     alignSelf: "flex-end",
     fontFamily:
       Platform.OS == "ios" ? FONTS.ROBOTO_REGULAR_IOS : FONTS.ROBOTO_REGULAR,

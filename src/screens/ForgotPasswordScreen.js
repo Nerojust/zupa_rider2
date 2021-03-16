@@ -41,9 +41,9 @@ const ForgotPasswordScreen = ({ navigation }) => {
  
 
   const performValidation = () => {
-    navigation.navigate("Home", {
-      screen: "Dashboard",
-    });
+    // navigation.navigate("Home", {
+    //   screen: "Dashboard",
+    // });
   };
   
   const handleRefFocus = () => {
@@ -93,7 +93,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
             <DisplayButton
               text="Reset Password"
               onPress={performValidation}
-              color={COLORS.primary}
+              color={COLORS.blue}
             />
           </View>
           <View style={styles.signRowView}>

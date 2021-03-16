@@ -184,6 +184,8 @@ const OrderHistoryScreen = ({ navigation }) => {
     if (isDialogVisible) {
       setIsDialogVisible(false);
     }
+    setStartDate("");
+    setEndDate("");
   };
   const handleRefreshPage = () => {
     getOrders();

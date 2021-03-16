@@ -8,6 +8,7 @@ import { COLORS, SIZES, FONTS } from "../utils/theme";
 const ButtonComponent = ({ text, onPress, color }) => {
   return (
     <TouchableOpacity
+      activeOpacity={0.8}
       style={{
         height: 50,
         width: SIZES.width - 70,
