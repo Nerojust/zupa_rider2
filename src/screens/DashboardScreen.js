@@ -113,8 +113,6 @@ const DashboardScreen = ({ navigation }) => {
     }
   };
   const renderItem = (data) => {
-    let childArray = [];
-    let batchCount = 1;
     if (data.dispatch_orders.length > 1) {
       return (
         <FlatList
@@ -145,7 +143,7 @@ const DashboardScreen = ({ navigation }) => {
                         : FONTS.ROBOTO_MEDIUM,
                   }}
                 >
-                  Batch
+                  Batch Order
                 </Text>
                 <TouchableOpacity>
                   <Text
@@ -219,7 +217,7 @@ const DashboardScreen = ({ navigation }) => {
   const getOrders = () => {
     setTimeout(() => {
       showLoader();
-    }, 100);
+    }, 0);
 
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");

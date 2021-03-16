@@ -132,7 +132,7 @@ const OrderHistoryScreen = ({ navigation }) => {
   const getOrders = (url) => {
     setTimeout(() => {
       showLoader();
-    }, 100);
+    }, 0);
 
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -185,67 +185,90 @@ const OrderHistoryScreen = ({ navigation }) => {
       setIsDialogVisible(false);
     }
   };
-
+  const handleRefreshPage = () => {
+    getOrders();
+  };
   const handleSearch = () => {
-    setOrderArray([]);
-    setIsDialogVisible(false);
-    showLoader();
-    setTimeout(() => {
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("Authorization", "Bearer " + loginData.jwt);
+    if (startDate != "" && startDate != null) {
+      if (endDate != "" && endDate != null) {
+        if (startDate.localeCompare(endDate)) {
+          setOrderArray([]);
+          setIsDialogVisible(false);
+          showLoader();
 
-      var requestOptions = {
-        method: "GET",
-        headers: myHeaders,
-        redirect: "follow",
-      };
+          setTimeout(() => {
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("Authorization", "Bearer " + loginData.jwt);
 
-      fetch(
-        GET_RIDER_REQUESTS +
-          "/?status=completed&startDate=" +
-          startDate +
-          "&endDate=" +
-          endDate,
-        requestOptions
-      )
-        .then((response) => response.json())
-        .then((responseJson) => {
-          if (responseJson) {
-            if (!responseJson.code) {
-              if (responseJson.length > 0) {
-                console.log("Date query array length is", responseJson.length);
-                console.log("Date query array is", responseJson);
-                setOrderArray(responseJson);
-              } else {
-                setIsResultOrderEmpty(true);
-              }
-              if (refreshing) {
+            var requestOptions = {
+              method: "GET",
+              headers: myHeaders,
+              redirect: "follow",
+            };
+
+            fetch(
+              GET_RIDER_REQUESTS +
+                "/?status=completed&startDate=" +
+                startDate +
+                "&endDate=" +
+                endDate,
+              requestOptions
+            )
+              .then((response) => response.json())
+              .then((responseJson) => {
+                if (responseJson) {
+                  if (!responseJson.code) {
+                    if (responseJson.length > 0) {
+                      console.log(
+                        "Date query array length is",
+                        responseJson.length
+                      );
+                      console.log("Date query array is", responseJson);
+                      setOrderArray(responseJson);
+                      if (orderArray) {
+                        dismissLoader();
+                      }
+                    } else {
+                      console.log("Result is empty for search");
+                      setOrderArray([]);
+                      setIsResultOrderEmpty(true);
+                    }
+                    if (refreshing) {
+                      setRefreshing(false);
+                    }
+                    // console.log("new array is ", newArray);
+                  } else {
+                    alert(responseJson.message);
+                  }
+                } else {
+                  alert(responseJson.message);
+                }
                 setRefreshing(false);
-              }
-              // console.log("new array is ", newArray);
-            } else {
-              alert(responseJson.message);
-            }
-          } else {
-            alert(responseJson.message);
-          }
-          setRefreshing(false);
-          // dismissLoader();
-        })
-        .catch((error) => {
-          console.log("error", error);
-          handleError(error);
-          setRefreshing(false);
-        });
-      //dismissLoader();
-    }, 100);
-    setTimeout(() => {
-      // getOrders();
-      dismissLoader();
-    }, 4000);
-    setStartDate("");
-    setEndDate("");
+                dismissLoader();
+              })
+              .catch((error) => {
+                console.log("error", error);
+                handleError(error);
+                setRefreshing(false);
+              });
+            dismissLoader();
+          }, 0);
+
+          setTimeout(() => {
+            dismissLoader();
+          }, 0);
+          setStartDate("");
+          setEndDate("");
+        } else {
+          alert("Both dates can not be the same");
+        }
+      } else {
+        alert("End date is required");
+      }
+    } else {
+      alert("Start date is required");
+    }
   };
   return (
     <View style={styles.container}>
@@ -411,16 +434,16 @@ const OrderHistoryScreen = ({ navigation }) => {
             >
               <Text
                 style={{
-                  fontSize: 15,
+                  fontSize: 14,
                   color: COLORS.gray1,
-                  marginRight: 5,
+                  marginRight: 3,
                   fontFamily:
                     Platform.OS == "ios"
                       ? FONTS.ROBOTO_MEDIUM_IOS
                       : FONTS.ROBOTO_MEDIUM,
                 }}
               >
-                Record count:
+                Total count:
               </Text>
               <Text
                 style={{
@@ -461,7 +484,7 @@ const OrderHistoryScreen = ({ navigation }) => {
           </View>
         ) : null}
 
-        {orderArray && orderArray.length > 0 ? (
+        {!isLoading && orderArray && orderArray.length > 0 ? (
           <Animatable.View
             animation="fadeInUp"
             duraton="1500"
@@ -490,8 +513,23 @@ const OrderHistoryScreen = ({ navigation }) => {
               style={styles.image}
             />
             <Text style={styles.noOrderTextview}>
-              You have no order history
+              No record found
             </Text>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={{
+                width: 100,
+                height: 50,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: COLORS.blue,
+                borderRadius: 10,
+                marginTop: 20,
+              }}
+              onPress={() => handleRefreshPage()}
+            >
+              <Text style={styles.refreshTextview}>Refresh</Text>
+            </TouchableOpacity>
           </View>
         ) : null}
       </>
@@ -560,6 +598,13 @@ const styles = StyleSheet.create({
     fontFamily:
       Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
     //marginTop:50
+  },
+  refreshTextview: {
+    fontSize: 14,
+    fontWeight: "300",
+    fontFamily:
+      Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
+    color: COLORS.white,
   },
   nameTextview: {
     fontSize: 18,

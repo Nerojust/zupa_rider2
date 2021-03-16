@@ -285,9 +285,9 @@ const OrderDetailScreen = ({ route, navigation }) => {
             title="Mark Complete"
             titleWeight={"700"}
             titleFontFamily={
-              Platform.OS == "ios" ? FONTS.ROBOTO_BLACK_IOS : FONTS.ROBOTO_THIN
+              Platform.OS == "ios" ? FONTS.ROBOTO_BLACK_IOS : FONTS.ROBOTO_MEDIUM
             }
-            titleFontSize={18}
+            titleFontSize={17}
             titleColor={COLORS.white}
             activityIndicatorColor={COLORS.white}
             backgroundColor={COLORS.blue}
@@ -302,7 +302,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
             title="Completed"
             titleWeight={"700"}
             titleFontFamily={
-              Platform.OS == "ios" ? FONTS.ROBOTO_BLACK_IOS : FONTS.ROBOTO_THIN
+              Platform.OS == "ios" ? FONTS.ROBOTO_BLACK_IOS : FONTS.ROBOTO_MEDIUM
             }
             titleFontSize={18}
             titleColor={COLORS.white}

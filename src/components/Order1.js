@@ -48,7 +48,7 @@ const Order1 = ({
                   : FONTS.ROBOTO_MEDIUM,
             }}
           >
-            Single
+            Single Order
           </Text>
           <TouchableOpacity>
             <Text
