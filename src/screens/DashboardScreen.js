@@ -1,25 +1,14 @@
 //import liraries
-import React, { Component, useEffect, useCallback, useState } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   StatusBar,
   FlatList,
-  Button,
   Image,
   RefreshControl,
-  TouchableOpacity,
-  Alert,
 } from "react-native";
-import Dialog, {
-  DialogFooter,
-  DialogButton,
-  DialogContent,
-  SlideAnimation,
-  DialogTitle,
-} from "react-native-popup-dialog";
 import { createOpenLink } from "react-native-open-maps";
 import { COLORS, FONTS, SIZES } from "../utils/theme";
 import Order from "../components/Order";
@@ -28,17 +17,11 @@ import { useDispatch } from "react-redux";
 import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
 import { useSelector } from "react-redux";
-import { testDataArray } from "../utils/Data";
-import NoConnection from "../components/NoConnection";
 import {
-  checkNetworkConnection,
   dialNumber,
   getReadableDateAndTime,
-  handleBackPress,
   handleError,
-  isNetworkAvailable,
 } from "../utils/utils";
-import { saveOrder } from "../store/Actions";
 // create a component
 const DashboardScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -78,8 +61,64 @@ const DashboardScreen = ({ navigation }) => {
 
     getOrders();
   }, []);
-
+  const renderFlatList = (item) => {
+    if (item.order) {
+      let address1 =
+        item.order && item.order.customer
+          ? item.order.customer.address
+          : address;
+      //console.log("address1", address1)
+      let end = address1;
+      return (
+        <Order
+          name={item.order.customer.name ? item.order.customer.name : name}
+          address={item.order.customer ? item.order.customer.address : address}
+          phoneNumber={
+            item.order.customer ? item.order.customer.phoneNumber : phone
+          }
+          status={item.status}
+          date={getReadableDateAndTime(item.updatedAt)}
+          quantityPress={() => setIsDialogVisible(true)}
+          onPressNavigate={createOpenLink({
+            travelType,
+            end,
+            provider: "google",
+          })}
+          onPressCall={() =>
+            dialNumber(
+              item.order.customer ? item.order.customer.phoneNumber : phone
+            )
+          }
+          onPressView={() =>
+            navigation.navigate("OrderDetails", {
+              id: item.id,
+              name: item.order.customer ? item.order.customer.name : name,
+              address: item.order.customer
+                ? item.order.customer.address
+                : address,
+              phoneNumber: item.order.customer
+                ? item.order.customer.phoneNumber
+                : phone,
+              status: item.status,
+              date: item.updatedAt,
+            })
+          }
+        />
+      );
+    }
+  };
   const renderItem = (data) => {
+    let childArray = [];
+    if (data.dispatch_orders.length > 1) {
+      return (
+        <FlatList
+          data={data.dispatch_orders}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item, index }) => renderFlatList(item)}
+          showsVerticalScrollIndicator={false}
+        />
+      );
+    }
     let item = data.dispatch_orders[0];
     //console.log("Item is ", item);
 

@@ -474,6 +474,7 @@ const OrderHistoryScreen = ({ navigation }) => {
               }
               keyExtractor={(item) => item.dispatch_orders[0].id}
               renderItem={({ item, index }) => renderItem(item)}
+              initialNumToRender={2}
               showsVerticalScrollIndicator={false}
             />
           </Animatable.View>
