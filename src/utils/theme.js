@@ -7,7 +7,7 @@ export const COLORS = {
   white: "#ffffff",
   black: "#000000",
   green: "#37E39F",
-  red: "#F9A8BA",
+  red1: "#F9A8BA",
   gray1: "#6A6A6A",
   lightGray: "#dbdbdb",
   lightGray1: "#f5f6fa",
@@ -32,6 +32,7 @@ export const COLORS = {
   modalBg1: "#00000029",
   transparent: "#00000000",
   blue: "#505DF1",
+  blue1: "#101DF1",
   white_transparent: "#00ffff",
 };
 export const SIZES = {

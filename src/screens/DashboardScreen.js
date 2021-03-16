@@ -8,10 +8,12 @@ import {
   FlatList,
   Image,
   RefreshControl,
+  TouchableOpacity,
 } from "react-native";
 import { createOpenLink } from "react-native-open-maps";
 import { COLORS, FONTS, SIZES } from "../utils/theme";
 import Order from "../components/Order";
+import Order1 from "../components/Order1";
 import * as Animatable from "react-native-animatable";
 import { useDispatch } from "react-redux";
 import LoadingDialog from "../components/LoadingDialog";
@@ -22,6 +24,9 @@ import {
   getReadableDateAndTime,
   handleError,
 } from "../utils/utils";
+import NoConnection from "../components/NoConnection";
+import BatchHeaderComponent from "../components/BatchHeaderComponent";
+import { testDataArray } from "../utils/Data";
 // create a component
 const DashboardScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -109,6 +114,7 @@ const DashboardScreen = ({ navigation }) => {
   };
   const renderItem = (data) => {
     let childArray = [];
+    let batchCount = 1;
     if (data.dispatch_orders.length > 1) {
       return (
         <FlatList
@@ -116,6 +122,48 @@ const DashboardScreen = ({ navigation }) => {
           keyExtractor={(item) => item.id}
           renderItem={({ item, index }) => renderFlatList(item)}
           showsVerticalScrollIndicator={false}
+          ListHeaderComponent={
+            <>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  backgroundColor: COLORS.blue1,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 17,
+                    color: COLORS.white,
+                    //marginBottom: 50,
+                    fontFamily:
+                      Platform.OS == "ios"
+                        ? FONTS.ROBOTO_MEDIUM_IOS
+                        : FONTS.ROBOTO_MEDIUM,
+                  }}
+                >
+                  Batch
+                </Text>
+                <TouchableOpacity>
+                  <Text
+                    style={{
+                      fontSize: 17,
+                      color: COLORS.white,
+                      fontFamily:
+                        Platform.OS == "ios"
+                          ? FONTS.ROBOTO_MEDIUM_IOS
+                          : FONTS.ROBOTO_MEDIUM,
+                    }}
+                  >
+                    Start
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          }
         />
       );
     }
@@ -130,7 +178,7 @@ const DashboardScreen = ({ navigation }) => {
       //console.log("address1", address1)
       let end = address1;
       return (
-        <Order
+        <Order1
           name={item.order.customer.name ? item.order.customer.name : name}
           address={item.order.customer ? item.order.customer.address : address}
           phoneNumber={
@@ -253,7 +301,7 @@ const DashboardScreen = ({ navigation }) => {
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }
-              keyExtractor={(item) => item.dispatch_orders[0].id}
+              keyExtractor={(item, index) => item.id + index}
               renderItem={({ item, index }) => renderItem(item)}
               showsVerticalScrollIndicator={false}
             />
