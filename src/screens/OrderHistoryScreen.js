@@ -8,7 +8,8 @@ import {
   StatusBar,
   Button,
   FlatList,
-  Image,BackHandler,
+  Image,
+  BackHandler,
   RefreshControl,
   TouchableOpacity,
   Alert,
@@ -71,20 +72,19 @@ const OrderHistoryScreen = ({ navigation }) => {
 
   handleBackPress();
 
-
-   function handleBackPress() {
+  function handleBackPress() {
     const backAction = () => {
       if (isDialogVisible) {
         setIsDialogVisible(false);
       }
       setIsDialogVisible(false);
-      navigation.goBack()
+      navigation.goBack();
       return true;
     };
-  
+
     useEffect(() => {
       BackHandler.addEventListener("hardwareBackPress", backAction);
-  
+
       return () =>
         BackHandler.removeEventListener("hardwareBackPress", backAction);
     }, []);
@@ -173,6 +173,7 @@ const OrderHistoryScreen = ({ navigation }) => {
             if (responseJson.length > 0) {
               console.log("Array size is", responseJson.length);
               setOrderArray(responseJson);
+              setIsResultOrderEmpty(false);
               if (orderArray) {
                 dismissLoader();
               }
@@ -203,7 +204,7 @@ const OrderHistoryScreen = ({ navigation }) => {
     if (isDialogVisible) {
       setIsDialogVisible(false);
     }
-    setIsDialogVisible(false);
+    //setIsDialogVisible(false);
     setStartDate("");
     setEndDate("");
   };
@@ -248,6 +249,7 @@ const OrderHistoryScreen = ({ navigation }) => {
                       );
                       console.log("Date query array is", responseJson);
                       setOrderArray(responseJson);
+                      setIsResultOrderEmpty(false);
                       if (orderArray) {
                         dismissLoader();
                       }
@@ -307,6 +309,7 @@ const OrderHistoryScreen = ({ navigation }) => {
             slideFrom: "top",
           })
         }
+        useNativeDriver={true}
         onTouchOutside={handleDismissDialog}
         dialogTitle={
           <Text
@@ -330,7 +333,7 @@ const OrderHistoryScreen = ({ navigation }) => {
               marginTop: 10,
             }}
           >
-            <TouchableOpacity onPress={handleDismissDialog} activeOpacity={0.7}>
+            <TouchableOpacity onPress={handleDismissDialog} activeOpacity={0.4}>
               <Text
                 style={{
                   fontSize: 15,
@@ -342,7 +345,7 @@ const OrderHistoryScreen = ({ navigation }) => {
                 Cancel
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleSearch} activeOpacity={0.6}>
+            <TouchableOpacity onPress={handleSearch} activeOpacity={0.5}>
               <Text
                 style={{
                   fontWeight: "bold",
@@ -490,7 +493,7 @@ const OrderHistoryScreen = ({ navigation }) => {
                 flexDirection: "row",
                 justifyContent: "center",
               }}
-              activeOpacity={0.75}
+              activeOpacity={0.65}
             >
               <Text
                 style={{
