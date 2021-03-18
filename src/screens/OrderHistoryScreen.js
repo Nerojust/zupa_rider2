@@ -77,6 +77,8 @@ const OrderHistoryScreen = ({ navigation }) => {
       if (isDialogVisible) {
         setIsDialogVisible(false);
       }
+      setIsDialogVisible(false);
+      navigation.goBack()
       return true;
     };
   
@@ -201,6 +203,7 @@ const OrderHistoryScreen = ({ navigation }) => {
     if (isDialogVisible) {
       setIsDialogVisible(false);
     }
+    setIsDialogVisible(false);
     setStartDate("");
     setEndDate("");
   };
