@@ -8,7 +8,7 @@ import {
   StatusBar,
   Button,
   FlatList,
-  Image,
+  Image,BackHandler,
   RefreshControl,
   TouchableOpacity,
   Alert,
@@ -69,7 +69,24 @@ const OrderHistoryScreen = ({ navigation }) => {
     getOrders();
   }, []);
 
-  //handleBackPress();
+  handleBackPress();
+
+
+   function handleBackPress() {
+    const backAction = () => {
+      if (isDialogVisible) {
+        setIsDialogVisible(false);
+      }
+      return true;
+    };
+  
+    useEffect(() => {
+      BackHandler.addEventListener("hardwareBackPress", backAction);
+  
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", backAction);
+    }, []);
+  }
 
   const showLoader = () => {
     setIsLoading(true);

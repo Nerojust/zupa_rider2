@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useContext, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -13,11 +13,36 @@ import {
 import { FONTS, SIZES, COLORS } from "../utils/theme";
 import * as Animatable from "react-native-animatable";
 import DisplayButton from "../components/Button";
+import { useDispatch } from "react-redux";
+import { getValue } from "../utils/utils";
+import { AuthContext } from "../utils/Context";
+import LoadingDialog from "../components/LoadingDialog";
 
 const WelcomeScreen = ({ navigation }) => {
+  const { signIn } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
+  let loginData = null;
+
+  useEffect(() => {
+    setIsLoading(true);
+    getValue("loginState").then((result) => {
+      loginData = JSON.parse(result);
+      if (loginData) {
+        //console.log("login data is", loginData.loginPayload);
+        if (loginData.loginPayload) {
+          //console.log("inside is ", loginData.loginPayload.jwt);
+          signIn(loginData.loginPayload);
+          setIsLoading(false);
+        }
+      }
+    });
+    setIsLoading(false);
+  }, [loginData]);
+
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={COLORS.primary} barStyle="light-content" />
+      <LoadingDialog loading={isLoading} message={"Loading..."} />
       <ImageBackground
         source={require("../assets/images/auth_bg.png")}
         style={styles.image}
@@ -76,10 +101,12 @@ const styles = StyleSheet.create({
     color: "grey",
     marginBottom: 15,
     justifyContent: "center",
-    fontSize:13,
+    fontSize: 13,
     alignSelf: "center",
     fontFamily:
-      Platform.OS == "ios" ? FONTS.VARELA_ROUND_REGULAR_IOS : FONTS.ROBOTO_MEDIUM,
+      Platform.OS == "ios"
+        ? FONTS.VARELA_ROUND_REGULAR_IOS
+        : FONTS.ROBOTO_MEDIUM,
   },
   buttonView: {
     flex: 0.5,

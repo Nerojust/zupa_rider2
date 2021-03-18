@@ -15,8 +15,6 @@ const AuthScreen = ({ navigation }) => {
         headerShown: false,
         animationEnabled: false,
       }}
-      //initialRouteName={"Welcome"}
-      //name="Auth"
     >
       <Auth.Screen name="Welcome" component={WelcomeScreen} />
       <Auth.Screen name="Login" component={LoginScreen} />

@@ -147,7 +147,7 @@ export const storeValue = async (key, value) => {
 export const deleteValue = async (key) => {
   try {
     await AsyncStorage.removeItem(key);
-    //console.log("deleted successfully from storage")
+    console.log("deleted successfully from storage")
   } catch (error) {
     console.log(error);
   }
@@ -165,6 +165,7 @@ export const getValue = async (key) => {
   try {
     const value = await AsyncStorage.getItem(key);
     if (value !== null) {
+      //console.log("gotten value from storage ", value)
       return value;
     } else {
       console.log("error reading from storage");

@@ -6,15 +6,20 @@ import { AppStack } from "./src/navigation/RootNavigation";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthContext } from "./src/utils/Context";
 import { initialState } from "./src/store/State";
+
 import { loginReducer } from "./src/store/reducers/LoginReducer";
+import { deleteValue, getValue, storeValue } from "./src/utils/utils";
 
 const App = () => {
+  //returns the new state and a dispatch action
+  const [loginState, dispatch] = useReducer(loginReducer, initialState);
+
   useEffect(() => {
     SplashScreen.hide();
   }, []);
 
-  //returns the new state and a dispatch action
-  const [loginState, dispatch] = useReducer(loginReducer, initialState);
+  
+
   //console.log("Login state is ", loginState);
   const authContext = useMemo(
     () => ({
@@ -24,6 +29,11 @@ const App = () => {
           type: "LOGIN",
           token: responseJson.jwt,
         });
+
+        storeValue("loginState", {
+          isLoggedIn: true,
+          loginPayload: responseJson,
+        });
       },
 
       signOut: async () => {
@@ -32,6 +42,7 @@ const App = () => {
           token: null,
           //isLoggedIn: false,
         });
+        deleteValue("loginState");
       },
     }),
     []

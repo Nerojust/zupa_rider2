@@ -4,11 +4,8 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
-    "iphone6s": "react-native run-ios --udid CD968A9D-4AB3-4EE7-9EA1-7ADD56B2070B",
     "iphone8": "react-native run-ios --udid 3BEEF839-C47F-41DC-B04B-DE3AF9D5B024",
     "iphone11": "react-native run-ios --udid B8BC75E2-6BCA-45D0-B179-40C6DED0FC50",
-    "iphone11Max": "react-native run-ios --udid 6BACB42B-FCA7-41F4-862B-23AF59E87762",
-    "ipadProTab": "react-native run-ios --udid CCEF9791-F9DC-4300-8441-AF3718E0F6F2",
     "ios": "react-native run-ios",
     "start": "react-native start",
     "debug": "react-native run-android --variant=debug",
