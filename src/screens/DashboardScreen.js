@@ -18,12 +18,16 @@ import * as Animatable from "react-native-animatable";
 import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
 
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+
 import {
   dialNumber,
   getReadableDateAndTime,
   getValue,
   handleError,
 } from "../utils/utils";
+import { loginUser } from "../store/Actions";
 // create a component
 const DashboardScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -39,20 +43,15 @@ const DashboardScreen = ({ navigation }) => {
   const [isResultOrderEmpty, setIsResultOrderEmpty] = useState(false);
   const [userNameRider, setUserNameRider] = useState("");
 
+  const dispatch = useDispatch();
+  const loginData = useSelector((state) => state.login.loginResults);
+  console.log("redux dashboard", loginData);
+
   useEffect(() => {
-    getValue("loginState").then((result) => {
-      let loginData = JSON.parse(result);
-      if (loginData) {
-        //console.log("login dashboard is", loginData.responseJson);
-        userToken = loginData.jwt;
-        userName = loginData.rider.name;
-        if (userToken && userName) {
-          setUserNameRider(userName);
-          getOrders();
-        }
-      }
-    });
-  }, [userToken, userName]);
+    if (loginData.jwt) {
+      getOrders();
+    }
+  }, [loginData.jwt]);
 
   //handleBackPress();
 
@@ -226,7 +225,7 @@ const DashboardScreen = ({ navigation }) => {
 
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", "Bearer " + userToken);
+    myHeaders.append("Authorization", "Bearer " + loginData.jwt);
 
     var requestOptions = {
       method: "GET",
@@ -290,7 +289,7 @@ const DashboardScreen = ({ navigation }) => {
                   : FONTS.ROBOTO_MEDIUM,
             }}
           >
-            Hi, {userNameRider},{"\n"} you have new order/s
+            Hi, {loginData.rider.name},{"\n"} you have new order/s
           </Text>
         ) : null}
 
@@ -313,7 +312,7 @@ const DashboardScreen = ({ navigation }) => {
         ) : isResultOrderEmpty ? (
           <View style={styles.parentView}>
             <Text style={styles.nameTextview}>
-              Hello {userNameRider}!
+              Hello {loginData.rider.name}!
             </Text>
 
             <Image

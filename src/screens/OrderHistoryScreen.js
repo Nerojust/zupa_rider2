@@ -22,13 +22,16 @@ import Order from "../components/Order";
 import * as Animatable from "react-native-animatable";
 import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
+import { useDispatch } from "react-redux";
 import DatePicker from "react-native-datepicker";
+import { useSelector } from "react-redux";
 import {
   dialNumber,
   getReadableDateAndTime,
   getValue,
   handleError,
 } from "../utils/utils";
+import { loginUser } from "../store/Actions";
 // create a component
 const OrderHistoryScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -46,21 +49,16 @@ const OrderHistoryScreen = ({ navigation }) => {
   const [orderArray, setOrderArray] = useState([]);
   const [isResultOrderEmpty, setIsResultOrderEmpty] = useState(false);
   const [userNameRider, setUserNameRider] = useState("");
+  const [token, setToken] = useState("");
+  const dispatch = useDispatch();
+  const loginData = useSelector((state) => state.login.loginResults);
+  //console.log("login data redux", loginData);
 
   useEffect(() => {
-    getValue("loginState").then((result) => {
-      let loginData = JSON.parse(result);
-      if (loginData) {
-        //console.log("login dashboard is", loginData.responseJson);
-        userName = loginData.responseJson.rider.name;
-        userToken = loginData.responseJson.jwt;
-        if (userToken && userName) {
-          setUserNameRider(userName);
-          getOrders();
-        }
-      }
-    });
-  }, [userToken, userName]);
+    if (loginData.jwt) {
+      getOrders();
+    }
+  }, [loginData.jwt]);
 
   handleBackPress();
 
@@ -147,8 +145,8 @@ const OrderHistoryScreen = ({ navigation }) => {
 
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", "Bearer " + userToken);
-
+    myHeaders.append("Authorization", "Bearer " + loginData.jwt);
+    //console.log("header token", loginData.jwt)
     var requestOptions = {
       method: "GET",
       headers: myHeaders,
@@ -160,6 +158,7 @@ const OrderHistoryScreen = ({ navigation }) => {
     fetch(fullUrl, requestOptions)
       .then((response) => response.json())
       .then((responseJson) => {
+        //console.log("order response", responseJson)
         if (responseJson) {
           if (!responseJson.code) {
             if (responseJson.length > 0) {
@@ -175,9 +174,8 @@ const OrderHistoryScreen = ({ navigation }) => {
             if (refreshing) {
               setRefreshing(false);
             }
-            // console.log("new array is ", newArray);
           } else {
-            alert(responseJson.message);
+            alert(responseJson.message + " " + responseJson.name);
           }
         } else {
           alert(responseJson.message);
@@ -196,22 +194,28 @@ const OrderHistoryScreen = ({ navigation }) => {
     if (isDialogVisible) {
       setIsDialogVisible(false);
     }
+    if (isDialogVisible) {
+      setIsDialogVisible(false);
+    }
     setStartDate("");
     setEndDate("");
   };
+
   const handleRefreshPage = () => {
     getOrders();
   };
+
   const handleSearch = () => {
     if (startDate != "" && startDate != null) {
       if (endDate != "" && endDate != null) {
         if (startDate.localeCompare(endDate)) {
           handleDismissDialog();
           setOrderArray([]);
-          showLoader();
+          // showLoader();
           let searchUrl =
             "/?status=completed&startDate=" + startDate + "&endDate=" + endDate;
           getOrders(searchUrl);
+
           setStartDate("");
           setEndDate("");
         } else {

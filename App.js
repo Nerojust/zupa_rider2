@@ -6,6 +6,9 @@ import { AppStack } from "./src/navigation/RootNavigation";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthContext } from "./src/utils/Context";
 import { deleteValue, getValue, storeValue } from "./src/utils/utils";
+import { loginUser } from "./src/store/Actions";
+import { useSelector } from "react-redux";
+
 
 const App = () => {
   const [state, dispatch] = React.useReducer(
@@ -39,6 +42,7 @@ const App = () => {
   );
   const [stateToken, setStateToken] = useState("");
 
+  let loginDataApp = {};
   useEffect(() => {
     // Fetch the token from storage then navigate to our appropriate place
 
@@ -49,7 +53,7 @@ const App = () => {
         // let res = await  getValue("loginState");
         // console.log("res", res.responseJson)
         getValue("loginState").then((result) => {
-          let loginDataApp = JSON.parse(result);
+          loginDataApp = JSON.parse(result);
           //console.log("logindataapp", loginDataApp)
           if (loginDataApp) {
             let userToken = loginDataApp.jwt;
@@ -70,6 +74,7 @@ const App = () => {
       if (stateToken) {
         console.log("State token is refreshed");
         dispatch({ type: "RESTORE_TOKEN", token: stateToken });
+        //dispatch(loginUser(loginDataApp));
       } else {
         console.log("No token in storage");
       }
@@ -105,6 +110,7 @@ const App = () => {
         dispatch({ type: "SIGN_IN", token: "dummy-auth-token" });
       },
     }),
+    
     []
   );
 
