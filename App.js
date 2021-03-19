@@ -1,48 +1,108 @@
 import "react-native-gesture-handler";
-import React, { useEffect, useReducer, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import SplashScreen from "react-native-splash-screen";
 import { NavigationContainer } from "@react-navigation/native";
 import { AppStack } from "./src/navigation/RootNavigation";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthContext } from "./src/utils/Context";
-import { initialState } from "./src/store/State";
-
-import { loginReducer } from "./src/store/reducers/LoginReducer";
 import { deleteValue, getValue, storeValue } from "./src/utils/utils";
 
 const App = () => {
-  //returns the new state and a dispatch action
-  const [loginState, dispatch] = useReducer(loginReducer, initialState);
+  const [state, dispatch] = React.useReducer(
+    (prevState, action) => {
+      switch (action.type) {
+        case "RESTORE_TOKEN":
+          return {
+            ...prevState,
+            userToken: action.token,
+            isLoading: false,
+          };
+        case "SIGN_IN":
+          return {
+            ...prevState,
+            isSignout: false,
+            userToken: action.token,
+          };
+        case "SIGN_OUT":
+          return {
+            ...prevState,
+            isSignout: true,
+            userToken: null,
+          };
+      }
+    },
+    {
+      isLoading: true,
+      isSignout: false,
+      userToken: null,
+    }
+  );
+  const [stateToken, setStateToken] = useState("");
 
   useEffect(() => {
-    SplashScreen.hide();
-  }, []);
+    // Fetch the token from storage then navigate to our appropriate place
 
-  
+    const getDataFromStorage = async () => {
+      try {
+        // Restore token stored in `SecureStore` or any other encrypted storage
+        // userToken = await SecureStore.getItemAsync('userToken');
+        // let res = await  getValue("loginState");
+        // console.log("res", res.responseJson)
+        getValue("loginState").then((result) => {
+          let loginDataApp = JSON.parse(result);
+          //console.log("logindataapp", loginDataApp)
+          if (loginDataApp) {
+            let userToken = loginDataApp.jwt;
+            //console.log("token inside is ", userToken);
+            setStateToken(userToken);
+          }
+        });
+      } catch (e) {
+        // Restoring token failed
+        console.log("error restoring", e);
+      }
+
+      // After restoring token, we may need to validate it in production apps
+
+      // This will switch to the App screen or Auth screen and this loading
+      // screen will be unmounted and thrown away.
+      console.log("About to refresh token");
+      if (stateToken) {
+        console.log("State token is refreshed");
+        dispatch({ type: "RESTORE_TOKEN", token: stateToken });
+      } else {
+        console.log("No token in storage");
+      }
+    };
+
+    getDataFromStorage();
+
+    SplashScreen.hide();
+  }, [stateToken]);
 
   //console.log("Login state is ", loginState);
-  const authContext = useMemo(
+  const authContext = React.useMemo(
     () => ({
       signIn: async (responseJson) => {
-        //details passed from signinscreen
-        dispatch({
-          type: "LOGIN",
-          token: responseJson.jwt,
-        });
+        // In a production app, we need to send some data (usually username, password) to server and get a token
+        // We will also need to handle errors if sign in failed
+        // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
+        // In the example, we'll use a dummy token
 
-        storeValue("loginState", {
-          isLoggedIn: true,
-          loginPayload: responseJson,
-        });
+        dispatch({ type: "SIGN_IN", token: responseJson.jwt });
+        storeValue("loginState", responseJson);
       },
-
-      signOut: async () => {
-        dispatch({
-          type: "LOGOUT",
-          token: null,
-          //isLoggedIn: false,
-        });
+      signOut: () => {
+        dispatch({ type: "SIGN_OUT" });
         deleteValue("loginState");
+      },
+      signUp: async (data) => {
+        // In a production app, we need to send user data to server and get a token
+        // We will also need to handle errors if sign up failed
+        // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
+        // In the example, we'll use a dummy token
+
+        dispatch({ type: "SIGN_IN", token: "dummy-auth-token" });
       },
     }),
     []
@@ -52,7 +112,7 @@ const App = () => {
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
         <SafeAreaProvider>
-          <AppStack userToken={loginState.userToken} />
+          <AppStack state={state} />
         </SafeAreaProvider>
       </NavigationContainer>
     </AuthContext.Provider>

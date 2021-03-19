@@ -1,63 +1,43 @@
 //import liraries
-import React, { Component, useEffect, useCallback, useState } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   StatusBar,
-  Button,
   FlatList,
   Image,
   BackHandler,
   RefreshControl,
   TouchableOpacity,
-  Alert,
   Platform,
 } from "react-native";
 import Dialog, {
-  DialogFooter,
-  DialogButton,
   DialogContent,
   SlideAnimation,
-  DialogTitle,
 } from "react-native-popup-dialog";
 import { createOpenLink } from "react-native-open-maps";
 import { COLORS, FONTS, SIZES } from "../utils/theme";
 import Order from "../components/Order";
 import * as Animatable from "react-native-animatable";
-import { useDispatch } from "react-redux";
 import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
-import { useSelector } from "react-redux";
 import DatePicker from "react-native-datepicker";
-import NoConnection from "../components/NoConnection";
 import {
-  checkNetworkConnection,
   dialNumber,
   getReadableDateAndTime,
-  getTodaysDate,
-  handleBackPress,
+  getValue,
   handleError,
-  isNetworkAvailable,
 } from "../utils/utils";
-import { saveOrder, saveSearchState } from "../store/Actions";
 // create a component
 const OrderHistoryScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
-  const loginData = useSelector((state) => state.login.loginResults);
-  //console.log("login data is ", loginData)
-  var isSearch = useSelector((state) => state.search.isSearchClicked);
-  //console.log("redux search", isSearch);
-  var dataArray = useSelector((state) => state.orders.orders);
-  //console.log("dashboard redux is", dataArray);
-  const [isNetworkAvailable, setisNetworkAvailable] = useState(false);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   let todaysDate = new Date();
-
+  let userToken = "";
+  let userName = "";
   let name = "Nerojust Adjeks";
   let phone = "08012345678";
   let address = "Necom House";
@@ -65,10 +45,22 @@ const OrderHistoryScreen = ({ navigation }) => {
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [orderArray, setOrderArray] = useState([]);
   const [isResultOrderEmpty, setIsResultOrderEmpty] = useState(false);
+  const [userNameRider, setUserNameRider] = useState("");
 
   useEffect(() => {
-    getOrders();
-  }, []);
+    getValue("loginState").then((result) => {
+      let loginData = JSON.parse(result);
+      if (loginData) {
+        //console.log("login dashboard is", loginData.responseJson);
+        userName = loginData.responseJson.rider.name;
+        userToken = loginData.responseJson.jwt;
+        if (userToken && userName) {
+          setUserNameRider(userName);
+          getOrders();
+        }
+      }
+    });
+  }, [userToken, userName]);
 
   handleBackPress();
 
@@ -155,7 +147,7 @@ const OrderHistoryScreen = ({ navigation }) => {
 
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", "Bearer " + loginData.jwt);
+    myHeaders.append("Authorization", "Bearer " + userToken);
 
     var requestOptions = {
       method: "GET",
@@ -204,7 +196,6 @@ const OrderHistoryScreen = ({ navigation }) => {
     if (isDialogVisible) {
       setIsDialogVisible(false);
     }
-    //setIsDialogVisible(false);
     setStartDate("");
     setEndDate("");
   };
@@ -215,73 +206,12 @@ const OrderHistoryScreen = ({ navigation }) => {
     if (startDate != "" && startDate != null) {
       if (endDate != "" && endDate != null) {
         if (startDate.localeCompare(endDate)) {
-          setOrderArray([]);
           handleDismissDialog();
+          setOrderArray([]);
           showLoader();
-
-          setTimeout(() => {
-            var myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
-            myHeaders.append("Authorization", "Bearer " + loginData.jwt);
-
-            var requestOptions = {
-              method: "GET",
-              headers: myHeaders,
-              redirect: "follow",
-            };
-
-            fetch(
-              GET_RIDER_REQUESTS +
-                "/?status=completed&startDate=" +
-                startDate +
-                "&endDate=" +
-                endDate,
-              requestOptions
-            )
-              .then((response) => response.json())
-              .then((responseJson) => {
-                if (responseJson) {
-                  if (!responseJson.code) {
-                    if (responseJson.length > 0) {
-                      console.log(
-                        "Date query array length is",
-                        responseJson.length
-                      );
-                      console.log("Date query array is", responseJson);
-                      setOrderArray(responseJson);
-                      setIsResultOrderEmpty(false);
-                      if (orderArray) {
-                        dismissLoader();
-                      }
-                    } else {
-                      console.log("Result is empty for search");
-                      setOrderArray([]);
-                      setIsResultOrderEmpty(true);
-                    }
-                    if (refreshing) {
-                      setRefreshing(false);
-                    }
-                    // console.log("new array is ", newArray);
-                  } else {
-                    alert(responseJson.message);
-                  }
-                } else {
-                  alert(responseJson.message);
-                }
-                setRefreshing(false);
-                dismissLoader();
-              })
-              .catch((error) => {
-                console.log("error", error);
-                handleError(error);
-                setRefreshing(false);
-              });
-            dismissLoader();
-          }, 50);
-
-          setTimeout(() => {
-            dismissLoader();
-          }, 0);
+          let searchUrl =
+            "/?status=completed&startDate=" + startDate + "&endDate=" + endDate;
+          getOrders(searchUrl);
           setStartDate("");
           setEndDate("");
         } else {
@@ -531,9 +461,7 @@ const OrderHistoryScreen = ({ navigation }) => {
           </Animatable.View>
         ) : isResultOrderEmpty ? (
           <View style={styles.parentView}>
-            <Text style={styles.nameTextview}>
-              Hello {loginData.rider.name}!
-            </Text>
+            <Text style={styles.nameTextview}>Hello {userNameRider}!</Text>
 
             <Image
               source={require("../assets/images/rider.png")}

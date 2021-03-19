@@ -168,7 +168,7 @@ export const getValue = async (key) => {
       //console.log("gotten value from storage ", value)
       return value;
     } else {
-      console.log("error reading from storage");
+      //console.log("error reading from storage");
       return value;
     }
   } catch (error) {

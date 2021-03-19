@@ -23,21 +23,21 @@ const WelcomeScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   let loginData = null;
 
-  useEffect(() => {
-    setIsLoading(true);
-    getValue("loginState").then((result) => {
-      loginData = JSON.parse(result);
-      if (loginData) {
-        //console.log("login data is", loginData.loginPayload);
-        if (loginData.loginPayload) {
-          //console.log("inside is ", loginData.loginPayload.jwt);
-          signIn(loginData.loginPayload);
-          setIsLoading(false);
-        }
-      }
-    });
-    setIsLoading(false);
-  }, [loginData]);
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   getValue("loginState").then((result) => {
+  //     loginData = JSON.parse(result);
+  //     if (loginData) {
+  //       //console.log("login data is", loginData.loginPayload);
+  //       if (loginData.loginPayload) {
+  //         //console.log("inside is ", loginData.loginPayload.jwt);
+  //         signIn(loginData.loginPayload);
+  //         setIsLoading(false);
+  //       }
+  //     }
+  //   });
+  //   setIsLoading(false);
+  // }, [loginData]);
 
   return (
     <View style={styles.container}>

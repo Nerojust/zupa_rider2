@@ -15,41 +15,44 @@ import { COLORS, FONTS, SIZES } from "../utils/theme";
 import Order from "../components/Order";
 import Order1 from "../components/Order1";
 import * as Animatable from "react-native-animatable";
-import { useDispatch } from "react-redux";
 import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
-import { useSelector } from "react-redux";
+
 import {
   dialNumber,
   getReadableDateAndTime,
+  getValue,
   handleError,
 } from "../utils/utils";
-import NoConnection from "../components/NoConnection";
-import BatchHeaderComponent from "../components/BatchHeaderComponent";
-import { testDataArray } from "../utils/Data";
 // create a component
 const DashboardScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
-  const loginData = useSelector((state) => state.login.loginResults);
-  //console.log("login data is ", loginData)
-  const [isDialogVisible, setIsDialogVisible] = useState(false);
-
-  var dataArray = useSelector((state) => state.orders.orders);
-  //console.log("dashboard redux is", dataArray);
   const fullURL = GET_RIDER_REQUESTS + "/?status=pending";
   let name = "Nerojust Adjeks";
   let phone = "08012345678";
   let address = "Necom House";
   const travelType = "drive";
-
+  let userToken = "";
+  let userName = "";
   const [orderArray, setOrderArray] = useState([]);
   const [isResultOrderEmpty, setIsResultOrderEmpty] = useState(false);
+  const [userNameRider, setUserNameRider] = useState("");
 
   useEffect(() => {
-    getOrders();
-  }, []);
+    getValue("loginState").then((result) => {
+      let loginData = JSON.parse(result);
+      if (loginData) {
+        //console.log("login dashboard is", loginData.responseJson);
+        userToken = loginData.jwt;
+        userName = loginData.rider.name;
+        if (userToken && userName) {
+          setUserNameRider(userName);
+          getOrders();
+        }
+      }
+    });
+  }, [userToken, userName]);
 
   //handleBackPress();
 
@@ -83,7 +86,6 @@ const DashboardScreen = ({ navigation }) => {
           }
           status={item.status}
           date={getReadableDateAndTime(item.updatedAt)}
-          quantityPress={() => setIsDialogVisible(true)}
           onPressNavigate={createOpenLink({
             travelType,
             end,
@@ -187,7 +189,6 @@ const DashboardScreen = ({ navigation }) => {
           }
           status={item.status}
           date={getReadableDateAndTime(item.updatedAt)}
-          quantityPress={() => setIsDialogVisible(true)}
           onPressNavigate={createOpenLink({
             travelType,
             end,
@@ -225,7 +226,7 @@ const DashboardScreen = ({ navigation }) => {
 
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", "Bearer " + loginData.jwt);
+    myHeaders.append("Authorization", "Bearer " + userToken);
 
     var requestOptions = {
       method: "GET",
@@ -259,6 +260,7 @@ const DashboardScreen = ({ navigation }) => {
         console.log("error block", error);
         handleError(error);
         setRefreshing(false);
+        dismissLoader();
       });
     dismissLoader();
   };
@@ -288,7 +290,7 @@ const DashboardScreen = ({ navigation }) => {
                   : FONTS.ROBOTO_MEDIUM,
             }}
           >
-            Hi, {loginData.rider.name},{"\n"} you have new order/s
+            Hi, {userNameRider},{"\n"} you have new order/s
           </Text>
         ) : null}
 
@@ -311,7 +313,7 @@ const DashboardScreen = ({ navigation }) => {
         ) : isResultOrderEmpty ? (
           <View style={styles.parentView}>
             <Text style={styles.nameTextview}>
-              Hello {loginData.rider.name}!
+              Hello {userNameRider}!
             </Text>
 
             <Image

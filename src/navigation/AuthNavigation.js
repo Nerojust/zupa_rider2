@@ -4,6 +4,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { WelcomeScreen, LoginScreen, ForgotPasswordScreen } from "../screens";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
+import SplashScreen from "../screens/SplashScreen";
 
 const Auth = createStackNavigator();
 

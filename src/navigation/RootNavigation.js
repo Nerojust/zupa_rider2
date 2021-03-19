@@ -6,7 +6,8 @@ import Store from "../store/Store";
 import { createStackNavigator } from "@react-navigation/stack";
 
 const AppNav = createStackNavigator();
-export const AppStack = ({ userToken }) => {
+export const AppStack = ({ state }) => {
+  //console.log("state is ", state)
   return (
     <Provider store={Store}>
       <AppNav.Navigator
@@ -15,10 +16,18 @@ export const AppStack = ({ userToken }) => {
           animationEnabled: false,
         }}
       >
-        {userToken ? (
-          <AppNav.Screen name="Home" component={HomeNavigation} />
+        {state.userToken == null ? (
+          <AppNav.Screen
+            name="Auth"
+            component={AuthNavigation}
+            options={{
+              //title: "Sign in",
+              // When logging out, a pop animation feels intuitive
+              animationTypeForReplace: state.isSignout ? "pop" : "push",
+            }}
+          />
         ) : (
-          <AppNav.Screen name="Auth" component={AuthNavigation} />
+          <AppNav.Screen name="Home" component={HomeNavigation} />
         )}
       </AppNav.Navigator>
     </Provider>
