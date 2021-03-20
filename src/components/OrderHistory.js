@@ -13,7 +13,7 @@ import { COLORS, FONTS, SIZES } from "../utils/theme";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 // create a component
-const Order = ({
+const Order1 = ({
   name,
   address,
   phoneNumber,
@@ -25,13 +25,41 @@ const Order = ({
 }) => {
   return (
     <View style={{ justifyContent: "center", marginBottom: 10 }}>
+      <>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingVertical: 5,
+            paddingHorizontal: 20,
+            backgroundColor: COLORS.blue,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 15,
+              color: COLORS.white,
+              //marginBottom: 50,
+              fontFamily:
+                Platform.OS == "ios"
+                  ? FONTS.ROBOTO_MEDIUM_IOS
+                  : FONTS.ROBOTO_MEDIUM,
+            }}
+          >
+            Single Order
+          </Text>
+          
+        </View>
+      </>
+
       <View>
         <TouchableWithoutFeedback style={styles.mainView} onPress={onPressView}>
           <View style={styles.nameViewContainer}>
             <Text
               ellipsizeMode={"tail"}
               numberOfLines={1}
-              style={[styles.nameView, { flex: 1 }]}
+              style={[styles.nameView,{flex:  0.85}]}
             >
               {name}
             </Text>
@@ -121,8 +149,10 @@ const styles = StyleSheet.create({
   },
 
   mainView: {
+    //marginTop: 6,
     width: SIZES.width - 20,
-    height: SIZES.width / 3.4,
+    height: SIZES.width / 3.3,
+    //paddingVertical:20 ,
     backgroundColor: COLORS.lightGray4,
     paddingHorizontal: 15,
     justifyContent: "center",
@@ -150,6 +180,9 @@ const styles = StyleSheet.create({
   },
   nameViewContainer: {
     flexDirection: "row",
+    marginTop: 7,
+    width:SIZES.width
+    //flex: 0.6,
   },
   nameView: { fontSize: 15, fontWeight: "bold" },
   phoneNumber: { fontSize: 14, fontWeight: "bold", flex: 0.5 },
@@ -170,9 +203,9 @@ const styles = StyleSheet.create({
     fontWeight: "normal",
     marginTop: 3,
     color: COLORS.gray1,
-    //flex: 0.4,
+    flex: 0.4,
   },
 });
 
 //make this component available to the app
-export default Order;
+export default Order1;

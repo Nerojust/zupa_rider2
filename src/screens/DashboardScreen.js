@@ -65,7 +65,7 @@ const DashboardScreen = ({ navigation }) => {
 
     getOrders();
   }, []);
-  const renderFlatList = (item) => {
+  const renderBatchList = (item) => {
     if (item.order) {
       let address1 =
         item.order && item.order.customer
@@ -116,7 +116,7 @@ const DashboardScreen = ({ navigation }) => {
         <FlatList
           data={data.dispatch_orders}
           keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => renderFlatList(item)}
+          renderItem={({ item, index }) => renderBatchList(item)}
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={
             <>

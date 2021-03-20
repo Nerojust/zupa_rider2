@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import { createOpenLink } from "react-native-open-maps";
 import { COLORS, FONTS, SIZES } from "../utils/theme";
+import OrderHistory from "../components/OrderHistory";
 import Order from "../components/Order";
 import * as Animatable from "react-native-animatable";
 import LoadingDialog from "../components/LoadingDialog";
@@ -88,7 +89,108 @@ const OrderHistoryScreen = ({ navigation }) => {
     setOrderArray([]);
     getOrders();
   }, []);
+
+  const renderBatchList = (item) => {
+    if (item.order) {
+      let address1 =
+        item.order && item.order.customer
+          ? item.order.customer.address
+          : address;
+      //console.log("address1", address1)
+      let end = address1;
+      return (
+        <Order
+          name={item.order.customer.name ? item.order.customer.name : name}
+          address={item.order.customer ? item.order.customer.address : address}
+          phoneNumber={
+            item.order.customer ? item.order.customer.phoneNumber : phone
+          }
+          status={item.status}
+          date={getReadableDateAndTime(item.updatedAt)}
+          onPressNavigate={createOpenLink({
+            travelType,
+            end,
+            provider: "google",
+          })}
+          onPressCall={() =>
+            dialNumber(
+              item.order.customer ? item.order.customer.phoneNumber : phone
+            )
+          }
+          onPressView={() =>
+            navigation.navigate("OrderDetails", {
+              id: item.id,
+              name: item.order.customer ? item.order.customer.name : name,
+              address: item.order.customer
+                ? item.order.customer.address
+                : address,
+              phoneNumber: item.order.customer
+                ? item.order.customer.phoneNumber
+                : phone,
+              status: item.status,
+              date: item.updatedAt,
+            })
+          }
+        />
+      );
+    }
+  };
   const renderItem = (data) => {
+    if (data.dispatch_orders.length > 1) {
+      return (
+        <FlatList
+          data={data.dispatch_orders}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item, index }) => renderBatchList(item)}
+          showsVerticalScrollIndicator={false}
+          ListHeaderComponent={
+            <>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  paddingVertical: 5,
+                  paddingHorizontal: 20,
+                  backgroundColor: COLORS.blue1,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 15,
+                    color: COLORS.white,
+                    //marginBottom: 50,
+                    fontFamily:
+                      Platform.OS == "ios"
+                        ? FONTS.ROBOTO_MEDIUM_IOS
+                        : FONTS.ROBOTO_MEDIUM,
+                  }}
+                >
+                  Batch Order
+                </Text>
+                {/* <TouchableOpacity
+                  activeOpacity={0.6}
+                  onPress={() => alert("Starting journey...")}
+                >
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      color: COLORS.white,
+                      fontFamily:
+                        Platform.OS == "ios"
+                          ? FONTS.ROBOTO_MEDIUM_IOS
+                          : FONTS.ROBOTO_MEDIUM,
+                    }}
+                  >
+                    Start
+                  </Text>
+                </TouchableOpacity> */}
+              </View>
+            </>
+          }
+        />
+      );
+    }
     let item = data.dispatch_orders[0];
     //console.log("Item is ", item);
 
@@ -100,7 +202,7 @@ const OrderHistoryScreen = ({ navigation }) => {
       //console.log("address1", address1)
       let end = address1;
       return (
-        <Order
+        <OrderHistory
           name={item.order.customer.name ? item.order.customer.name : name}
           address={item.order.customer ? item.order.customer.address : address}
           phoneNumber={
