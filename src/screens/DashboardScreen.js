@@ -45,7 +45,7 @@ const DashboardScreen = ({ navigation }) => {
 
   const dispatch = useDispatch();
   const loginData = useSelector((state) => state.login.loginResults);
-  console.log("redux dashboard", loginData);
+  //console.log("redux dashboard", loginData);
 
   useEffect(() => {
     if (loginData.jwt) {

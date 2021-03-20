@@ -18,6 +18,7 @@ import call from "react-native-phone-call";
 import openMap from "react-native-open-maps";
 import { createOpenLink } from "react-native-open-maps";
 import { getTodaysDate } from "../utils/utils";
+
 // create a component
 const OrderHistoryDetailScreen = ({ route, navigation }) => {
   const name = route.params.name;

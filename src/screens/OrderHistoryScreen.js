@@ -1,5 +1,5 @@
 //import liraries
-import React, { useEffect, useCallback, useState } from "react";
+import React, { useEffect, useCallback, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -9,13 +9,10 @@ import {
   Image,
   BackHandler,
   RefreshControl,
+  Button,
   TouchableOpacity,
   Platform,
 } from "react-native";
-import Dialog, {
-  DialogContent,
-  SlideAnimation,
-} from "react-native-popup-dialog";
 import { createOpenLink } from "react-native-open-maps";
 import { COLORS, FONTS, SIZES } from "../utils/theme";
 import Order from "../components/Order";
@@ -23,6 +20,7 @@ import * as Animatable from "react-native-animatable";
 import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
 import { useDispatch } from "react-redux";
+import RBSheet from "react-native-raw-bottom-sheet";
 import DatePicker from "react-native-datepicker";
 import { useSelector } from "react-redux";
 import {
@@ -31,7 +29,6 @@ import {
   getValue,
   handleError,
 } from "../utils/utils";
-import { loginUser } from "../store/Actions";
 // create a component
 const OrderHistoryScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -53,6 +50,7 @@ const OrderHistoryScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const loginData = useSelector((state) => state.login.loginResults);
   //console.log("login data redux", loginData);
+  const refRBSheet = useRef();
 
   useEffect(() => {
     if (loginData.jwt) {
@@ -191,11 +189,8 @@ const OrderHistoryScreen = ({ navigation }) => {
     dismissLoader();
   };
   const handleDismissDialog = () => {
-    if (isDialogVisible) {
-      setIsDialogVisible(false);
-    }
-    if (isDialogVisible) {
-      setIsDialogVisible(false);
+    if (refRBSheet.current) {
+      refRBSheet.current.close();
     }
     setStartDate("");
     setEndDate("");
@@ -236,66 +231,47 @@ const OrderHistoryScreen = ({ navigation }) => {
       />
       <LoadingDialog loading={isLoading} message={"Fetching your orders..."} />
 
-      <Dialog
-        visible={isDialogVisible}
-        dialogAnimation={
-          new SlideAnimation({
-            slideFrom: "top",
-          })
-        }
-        useNativeDriver={true}
-        onTouchOutside={handleDismissDialog}
-        dialogTitle={
+      <RBSheet
+        ref={refRBSheet}
+        animationType={"none"}
+        closeOnDragDown={true}
+        closeOnPressMask={true}
+        closeOnPressBack={true}
+        height={200}
+        customStyles={{
+          wrapper: {
+            backgroundColor: "transparent",
+          },
+          draggableIcon: {
+            backgroundColor: COLORS.blue,
+          },
+        }}
+      >
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: 10,
+            flex: 1,
+          }}
+        >
           <Text
             style={{
               alignSelf: "center",
               fontSize: 15,
-              paddingVertical: 20,
-              fontWeight: "bold",
+              marginBottom: 20,
+              //fontWeight: "bold",
             }}
           >
-            Filter by date
+            Filter records by date range
           </Text>
-        }
-        footer={
           <View
             style={{
               flexDirection: "row",
-              justifyContent: "space-around",
-              alignItems: "center",
+              paddingHorizontal: 5,
               marginBottom: 20,
-              marginTop: 10,
             }}
           >
-            <TouchableOpacity onPress={handleDismissDialog} activeOpacity={0.4}>
-              <Text
-                style={{
-                  fontSize: 15,
-                  color: COLORS.gray,
-                  alignSelf: "center",
-                  fontWeight: "bold",
-                }}
-              >
-                Cancel
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleSearch} activeOpacity={0.5}>
-              <Text
-                style={{
-                  fontWeight: "bold",
-                  fontSize: 15,
-                  color: COLORS.blue,
-                  alignSelf: "center",
-                }}
-              >
-                Search
-              </Text>
-            </TouchableOpacity>
-          </View>
-        }
-      >
-        <DialogContent>
-          <View style={{ flexDirection: "row", paddingHorizontal: 10 }}>
             <View
               style={{
                 marginRight: 10,
@@ -307,7 +283,7 @@ const OrderHistoryScreen = ({ navigation }) => {
               }}
             >
               <DatePicker
-                style={{ width: 100 }}
+                style={{ width: 130 }}
                 date={startDate}
                 mode="date"
                 placeholder="Start date"
@@ -345,7 +321,7 @@ const OrderHistoryScreen = ({ navigation }) => {
               }}
             >
               <DatePicker
-                style={{ width: 100 }}
+                style={{ width: 130 }}
                 date={endDate}
                 mode="date"
                 placeholder="End date"
@@ -373,9 +349,62 @@ const OrderHistoryScreen = ({ navigation }) => {
               />
             </View>
           </View>
-        </DialogContent>
-      </Dialog>
-
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 0,
+              padding: 10,
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => refRBSheet.current.close()}
+              activeOpacity={0.4}
+              style={{
+                flex: 1,
+                backgroundColor: COLORS.lightGray2,
+                height: 45,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: COLORS.gray,
+                  alignSelf: "center",
+                  fontWeight: "bold",
+                }}
+              >
+                Cancel
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleSearch}
+              activeOpacity={0.5}
+              style={{
+                flex: 1,
+                backgroundColor: COLORS.blue,
+                height: 45,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  fontSize: 15,
+                  color: COLORS.white,
+                  alignSelf: "center",
+                }}
+              >
+                Search
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </RBSheet>
       <>
         {!isLoading && orderArray && orderArray.length > 0 ? (
           <View
@@ -421,7 +450,7 @@ const OrderHistoryScreen = ({ navigation }) => {
             </View>
 
             <TouchableOpacity
-              onPress={() => setIsDialogVisible(true)}
+              onPress={() => refRBSheet.current.open()}
               style={{
                 flex: 0.5,
                 flexDirection: "row",
@@ -465,7 +494,7 @@ const OrderHistoryScreen = ({ navigation }) => {
           </Animatable.View>
         ) : isResultOrderEmpty ? (
           <View style={styles.parentView}>
-            <Text style={styles.nameTextview}>Hello {userNameRider}!</Text>
+            <Text style={styles.nameTextview}>Hello {loginData.rider.name}!</Text>
 
             <Image
               source={require("../assets/images/rider.png")}
@@ -551,7 +580,7 @@ const styles = StyleSheet.create({
     height: SIZES.width / 3,
   },
   noOrderTextview: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: "300",
     fontFamily:
       Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,

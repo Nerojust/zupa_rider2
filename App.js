@@ -6,9 +6,7 @@ import { AppStack } from "./src/navigation/RootNavigation";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthContext } from "./src/utils/Context";
 import { deleteValue, getValue, storeValue } from "./src/utils/utils";
-import { loginUser } from "./src/store/Actions";
-import { useSelector } from "react-redux";
-
+import { Platform } from "react-native";
 
 const App = () => {
   const [state, dispatch] = React.useReducer(
@@ -50,11 +48,9 @@ const App = () => {
       try {
         // Restore token stored in `SecureStore` or any other encrypted storage
         // userToken = await SecureStore.getItemAsync('userToken');
-        // let res = await  getValue("loginState");
-        // console.log("res", res.responseJson)
+
         getValue("loginState").then((result) => {
           loginDataApp = JSON.parse(result);
-          //console.log("logindataapp", loginDataApp)
           if (loginDataApp) {
             let userToken = loginDataApp.jwt;
             //console.log("token inside is ", userToken);
@@ -67,16 +63,14 @@ const App = () => {
       }
 
       // After restoring token, we may need to validate it in production apps
-
       // This will switch to the App screen or Auth screen and this loading
       // screen will be unmounted and thrown away.
-      console.log("About to refresh token");
       if (stateToken) {
-        console.log("State token is refreshed");
+        Platform.OS === "ios"
+          ? console.log("State token is refreshed for IOS", stateToken)
+          : console.log("State token is refreshed for Android", stateToken);
+
         dispatch({ type: "RESTORE_TOKEN", token: stateToken });
-        //dispatch(loginUser(loginDataApp));
-      } else {
-        console.log("No token in storage");
       }
     };
 
@@ -110,7 +104,7 @@ const App = () => {
         dispatch({ type: "SIGN_IN", token: "dummy-auth-token" });
       },
     }),
-    
+
     []
   );
 

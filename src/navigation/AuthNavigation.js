@@ -1,10 +1,7 @@
 //import liraries
-import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React from "react";
 import { WelcomeScreen, LoginScreen, ForgotPasswordScreen } from "../screens";
 import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer } from "@react-navigation/native";
-import SplashScreen from "../screens/SplashScreen";
 
 const Auth = createStackNavigator();
 
