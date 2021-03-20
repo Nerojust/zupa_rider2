@@ -77,7 +77,6 @@ const App = () => {
     getDataFromStorage();
 
     setTimeout(() => {
-      
       SplashScreen.hide();
     }, 150);
   }, [stateToken]);

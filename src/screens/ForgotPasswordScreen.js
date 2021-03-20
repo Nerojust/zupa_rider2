@@ -14,6 +14,7 @@ import {
   Image,
   StatusBar,
   Platform,
+  SafeAreaView,
 } from "react-native";
 import { AuthContext } from "../utils/Context";
 import { COLORS, FONTS, SIZES } from "../utils/theme";
@@ -52,7 +53,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <LoadingDialog loading={isLoading} />
       <StatusBar
         backgroundColor={COLORS.primary}
@@ -122,7 +123,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
           </View>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

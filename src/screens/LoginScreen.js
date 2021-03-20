@@ -21,6 +21,7 @@ import { COLORS, FONTS, SIZES } from "../utils/theme";
 import { AuthContext } from "../utils/Context";
 import { useDispatch } from "react-redux";
 import TogglePasswordEye from "../components/TogglePassword";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import LoadingDialog from "../components/LoadingDialog";
 import TextInputComponent from "../components/TextInputComponent";
 import AnimateLoadingButton from "react-native-animate-loading-button";
@@ -104,7 +105,7 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar
         backgroundColor={COLORS.primary}
         barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
@@ -205,7 +206,7 @@ const LoginScreen = ({ navigation }) => {
           </View>
         </View>
       </ImageBackground>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -213,7 +214,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+    //justifyContent: "center",
     //backgroundColor: COLORS.white,
   },
   parentView: {
@@ -255,6 +256,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignItems: "center",
     alignSelf: "center",
+    width: SIZES.width / 1.25,
   },
   signRowView: {
     //flex: 1,

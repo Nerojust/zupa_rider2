@@ -9,6 +9,7 @@ import {
   Image,
   RefreshControl,
   TouchableOpacity,
+  SafeAreaView,
 } from "react-native";
 import { createOpenLink } from "react-native-open-maps";
 import { COLORS, FONTS, SIZES } from "../utils/theme";
@@ -262,7 +263,7 @@ const DashboardScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar
         backgroundColor={COLORS.blue}
         barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
@@ -323,7 +324,7 @@ const DashboardScreen = ({ navigation }) => {
           </View>
         ) : null}
       </>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -331,7 +332,7 @@ const DashboardScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    //justifyContent: "center",
     alignItems: "center",
     backgroundColor: COLORS.white,
   },

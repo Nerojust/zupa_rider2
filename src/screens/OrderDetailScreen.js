@@ -10,6 +10,7 @@ import {
   Button,
   Platform,
   Alert,
+  SafeAreaView,
 } from "react-native";
 import { COLORS, FONTS, SIZES } from "../utils/theme";
 import DisplayButton from "../components/Button1";
@@ -167,7 +168,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View
         style={{
           //flex: 1,
@@ -325,7 +326,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
           />
         </View>
       ) : null} */}
-    </View>
+    </SafeAreaView>
   );
 };
 

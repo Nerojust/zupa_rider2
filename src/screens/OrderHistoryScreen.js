@@ -12,6 +12,7 @@ import {
   Button,
   TouchableOpacity,
   Platform,
+  SafeAreaView,
 } from "react-native";
 import { createOpenLink } from "react-native-open-maps";
 import { COLORS, FONTS, SIZES } from "../utils/theme";
@@ -326,7 +327,7 @@ const OrderHistoryScreen = ({ navigation }) => {
     }
   };
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar
         backgroundColor={COLORS.blue}
         barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
@@ -339,7 +340,7 @@ const OrderHistoryScreen = ({ navigation }) => {
         closeOnDragDown={true}
         closeOnPressMask={true}
         closeOnPressBack={true}
-        height={200}
+        height={SIZES.width / 1.8}
         customStyles={{
           wrapper: {
             backgroundColor: "transparent",
@@ -622,7 +623,7 @@ const OrderHistoryScreen = ({ navigation }) => {
           </View>
         ) : null}
       </>
-    </View>
+    </SafeAreaView>
   );
 };
 

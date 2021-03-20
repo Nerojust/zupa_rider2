@@ -9,6 +9,7 @@ import {
   Dimensions,
   ImageBackground,
   Image,
+  SafeAreaView,
 } from "react-native";
 import { FONTS, SIZES, COLORS } from "../utils/theme";
 import * as Animatable from "react-native-animatable";
@@ -16,8 +17,8 @@ import DisplayButton from "../components/Button";
 
 const WelcomeScreen = ({ navigation }) => {
   return (
-    <View style={styles.container}>
-      <StatusBar backgroundColor={COLORS.primary} barStyle="light-content" />
+    <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor={COLORS.primary} barStyle="dark-content" />
       <ImageBackground
         source={require("../assets/images/auth_bg.png")}
         style={styles.image}
@@ -43,7 +44,7 @@ const WelcomeScreen = ({ navigation }) => {
           />
         </View>
       </ImageBackground>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -60,14 +61,14 @@ const styles = StyleSheet.create({
   image: { width: SIZES.width, height: SIZES.height },
   logo: {
     width: SIZES.width - 140,
-    height: SIZES.height * 0.08,
+    height: SIZES.height * 0.073,
   },
   title: {
     fontSize: 17,
     color: COLORS.blue,
     fontFamily:
       Platform.OS == "ios" ? FONTS.ROBOTO_THIN_IOS : FONTS.ROBOTO_THIN,
-    top: -65,
+    bottom: SIZES.width / 5.5,
     alignSelf: "flex-end",
     marginRight: Platform.OS == "ios" ? 68 : 70,
   },
@@ -78,9 +79,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     alignSelf: "center",
     fontFamily:
-      Platform.OS == "ios"
-        ? FONTS.ROBOTO_MEDIUM_IOS
-        : FONTS.ROBOTO_MEDIUM,
+      Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
   },
   buttonView: {
     flex: 0.5,
