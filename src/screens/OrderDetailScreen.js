@@ -183,14 +183,14 @@ const OrderDetailScreen = ({ route, navigation }) => {
             source={require("../assets/icons/calendar.png")}
             resizeMode={"contain"}
             style={{
-              width: 18,
-              height: 15,
+              width: 13,
+              height: 13,
               flex: 0.37,
             }}
           />
           <Text
             selectable={true}
-            style={{ fontSize: 16, flex: 1.9, left: -10 }}
+            style={{ fontSize: 15, flex: 1.9, left: -10 }}
           >
             {getTodaysDate(date)}
           </Text>
@@ -211,14 +211,14 @@ const OrderDetailScreen = ({ route, navigation }) => {
             source={require("../assets/icons/pin.png")}
             resizeMode={"contain"}
             style={{
-              width: 18,
-              height: 15,
+              width: 13,
+              height: 13,
               flex: 0.37,
             }}
           />
           <Text
             selectable={true}
-            style={{ fontSize: 16, flex: 1.9, left: -10 }}
+            style={{ fontSize: 15, flex: 1.9, left: -10 }}
           >
             {address}
           </Text>
@@ -238,9 +238,9 @@ const OrderDetailScreen = ({ route, navigation }) => {
         <Image
           source={require("../assets/icons/smartphone.png")}
           resizeMode={"contain"}
-          style={{ width: 18, height: 15, flex: 0.37 }}
+          style={{ width: 13, height: 13, flex: 0.37 }}
         />
-        <Text selectable={true} style={{ fontSize: 16, flex: 1.9, left: -10 }}>
+        <Text selectable={true} style={{ fontSize: 15, flex: 1.9, left: -10 }}>
           {phoneNumber}
         </Text>
       </View>
@@ -281,7 +281,6 @@ const OrderDetailScreen = ({ route, navigation }) => {
             ref={(c) => (loadingButton.current = c)}
             width={SIZES.width - 70}
             height={50}
-            //borderWidth={30}
             title="Mark Complete"
             titleWeight={"700"}
             titleFontFamily={
@@ -307,7 +306,6 @@ const OrderDetailScreen = ({ route, navigation }) => {
             titleFontSize={18}
             titleColor={COLORS.white}
             activityIndicatorColor={COLORS.white}
-            // tintColor={COLORS.gray}
             backgroundColor={COLORS.green3}
             borderRadius={10}
             onPress={handleNothing.bind(this)}

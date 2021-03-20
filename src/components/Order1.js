@@ -32,14 +32,14 @@ const Order1 = ({
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
-            paddingVertical: 10,
+            paddingVertical: 5,
             paddingHorizontal: 20,
             backgroundColor: COLORS.blue,
           }}
         >
           <Text
             style={{
-              fontSize: 17,
+              fontSize: 15,
               color: COLORS.white,
               //marginBottom: 50,
               fontFamily:
@@ -53,7 +53,7 @@ const Order1 = ({
           <TouchableOpacity activeOpacity={0.6} onPress={pressStart}>
             <Text
               style={{
-                fontSize: 17,
+                fontSize: 15,
                 color: COLORS.white,
                 fontFamily:
                   Platform.OS == "ios"
@@ -73,7 +73,7 @@ const Order1 = ({
             <Text
               ellipsizeMode={"tail"}
               numberOfLines={1}
-              style={[styles.nameView, { flex: 1 }]}
+              style={[styles.nameView]}
             >
               {name}
             </Text>
@@ -93,7 +93,7 @@ const Order1 = ({
           <Text
             style={styles.addressView}
             ellipsizeMode={"tail"}
-            numberOfLines={2}
+            numberOfLines={1}
           >
             {address}
           </Text>
@@ -170,10 +170,10 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.lightGray4,
     paddingHorizontal: 15,
     justifyContent: "center",
-    flex: 1,
+    //flex: 1,
   },
   actionRowView: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
     marginRight: 12,
     color: COLORS.blue,
@@ -197,10 +197,10 @@ const styles = StyleSheet.create({
     marginTop: 7,
     flex: 0.6,
   },
-  nameView: { fontSize: 16, fontWeight: "bold" },
-  phoneNumber: { fontSize: 15, fontWeight: "bold", flex: 0.5 },
+  nameView: { fontSize: 15, fontWeight: "bold" },
+  phoneNumber: { fontSize: 14, fontWeight: "bold", flex: 0.5 },
   addressView: {
-    fontSize: 13,
+    fontSize: 12,
     paddingVertical: 5,
     color: COLORS.gray1,
     //flex: 1,

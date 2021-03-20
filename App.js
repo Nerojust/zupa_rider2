@@ -76,7 +76,10 @@ const App = () => {
 
     getDataFromStorage();
 
-    SplashScreen.hide();
+    setTimeout(() => {
+      
+      SplashScreen.hide();
+    }, 150);
   }, [stateToken]);
 
   //console.log("Login state is ", loginState);

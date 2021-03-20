@@ -73,14 +73,14 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
             source={require("../assets/icons/calendar.png")}
             resizeMode={"contain"}
             style={{
-              width: 18,
-              height: 15,
+              width: 13,
+              height: 13,
               flex: 0.37,
             }}
           />
           <Text
             selectable={true}
-            style={{ fontSize: 16, flex: 1.9, left: -10 }}
+            style={{ fontSize: 15, flex: 1.9, left: -10 }}
           >
             {getTodaysDate(date)}
           </Text>
@@ -101,12 +101,12 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
             source={require("../assets/icons/pin.png")}
             resizeMode={"contain"}
             style={{
-              width: 18,
-              height: 15,
+              width: 13,
+              height: 13,
               flex: 0.37,
             }}
           />
-          <Text style={{ fontSize: 16, flex: 1.9, left: -10 }}>{address}</Text>
+          <Text style={{ fontSize: 15, flex: 1.9, left: -10 }}>{address}</Text>
         </>
       </View>
       <View
@@ -116,15 +116,15 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
           alignSelf: "flex-start",
           justifyContent: "center",
           alignItems: "center",
-          paddingHorizontal: 28,
+          paddingHorizontal: 5,
         }}
       >
         <Image
           source={require("../assets/icons/smartphone.png")}
           resizeMode={"contain"}
-          style={{ width: 18, height: 15, marginRight: 15 }}
+          style={{ width: 13, height: 13,   flex: 0.37,}}
         />
-        <Text style={{ fontSize: 16 }}>{phoneNumber}</Text>
+        <Text style={{ fontSize: 15,flex: 1.9, left: -10  }}>{phoneNumber}</Text>
       </View>
 
       <View style={{ marginTop: 40 }}>

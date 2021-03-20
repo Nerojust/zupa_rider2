@@ -38,14 +38,15 @@ const ForgotPasswordScreen = ({ navigation }) => {
   const handleEmailAddress = (value) => {
     setEmailAddress(value);
   };
- 
 
   const performValidation = () => {
-    // navigation.navigate("Home", {
-    //   screen: "Dashboard",
-    // });
+    if (emailAddress) {
+      alert("Please check your email and change your password");
+    } else {
+      alert("Email is required");
+    }
   };
-  
+
   const handleRefFocus = () => {
     passwordRef.current.focus();
   };
@@ -65,7 +66,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
         />
         <Text
           style={{
-            color: COLORS.black,
+            color: COLORS.gray,
             marginTop: 80,
             fontSize: 14,
             alignSelf: "center",
@@ -99,7 +100,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
           <View style={styles.signRowView}>
             <Text
               style={{
-                color: COLORS.black,
+                color: COLORS.gray,
 
                 fontSize: 14,
                 alignSelf: "center",
@@ -156,12 +157,12 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 10,
   },
   signUp: {
-    color: COLORS.black,
+    color: COLORS.blue,
     fontSize: 15,
-    fontWeight: "bold",
+    fontWeight: "300",
     alignSelf: "center",
     fontFamily:
-      Platform.OS == "ios" ? FONTS.ROBOTO_REGULAR_IOS : FONTS.ROBOTO_REGULAR,
+      Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
   },
   passwordRowView: {
     marginTop: 10,
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     alignSelf: "flex-end",
     fontFamily:
-      Platform.OS == "ios" ? FONTS.ROBOTO_REGULAR_IOS : FONTS.ROBOTO_REGULAR,
+      Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
   },
 });
 

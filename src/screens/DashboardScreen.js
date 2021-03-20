@@ -41,9 +41,6 @@ const DashboardScreen = ({ navigation }) => {
   let userName = "";
   const [orderArray, setOrderArray] = useState([]);
   const [isResultOrderEmpty, setIsResultOrderEmpty] = useState(false);
-  const [userNameRider, setUserNameRider] = useState("");
-
-  const dispatch = useDispatch();
   const loginData = useSelector((state) => state.login.loginResults);
   //console.log("redux dashboard", loginData);
 
@@ -128,14 +125,14 @@ const DashboardScreen = ({ navigation }) => {
                   flexDirection: "row",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  paddingVertical: 10,
+                  paddingVertical: 5,
                   paddingHorizontal: 20,
                   backgroundColor: COLORS.blue1,
                 }}
               >
                 <Text
                   style={{
-                    fontSize: 17,
+                    fontSize: 15,
                     color: COLORS.white,
                     //marginBottom: 50,
                     fontFamily:
@@ -152,7 +149,7 @@ const DashboardScreen = ({ navigation }) => {
                 >
                   <Text
                     style={{
-                      fontSize: 17,
+                      fontSize: 15,
                       color: COLORS.white,
                       fontFamily:
                         Platform.OS == "ios"

@@ -52,7 +52,7 @@ const Order = ({
           <Text
             style={styles.addressView}
             ellipsizeMode={"tail"}
-            numberOfLines={2}
+            numberOfLines={1}
           >
             {address}
           </Text>
@@ -122,17 +122,15 @@ const styles = StyleSheet.create({
   },
 
   mainView: {
-    //marginTop: 6,
     width: SIZES.width - 20,
-    height: SIZES.width / 3.3,
-    //paddingVertical:20 ,
+    height: SIZES.width / 3.4,
     backgroundColor: COLORS.lightGray4,
     paddingHorizontal: 15,
     justifyContent: "center",
-    flex: 1,
+    //flex: 1,
   },
   actionRowView: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
     marginRight: 12,
     color: COLORS.blue,
@@ -153,13 +151,11 @@ const styles = StyleSheet.create({
   },
   nameViewContainer: {
     flexDirection: "row",
-    marginTop: 7,
-    flex: 0.6,
   },
-  nameView: { fontSize: 16, fontWeight: "bold" },
-  phoneNumber: { fontSize: 15, fontWeight: "bold", flex: 0.5 },
+  nameView: { fontSize: 15, fontWeight: "bold" },
+  phoneNumber: { fontSize: 14, fontWeight: "bold", flex: 0.5 },
   addressView: {
-    fontSize: 13,
+    fontSize: 12,
     paddingVertical: 5,
     color: COLORS.gray1,
     //flex: 1,
@@ -175,7 +171,7 @@ const styles = StyleSheet.create({
     fontWeight: "normal",
     marginTop: 3,
     color: COLORS.gray1,
-    flex: 0.4,
+    //flex: 0.4,
   },
 });
 
