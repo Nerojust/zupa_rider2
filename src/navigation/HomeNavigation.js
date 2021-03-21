@@ -1,6 +1,6 @@
 //import liraries
 import React, { Component } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image,Animated } from "react-native";
 import {
   WelcomeScreen,
   LoginScreen,
@@ -54,6 +54,8 @@ const DrawerStackScreen = ({ navigation }) => {
                 : FONTS.ROBOTO_MEDIUM_IOS,
           },
           headerTitleAlign: "center",
+          gestureEnabled: true,
+
           headerLeft: () => (
             <>
               <TouchableOpacity
@@ -103,6 +105,7 @@ const HistoryStackScreen = ({ navigation }) => {
                 : FONTS.ROBOTO_MEDIUM_IOS,
           },
           headerTitleAlign: "center",
+          headerBackTitleVisible: false,
         }}
       />
       <History.Screen
@@ -127,6 +130,7 @@ const HistoryStackScreen = ({ navigation }) => {
                 : FONTS.ROBOTO_MEDIUM_IOS,
           },
           headerTitleAlign: "center",
+          headerBackTitleVisible: false,
         }}
       />
     </History.Navigator>
@@ -139,6 +143,8 @@ export const HomeNavigation = ({ navigation }) => {
       screenOptions={{
         headerShown: true,
         animationEnabled: false,
+        gestureEnabled: true,
+        cardOverlayEnabled: true,
       }}
     >
       <Home.Screen
@@ -171,6 +177,7 @@ export const HomeNavigation = ({ navigation }) => {
                 : FONTS.ROBOTO_MEDIUM_IOS,
           },
           headerTitleAlign: "center",
+          headerBackTitleVisible: false,
         }}
       />
       <Home.Screen

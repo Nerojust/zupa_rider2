@@ -1,5 +1,11 @@
 //import liraries
-import React, { useEffect, useCallback, useRef, useState } from "react";
+import React, {
+  useEffect,
+  useCallback,
+  useRef,
+  useState,
+  useLayoutEffect,
+} from "react";
 import {
   View,
   Text,
@@ -54,31 +60,31 @@ const OrderHistoryScreen = ({ navigation }) => {
   //console.log("login data redux", loginData);
   const refRBSheet = useRef();
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          onPress={() => refRBSheet.current.open()}
+          style={{
+            marginRight: 25,
+            justifyContent: "center",
+          }}
+          activeOpacity={0.5}
+        >
+          <Image
+            source={require("../assets/icons/search.png")}
+            style={styles.searchIcon}
+          />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
   useEffect(() => {
     if (loginData.jwt) {
       getOrders();
     }
   }, [loginData.jwt]);
-
-  handleBackPress();
-
-  function handleBackPress() {
-    const backAction = () => {
-      if (isDialogVisible) {
-        setIsDialogVisible(false);
-      }
-      setIsDialogVisible(false);
-      navigation.goBack();
-      return true;
-    };
-
-    useEffect(() => {
-      BackHandler.addEventListener("hardwareBackPress", backAction);
-
-      return () =>
-        BackHandler.removeEventListener("hardwareBackPress", backAction);
-    }, []);
-  }
 
   const showLoader = () => {
     setIsLoading(true);
@@ -169,23 +175,6 @@ const OrderHistoryScreen = ({ navigation }) => {
                 >
                   Batch Order
                 </Text>
-                {/* <TouchableOpacity
-                  activeOpacity={0.6}
-                  onPress={() => alert("Starting journey...")}
-                >
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      color: COLORS.white,
-                      fontFamily:
-                        Platform.OS == "ios"
-                          ? FONTS.ROBOTO_MEDIUM_IOS
-                          : FONTS.ROBOTO_MEDIUM,
-                    }}
-                  >
-                    Start
-                  </Text>
-                </TouchableOpacity> */}
               </View>
             </>
           }
@@ -551,30 +540,6 @@ const OrderHistoryScreen = ({ navigation }) => {
                 {orderArray.length}
               </Text>
             </View>
-
-            <TouchableOpacity
-              onPress={() => refRBSheet.current.open()}
-              style={{
-                flex: 0.5,
-                flexDirection: "row",
-                justifyContent: "center",
-              }}
-              activeOpacity={0.65}
-            >
-              <Text
-                style={{
-                  color: COLORS.gray1,
-                  marginRight: Platform.OS == "ios" ? 5 : 10,
-                  fontSize: 13,
-                }}
-              >
-                Search
-              </Text>
-              <Image
-                source={require("../assets/icons/search.png")}
-                style={styles.searchIcon}
-              />
-            </TouchableOpacity>
           </View>
         ) : null}
 
@@ -597,7 +562,9 @@ const OrderHistoryScreen = ({ navigation }) => {
           </Animatable.View>
         ) : isResultOrderEmpty ? (
           <View style={styles.parentView}>
-            <Text style={styles.nameTextview}>Hello {loginData.rider.name}!</Text>
+            <Text style={styles.nameTextview}>
+              Hello {loginData.rider.name}!
+            </Text>
 
             <Image
               source={require("../assets/images/rider.png")}
@@ -707,7 +674,7 @@ const styles = StyleSheet.create({
     width: 19,
     height: 19,
     // alignSelf: "flex-end",
-    tintColor: COLORS.lightGray3,
+    tintColor: COLORS.white,
   },
 });
 
