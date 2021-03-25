@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 
 import { COLORS, FONTS, SIZES } from "../utils/theme";
@@ -23,6 +24,9 @@ const Order1 = ({
   onPressView,
   date,
   pressStart,
+  pressEnd,
+  isJourneyStarted,
+  isOrderLoading,
 }) => {
   return (
     <View style={{ justifyContent: "center", marginBottom: 10 }}>
@@ -50,7 +54,7 @@ const Order1 = ({
           >
             Single Order
           </Text>
-          <TouchableOpacity activeOpacity={0.6} onPress={pressStart}>
+          {isJourneyStarted ? (
             <Text
               style={{
                 fontSize: 15,
@@ -61,9 +65,44 @@ const Order1 = ({
                     : FONTS.ROBOTO_MEDIUM,
               }}
             >
-              Start
+              in progress
             </Text>
-          </TouchableOpacity>
+          ) : null}
+        
+          {isJourneyStarted ? (
+            <TouchableOpacity activeOpacity={0.6} onPress={pressEnd}>
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: COLORS.white,
+                  fontFamily:
+                    Platform.OS == "ios"
+                      ? FONTS.ROBOTO_MEDIUM_IOS
+                      : FONTS.ROBOTO_MEDIUM,
+                }}
+              >
+                End
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity activeOpacity={0.6} onPress={pressStart}>
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: COLORS.white,
+                  fontFamily:
+                    Platform.OS == "ios"
+                      ? FONTS.ROBOTO_MEDIUM_IOS
+                      : FONTS.ROBOTO_MEDIUM,
+                }}
+              >
+                Start
+              </Text>
+            </TouchableOpacity>
+          )}
+          {isOrderLoading ? (
+            <ActivityIndicator size="small" color={COLORS.white} />
+          ) : null}
         </View>
       </>
 

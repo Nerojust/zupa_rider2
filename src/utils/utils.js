@@ -7,6 +7,7 @@ import {
   View,
   Dimensions,
   Alert,
+  ToastAndroid,
   BackHandler,
   Image,
   StatusBar,
@@ -43,6 +44,29 @@ export function handleBackPress(navigation) {
       BackHandler.removeEventListener("hardwareBackPress", backAction);
   }, []);
 }
+
+let currentCount = 0;
+export const useDoubleBackPressExit = (exitHandler: () => void) => {
+  if (Platform.OS === "ios") return;
+  const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
+    if (currentCount === 1) {
+      exitHandler();
+      subscription.remove();
+      return true;
+    }
+    backPressHandler();
+    return true;
+  });
+};
+const backPressHandler = () => {
+  if (currentCount < 1) {
+    currentCount += 1;
+    ToastAndroid.show("Press again to exit", ToastAndroid.SHORT);
+  }
+  setTimeout(() => {
+    currentCount = 0;
+  }, 2000);
+};
 
 export const dialNumber = (phoneNumber) => {
   const args = {
@@ -147,7 +171,7 @@ export const storeValue = async (key, value) => {
 export const deleteValue = async (key) => {
   try {
     await AsyncStorage.removeItem(key);
-    console.log("deleted successfully from storage")
+    console.log("deleted successfully from storage");
   } catch (error) {
     console.log(error);
   }

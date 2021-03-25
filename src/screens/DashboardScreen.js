@@ -9,6 +9,7 @@ import {
   Image,
   RefreshControl,
   TouchableOpacity,
+  BackHandler,
   SafeAreaView,
 } from "react-native";
 import { createOpenLink } from "react-native-open-maps";
@@ -19,7 +20,7 @@ import * as Animatable from "react-native-animatable";
 import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
 
-import { useDispatch } from "react-redux";
+import { useDoubleBackPressExit } from "../utils/utils";
 import { useSelector } from "react-redux";
 
 import {
@@ -28,11 +29,14 @@ import {
   getValue,
   handleError,
 } from "../utils/utils";
-import { loginUser } from "../store/Actions";
+import DoubleTapToClose from "../components/BackToExit";
+
 // create a component
 const DashboardScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [isJourneyStarted, setIsJourneyStarted] = useState(false);
+  const [isOrderLoading, setIsOrderLoading] = useState(false);
   const fullURL = GET_RIDER_REQUESTS + "/?status=pending";
   let name = "Nerojust Adjeks";
   let phone = "08012345678";
@@ -43,7 +47,7 @@ const DashboardScreen = ({ navigation }) => {
   const [orderArray, setOrderArray] = useState([]);
   const [isResultOrderEmpty, setIsResultOrderEmpty] = useState(false);
   const loginData = useSelector((state) => state.login.loginResults);
-  //console.log("redux dashboard", loginData);
+  const [isInitialScreen, setIsInitialScreen] = useState(true);
 
   useEffect(() => {
     if (loginData.jwt) {
@@ -51,7 +55,20 @@ const DashboardScreen = ({ navigation }) => {
     }
   }, [loginData.jwt]);
 
-  //handleBackPress();
+  // useDoubleBackPressExit(() => {
+  //   // user has pressed "back" twice. Do whatever you want!
+  //   console.log("close now");
+  //   BackHandler.exitApp();
+  // });
+
+  // const isCurrentScreenInitialOne = (state) => {
+  //   const route = state.routes[state.index];
+  //   if (route.state) {
+  //     // Dive into nested navigators
+  //     return isCurrentScreenInitialOne(route.state);
+  //   }
+  //   return state.index === 0;
+  // };
 
   const showLoader = () => {
     setIsLoading(true);
@@ -66,6 +83,7 @@ const DashboardScreen = ({ navigation }) => {
 
     getOrders();
   }, []);
+
   const renderBatchList = (item) => {
     if (item.order) {
       let address1 =
@@ -196,7 +214,14 @@ const DashboardScreen = ({ navigation }) => {
               item.order.customer ? item.order.customer.phoneNumber : phone
             )
           }
-          pressStart={() => alert("Starting journey...")}
+          isJourneyStarted={isJourneyStarted}
+          isOrderLoading={isOrderLoading}
+          //pressStart={() => startJourneyRequest(data.id, "started")}
+          pressStart={() => {
+            console.log("Start id is", data.id)
+            alert("starting ride");
+          }}
+          pressEnd={() => startJourneyRequest(data.id, "completed")}
           onPressView={() =>
             navigation.navigate("OrderDetails", {
               id: item.id,
@@ -261,13 +286,47 @@ const DashboardScreen = ({ navigation }) => {
       });
     dismissLoader();
   };
-
+  const startJourneyRequest = (dispatchId, status) => {
+    setIsOrderLoading(true);
+    fetch(GET_RIDER_REQUESTS + "/" + dispatchId, {
+      method: "PATCH",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + loginData.jwt,
+      },
+      body: JSON.stringify({
+        status: status,
+        model: "dispatch",
+      }),
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        if (responseJson) {
+          if (!responseJson.code) {
+            setIsOrderLoading(false);
+            setIsJourneyStarted(true);
+          } else {
+            dispatch(setError(responseJson.message));
+          }
+        } else {
+          dispatch(setError(responseJson.message));
+        }
+        setIsOrderLoading(false);
+      })
+      .catch((error) => {
+        handleError(error);
+        setIsOrderLoading(false);
+        console.log("start journey error: ", error);
+      });
+  };
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
         backgroundColor={COLORS.blue}
         barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
       />
+      {/* <DoubleTapToClose /> */}
       <LoadingDialog
         loading={isLoading}
         message={"Fetching your orders for today..."}
@@ -278,7 +337,7 @@ const DashboardScreen = ({ navigation }) => {
           <Text
             style={{
               fontSize: 15,
-              marginTop: 20,
+              marginTop: 15,
               marginHorizontal: 5,
               marginBottom: 5,
               fontFamily:
