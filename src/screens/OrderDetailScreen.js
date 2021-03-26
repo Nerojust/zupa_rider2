@@ -39,10 +39,13 @@ const OrderDetailScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const loadingButton = useRef();
   const loginData = useSelector((state) => state.login.loginResults);
-  const start = "Here";
+  const orderData = useSelector((state) => state.orders.orders);
+  //console.log("order redux", orderData)
+
+
+
   const end = address;
   const travelType = "drive";
-
   const openLocation = createOpenLink({ travelType, end, provider: "google" });
 
   const sendTextMessage = () => {
@@ -89,6 +92,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
   };
 
   const performPatchRequest = () => {
+    console.log("order id", orderId);
     loadingButton.current.showLoading(true);
 
     fetch(GET_RIDER_REQUESTS + "/" + orderId, {

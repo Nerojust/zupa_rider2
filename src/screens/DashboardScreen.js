@@ -9,6 +9,7 @@ import {
   Image,
   RefreshControl,
   TouchableOpacity,
+  Alert,
   ActivityIndicator,
   BackHandler,
   SafeAreaView,
@@ -38,18 +39,16 @@ const DashboardScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [isJourneyStarted, setIsJourneyStarted] = useState(false);
   const [isOrderLoading, setIsOrderLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
   const fullURL = GET_RIDER_REQUESTS + "/?status=pending";
   let name = "Nerojust Adjeks";
   let phone = "08012345678";
   let address = "Necom House";
   const travelType = "drive";
-  let userToken = "";
-  let userName = "";
+
   const [orderArray, setOrderArray] = useState([]);
   const [isResultOrderEmpty, setIsResultOrderEmpty] = useState(false);
   const loginData = useSelector((state) => state.login.loginResults);
-  const [isInitialScreen, setIsInitialScreen] = useState(true);
-  const [journeyStatusMessage, setJourneyStatusMessage] = useState("");
 
   useEffect(() => {
     if (loginData.jwt) {
@@ -86,7 +85,7 @@ const DashboardScreen = ({ navigation }) => {
     getOrders();
   }, []);
 
-  const renderBatchList = (item) => {
+  const renderBatchList = (item, data) => {
     if (item.order) {
       let address1 =
         item.order && item.order.customer
@@ -125,6 +124,7 @@ const DashboardScreen = ({ navigation }) => {
                 : phone,
               status: item.status,
               date: item.updatedAt,
+              parentId: data.id,
             })
           }
         />
@@ -132,12 +132,12 @@ const DashboardScreen = ({ navigation }) => {
     }
   };
   const renderItem = (data) => {
-    if (data.dispatch_orders.length > 1) {
+    if (data.dispatch_orders && data.dispatch_orders.length > 1) {
       return (
         <FlatList
           data={data.dispatch_orders}
           keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => renderBatchList(item)}
+          renderItem={({ item, index }) => renderBatchList(item, data)}
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={
             <>
@@ -164,12 +164,12 @@ const DashboardScreen = ({ navigation }) => {
                 >
                   Batch Order
                 </Text>
-                {data.status == "pending" ? (
+                {!isOrderLoading && data.status == "pending" ? (
                   <TouchableOpacity
                     activeOpacity={0.6}
                     onPress={() => {
                       console.log("batch start id is", data.id);
-                      startJourneyRequest(data.id, "started");
+                      handleStartJourneyDialog(data.id);
                     }}
                   >
                     <Text
@@ -185,7 +185,7 @@ const DashboardScreen = ({ navigation }) => {
                       Start
                     </Text>
                   </TouchableOpacity>
-                ) : data.status == "started" ? (
+                ) : !isOrderLoading && data.status == "started" ? (
                   <TouchableOpacity activeOpacity={0.8}>
                     <Text
                       style={{
@@ -201,9 +201,9 @@ const DashboardScreen = ({ navigation }) => {
                     </Text>
                   </TouchableOpacity>
                 ) : null}
-                {isLoading ? (
+                {/* {isOrderLoading ? (
                   <ActivityIndicator size="small" color={COLORS.white} />
-                ) : null}
+                ) : null} */}
               </View>
             </>
           }
@@ -211,7 +211,7 @@ const DashboardScreen = ({ navigation }) => {
       );
     }
 
-    let item = data.dispatch_orders[0];
+    let item = data.dispatch_orders ? data.dispatch_orders[0] : {};
 
     if (item.order) {
       let address1 =
@@ -244,12 +244,8 @@ const DashboardScreen = ({ navigation }) => {
           isOrderLoading={isOrderLoading}
           pressStart={() => {
             console.log("Start id is", data.id);
-            startJourneyRequest(data.id, "started");
+            handleStartJourneyDialog(data.id);
           }}
-          // pressStart={() => {
-          //   alert("starting ride");
-          // }}
-          //pressEnd={() => startJourneyRequest(data.id, "completed")}
           onPressView={() =>
             navigation.navigate("OrderDetails", {
               id: item.id,
@@ -269,8 +265,30 @@ const DashboardScreen = ({ navigation }) => {
       );
     }
   };
-
+  const handleStartJourneyDialog = (data_id) => {
+    Alert.alert(
+      "Trip Alert",
+      "Do you want to start this trip?",
+      [
+        {
+          text: "No",
+          onPress: () => {
+            console.log("cancel Pressed");
+          },
+        },
+        {
+          text: "Yes",
+          onPress: () => {
+            console.log("Start id is", data_id);
+            startJourneyRequest(data_id);
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
   const getOrders = () => {
+    setLoadingMessage("Fetching your orders for today...");
     setTimeout(() => {
       showLoader();
     }, 0);
@@ -284,13 +302,36 @@ const DashboardScreen = ({ navigation }) => {
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(fullURL, requestOptions)
+    fetch(GET_RIDER_REQUESTS, requestOptions)
       .then((response) => response.json())
       .then((responseJson) => {
         if (responseJson) {
           if (!responseJson.code) {
             if (responseJson.length > 0) {
+              //newOrderList.push(responseJson);
+              // var completeCount = 0;
+              // for (let i = 0; i < responseJson.length; i++) {
+              //   const element = responseJson[i];
+              //   if(element.status != "completed"){
+              //     newOrderList.push(element)
+              //   }
+              //   // for (let j = 0; j < element.dispatch_orders.length; j++) {
+              //   //   const childDispatch = element.dispatch_orders[j];
+              //   //   if (element.dispatch_orders.length == 1) {
+              //   //     if (childDispatch.status != "completed") {
+              //   //       newOrderList.push(element);
+              //   //     }
+              //   //   }
+              //   //   if (element.dispatch_orders.length >1) {
+              //   //     if (childDispatch.status != "completed") {
+              //   //       newOrderList.push(element);
+              //   //     }
+              //   //   }
+              //   // }
+              // }
+
               setOrderArray(responseJson);
+              setLoadingMessage("");
               if (orderArray) {
                 dismissLoader();
               }
@@ -306,17 +347,21 @@ const DashboardScreen = ({ navigation }) => {
         }
         setRefreshing(false);
         dismissLoader();
+        setLoadingMessage("");
       })
       .catch((error) => {
         console.log("error block", error);
         handleError(error);
         setRefreshing(false);
+
+        setLoadingMessage("");
         dismissLoader();
       });
     dismissLoader();
   };
-  const startJourneyRequest = (dispatchId, status) => {
-    setIsOrderLoading(true);
+  const startJourneyRequest = (dispatchId) => {
+    setLoadingMessage("Starting trip for this order");
+    setIsLoading(true);
     fetch(GET_RIDER_REQUESTS + "/" + dispatchId, {
       method: "PATCH",
       headers: {
@@ -325,7 +370,7 @@ const DashboardScreen = ({ navigation }) => {
         Authorization: "Bearer " + loginData.jwt,
       },
       body: JSON.stringify({
-        status: status,
+        status: "started",
         model: "dispatch",
       }),
     })
@@ -333,8 +378,7 @@ const DashboardScreen = ({ navigation }) => {
       .then((responseJson) => {
         if (responseJson) {
           if (!responseJson.code) {
-            setIsOrderLoading(false);
-            setIsJourneyStarted(true);
+            setLoadingMessage("");
             getOrders();
           } else {
             dispatch(setError(responseJson.message));
@@ -342,11 +386,13 @@ const DashboardScreen = ({ navigation }) => {
         } else {
           dispatch(setError(responseJson.message));
         }
-        setIsOrderLoading(false);
+        setIsLoading(false);
+        setLoadingMessage("");
       })
       .catch((error) => {
         handleError(error);
-        setIsOrderLoading(false);
+        setIsLoading(false);
+        setLoadingMessage("");
         console.log("start journey error: ", error);
       });
   };
@@ -357,16 +403,13 @@ const DashboardScreen = ({ navigation }) => {
         barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
       />
       {/* <DoubleTapToClose /> */}
-      <LoadingDialog
-        loading={isLoading}
-        message={"Fetching your orders for today..."}
-      />
+      <LoadingDialog loading={isLoading} message={loadingMessage} />
 
       <>
         {!isLoading && orderArray && orderArray.length > 0 ? (
           <Text
             style={{
-              fontSize: 15,
+              fontSize: 14,
               marginTop: 15,
               marginHorizontal: 5,
               marginBottom: 5,

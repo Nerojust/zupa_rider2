@@ -87,9 +87,9 @@ const Order1 = ({
               </Text>
             </TouchableOpacity>
           ) : null}
-          {isOrderLoading ? (
+          {/* {statusMessage == "pending"&& isOrderLoading ? (
             <ActivityIndicator size="small" color={COLORS.white} />
-          ) : null}
+          ) : null} */}
         </View>
       </>
 
@@ -221,7 +221,8 @@ const styles = StyleSheet.create({
   nameViewContainer: {
     flexDirection: "row",
     marginTop: 7,
-    flex: 0.6,
+    justifyContent: "space-between",
+    //flex: 0.6,
   },
   nameView: { fontSize: 15, fontWeight: "bold" },
   phoneNumber: { fontSize: 14, fontWeight: "bold", flex: 0.5 },
