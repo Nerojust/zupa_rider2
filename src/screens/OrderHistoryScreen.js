@@ -276,9 +276,9 @@ const OrderHistoryScreen = ({ navigation }) => {
       .catch((error) => {
         console.log("error", error);
         handleError(error);
+        dismissLoader();
         setRefreshing(false);
       });
-    dismissLoader();
   };
   const handleDismissDialog = () => {
     if (refRBSheet.current) {

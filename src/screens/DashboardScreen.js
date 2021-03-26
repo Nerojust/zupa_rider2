@@ -9,6 +9,7 @@ import {
   Image,
   RefreshControl,
   TouchableOpacity,
+  ActivityIndicator,
   BackHandler,
   SafeAreaView,
 } from "react-native";
@@ -48,6 +49,7 @@ const DashboardScreen = ({ navigation }) => {
   const [isResultOrderEmpty, setIsResultOrderEmpty] = useState(false);
   const loginData = useSelector((state) => state.login.loginResults);
   const [isInitialScreen, setIsInitialScreen] = useState(true);
+  const [journeyStatusMessage, setJourneyStatusMessage] = useState("");
 
   useEffect(() => {
     if (loginData.jwt) {
@@ -162,31 +164,54 @@ const DashboardScreen = ({ navigation }) => {
                 >
                   Batch Order
                 </Text>
-                <TouchableOpacity
-                  activeOpacity={0.6}
-                  onPress={() => alert("Starting journey...")}
-                >
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      color: COLORS.white,
-                      fontFamily:
-                        Platform.OS == "ios"
-                          ? FONTS.ROBOTO_MEDIUM_IOS
-                          : FONTS.ROBOTO_MEDIUM,
+                {data.status == "pending" ? (
+                  <TouchableOpacity
+                    activeOpacity={0.6}
+                    onPress={() => {
+                      console.log("batch start id is", data.id);
+                      startJourneyRequest(data.id, "started");
                     }}
                   >
-                    Start
-                  </Text>
-                </TouchableOpacity>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        color: COLORS.white,
+                        fontFamily:
+                          Platform.OS == "ios"
+                            ? FONTS.ROBOTO_MEDIUM_IOS
+                            : FONTS.ROBOTO_MEDIUM,
+                      }}
+                    >
+                      Start
+                    </Text>
+                  </TouchableOpacity>
+                ) : data.status == "started" ? (
+                  <TouchableOpacity activeOpacity={0.8}>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        color: COLORS.white,
+                        fontFamily:
+                          Platform.OS == "ios"
+                            ? FONTS.ROBOTO_MEDIUM_IOS
+                            : FONTS.ROBOTO_MEDIUM,
+                      }}
+                    >
+                      In progress
+                    </Text>
+                  </TouchableOpacity>
+                ) : null}
+                {isLoading ? (
+                  <ActivityIndicator size="small" color={COLORS.white} />
+                ) : null}
               </View>
             </>
           }
         />
       );
     }
+
     let item = data.dispatch_orders[0];
-    //console.log("Item is ", item);
 
     if (item.order) {
       let address1 =
@@ -214,14 +239,17 @@ const DashboardScreen = ({ navigation }) => {
               item.order.customer ? item.order.customer.phoneNumber : phone
             )
           }
+          statusMessage={data.status}
           isJourneyStarted={isJourneyStarted}
           isOrderLoading={isOrderLoading}
-          //pressStart={() => startJourneyRequest(data.id, "started")}
           pressStart={() => {
-            console.log("Start id is", data.id)
-            alert("starting ride");
+            console.log("Start id is", data.id);
+            startJourneyRequest(data.id, "started");
           }}
-          pressEnd={() => startJourneyRequest(data.id, "completed")}
+          // pressStart={() => {
+          //   alert("starting ride");
+          // }}
+          //pressEnd={() => startJourneyRequest(data.id, "completed")}
           onPressView={() =>
             navigation.navigate("OrderDetails", {
               id: item.id,
@@ -234,6 +262,7 @@ const DashboardScreen = ({ navigation }) => {
                 : phone,
               status: item.status,
               date: item.updatedAt,
+              parentId: data.id,
             })
           }
         />
@@ -306,6 +335,7 @@ const DashboardScreen = ({ navigation }) => {
           if (!responseJson.code) {
             setIsOrderLoading(false);
             setIsJourneyStarted(true);
+            getOrders();
           } else {
             dispatch(setError(responseJson.message));
           }

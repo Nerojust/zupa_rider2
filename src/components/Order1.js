@@ -27,6 +27,7 @@ const Order1 = ({
   pressEnd,
   isJourneyStarted,
   isOrderLoading,
+  statusMessage,
 }) => {
   return (
     <View style={{ justifyContent: "center", marginBottom: 10 }}>
@@ -54,37 +55,8 @@ const Order1 = ({
           >
             Single Order
           </Text>
-          {isJourneyStarted ? (
-            <Text
-              style={{
-                fontSize: 15,
-                color: COLORS.white,
-                fontFamily:
-                  Platform.OS == "ios"
-                    ? FONTS.ROBOTO_MEDIUM_IOS
-                    : FONTS.ROBOTO_MEDIUM,
-              }}
-            >
-              in progress
-            </Text>
-          ) : null}
-        
-          {isJourneyStarted ? (
-            <TouchableOpacity activeOpacity={0.6} onPress={pressEnd}>
-              <Text
-                style={{
-                  fontSize: 15,
-                  color: COLORS.white,
-                  fontFamily:
-                    Platform.OS == "ios"
-                      ? FONTS.ROBOTO_MEDIUM_IOS
-                      : FONTS.ROBOTO_MEDIUM,
-                }}
-              >
-                End
-              </Text>
-            </TouchableOpacity>
-          ) : (
+
+          {statusMessage == "pending" ? (
             <TouchableOpacity activeOpacity={0.6} onPress={pressStart}>
               <Text
                 style={{
@@ -99,7 +71,22 @@ const Order1 = ({
                 Start
               </Text>
             </TouchableOpacity>
-          )}
+          ) : statusMessage == "started" ? (
+            <TouchableOpacity activeOpacity={0.8}>
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: COLORS.white,
+                  fontFamily:
+                    Platform.OS == "ios"
+                      ? FONTS.ROBOTO_MEDIUM_IOS
+                      : FONTS.ROBOTO_MEDIUM,
+                }}
+              >
+                In progress
+              </Text>
+            </TouchableOpacity>
+          ) : null}
           {isOrderLoading ? (
             <ActivityIndicator size="small" color={COLORS.white} />
           ) : null}

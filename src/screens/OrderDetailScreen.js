@@ -32,6 +32,8 @@ const OrderDetailScreen = ({ route, navigation }) => {
   const status = route.params.status;
   const orderId = route.params.id;
   const date = route.params.date;
+  const parentId = route.params.parentId;
+  console.log("parent id ", parentId);
   const [isLoading, setIsLoading] = useState(false);
   const [isMarkComplete, setIsMarkComplete] = useState(false);
   const dispatch = useDispatch();
@@ -104,7 +106,8 @@ const OrderDetailScreen = ({ route, navigation }) => {
       .then((responseJson) => {
         if (responseJson) {
           if (!responseJson.code) {
-            getOrders();
+            endTrip();
+            //getOrders();
           } else {
             if (loadingButton.current) {
               loadingButton.current.showLoading(false);
@@ -124,6 +127,55 @@ const OrderDetailScreen = ({ route, navigation }) => {
         if (loadingButton.current) {
           loadingButton.current.showLoading(false);
         }
+      });
+  };
+
+  const endTrip = () => {
+    console.log("parent id", parentId);
+    fetch(GET_RIDER_REQUESTS + "/" + parentId, {
+      method: "PATCH",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + loginData.jwt,
+      },
+      body: JSON.stringify({
+        status: "completed",
+        model: "dispatch",
+      }),
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        if (responseJson) {
+          if (!responseJson.code) {
+            console.log("Trip ended");
+            setIsMarkComplete(true);
+            if (loadingButton.current) {
+              loadingButton.current.showLoading(false);
+            }
+            setTimeout(() => {
+              navigation.goBack();
+            }, 2200);
+          } else {
+            setIsMarkComplete(false);
+            dispatch(setError(responseJson.message));
+          }
+        } else {
+          setIsMarkComplete(false);
+
+          dispatch(setError(responseJson.message));
+        }
+        if (loadingButton.current) {
+          loadingButton.current.showLoading(false);
+        }
+      })
+      .catch((error) => {
+        handleError(error);
+        if (loadingButton.current) {
+          loadingButton.current.showLoading(false);
+        }
+        setIsMarkComplete(false);
+        console.log("start journey error: ", error);
       });
   };
 
@@ -285,7 +337,9 @@ const OrderDetailScreen = ({ route, navigation }) => {
             title="Mark Complete"
             titleWeight={"700"}
             titleFontFamily={
-              Platform.OS == "ios" ? FONTS.ROBOTO_BLACK_IOS : FONTS.ROBOTO_MEDIUM
+              Platform.OS == "ios"
+                ? FONTS.ROBOTO_BLACK_IOS
+                : FONTS.ROBOTO_MEDIUM
             }
             titleFontSize={17}
             titleColor={COLORS.white}
@@ -302,7 +356,9 @@ const OrderDetailScreen = ({ route, navigation }) => {
             title="Completed"
             titleWeight={"700"}
             titleFontFamily={
-              Platform.OS == "ios" ? FONTS.ROBOTO_BLACK_IOS : FONTS.ROBOTO_MEDIUM
+              Platform.OS == "ios"
+                ? FONTS.ROBOTO_BLACK_IOS
+                : FONTS.ROBOTO_MEDIUM
             }
             titleFontSize={18}
             titleColor={COLORS.white}

@@ -67,8 +67,8 @@ const App = () => {
       // screen will be unmounted and thrown away.
       if (stateToken) {
         Platform.OS === "ios"
-          ? console.log("State token is refreshed for IOS", stateToken)
-          : console.log("State token is refreshed for Android", stateToken);
+          ? console.log("State token is refreshed for IOS")
+          : console.log("State token is refreshed for Android");
 
         dispatch({ type: "RESTORE_TOKEN", token: stateToken });
       }
