@@ -32,9 +32,6 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
   const end = address;
   const travelType = "drive";
 
-  const userLocation = { latitude: 6.5886839, longitude: 3.2888395 };
-  //const openUserLocation = createOpenLink(userLocation);
-  //const openLocation = createOpenLink({ ...userLocation, zoom: 30 });
   const openLocation = createOpenLink({ travelType, end, provider: "google" });
 
   const sendTextMessage = () => {

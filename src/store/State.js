@@ -6,5 +6,5 @@ export const initialState = {
   loginResults: [],
   orders: [],
   userToken: "",
-  isSearchClicked:false
+  isBackToNewPage: false,
 };

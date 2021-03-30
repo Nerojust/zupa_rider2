@@ -7,6 +7,7 @@ import {
   ISNETWORK_AVAIALBLE,
   ORDER,
   SEARCH,
+  NEW_PAGE,
 } from "./ActionTypes";
 
 export const saveNetworkState = (status) => {
@@ -32,11 +33,11 @@ export const setError = (error) => {
   };
 };
 
-export const saveSearchState = (state) => {
+export const saveNavState = (state) => {
   //console.log("data", data)
   return {
-    type: SEARCH,
-    isSearch: state,
+    type: NEW_PAGE,
+    isBackToNewPage: state,
   };
 };
 export const loginUser = (data) => {

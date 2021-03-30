@@ -19,7 +19,7 @@ import { createStore, applyMiddleware, combineReducers } from "redux";
 import thunk from "redux-thunk";
 import { loginReducer } from "../store/reducers/LoginReducer";
 import { orderReducer } from "../store/reducers/OrderReducer";
-import { searchReducer } from "../store/reducers/SearchReducer";
+import { OtherReducer } from "../store/reducers/OtherReducer";
 import AsyncStorage from "@react-native-community/async-storage";
 import { persistStore, persistReducer } from "redux-persist";
 const middlewares = [thunk];
@@ -28,7 +28,7 @@ const middlewares = [thunk];
 const rootReducer = combineReducers({
   login: loginReducer,
   orders: orderReducer,
-  search: searchReducer,
+  others: OtherReducer
 });
 
 const persistConfig = {

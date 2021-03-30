@@ -23,7 +23,7 @@ import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
 
 import { useDoubleBackPressExit } from "../utils/utils";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import {
   dialNumber,
@@ -32,6 +32,7 @@ import {
   handleError,
 } from "../utils/utils";
 import DoubleTapToClose from "../components/BackToExit";
+import { saveNavState, saveOrder } from "../store/Actions";
 
 // create a component
 const DashboardScreen = ({ navigation }) => {
@@ -41,14 +42,15 @@ const DashboardScreen = ({ navigation }) => {
   const [isOrderLoading, setIsOrderLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
   const fullURL = GET_RIDER_REQUESTS + "/?status=pending";
-  let name = "Nerojust Adjeks";
-  let phone = "08012345678";
-  let address = "Necom House";
+  let name = "";
+  let phone = "";
+  let address = "";
   const travelType = "drive";
-
+  const dispatch = useDispatch();
   const [orderArray, setOrderArray] = useState([]);
   const [isResultOrderEmpty, setIsResultOrderEmpty] = useState(false);
   const loginData = useSelector((state) => state.login.loginResults);
+  const navData = useSelector((state) => state.others.isBackToNewPage);
 
   useEffect(() => {
     if (loginData.jwt) {
@@ -265,6 +267,10 @@ const DashboardScreen = ({ navigation }) => {
       );
     }
   };
+  /**
+   * Method to start the journey for an order or batch
+   * @param {id to patch} data_id
+   */
   const handleStartJourneyDialog = (data_id) => {
     Alert.alert(
       "Trip Alert",
@@ -287,6 +293,9 @@ const DashboardScreen = ({ navigation }) => {
       { cancelable: true }
     );
   };
+  /**
+   * to get all orders and then filter based on pending and started status
+   */
   const getOrders = () => {
     setLoadingMessage("Fetching your orders for today...");
     setTimeout(() => {
@@ -308,29 +317,17 @@ const DashboardScreen = ({ navigation }) => {
         if (responseJson) {
           if (!responseJson.code) {
             if (responseJson.length > 0) {
-              //newOrderList.push(responseJson);
-              // var completeCount = 0;
-              // for (let i = 0; i < responseJson.length; i++) {
-              //   const element = responseJson[i];
-              //   if(element.status != "completed"){
-              //     newOrderList.push(element)
-              //   }
-              //   // for (let j = 0; j < element.dispatch_orders.length; j++) {
-              //   //   const childDispatch = element.dispatch_orders[j];
-              //   //   if (element.dispatch_orders.length == 1) {
-              //   //     if (childDispatch.status != "completed") {
-              //   //       newOrderList.push(element);
-              //   //     }
-              //   //   }
-              //   //   if (element.dispatch_orders.length >1) {
-              //   //     if (childDispatch.status != "completed") {
-              //   //       newOrderList.push(element);
-              //   //     }
-              //   //   }
-              //   // }
-              // }
+              var newOrderList = [];
+              //filter through to get only pending and started
+              for (let i = 0; i < responseJson.length; i++) {
+                const element = responseJson[i];
+                if (element.status != "completed") {
+                  newOrderList.push(element);
+                }
+              }
 
-              setOrderArray(responseJson);
+              setOrderArray(newOrderList);
+              dispatch(saveOrder(newOrderList))
               setLoadingMessage("");
               if (orderArray) {
                 dismissLoader();
@@ -437,6 +434,7 @@ const DashboardScreen = ({ navigation }) => {
               keyExtractor={(item, index) => item.id + index}
               renderItem={({ item, index }) => renderItem(item)}
               showsVerticalScrollIndicator={false}
+              windowSize={201}
             />
           </Animatable.View>
         ) : isResultOrderEmpty ? (

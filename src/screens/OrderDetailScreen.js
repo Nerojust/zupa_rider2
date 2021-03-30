@@ -1,5 +1,5 @@
 //import liraries
-import React, { Component, useRef, useState } from "react";
+import React, { Component, useRef, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -22,7 +22,7 @@ import AnimateLoadingButton from "react-native-animate-loading-button";
 import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
 import { useDispatch, useSelector } from "react-redux";
-import { saveOrder, setError } from "../store/Actions";
+import { saveNavState, saveOrder, setError } from "../store/Actions";
 import { dialNumber, getTodaysDate, handleError } from "../utils/utils";
 
 const OrderDetailScreen = ({ route, navigation }) => {
@@ -33,16 +33,25 @@ const OrderDetailScreen = ({ route, navigation }) => {
   const orderId = route.params.id;
   const date = route.params.date;
   const parentId = route.params.parentId;
-  console.log("parent id ", parentId);
+  //console.log("parent id ", parentId);
   const [isLoading, setIsLoading] = useState(false);
   const [isMarkComplete, setIsMarkComplete] = useState(false);
   const dispatch = useDispatch();
   const loadingButton = useRef();
   const loginData = useSelector((state) => state.login.loginResults);
   const orderData = useSelector((state) => state.orders.orders);
-  //console.log("order redux", orderData)
-
-
+  // console.log("order redux", orderData);
+  // for (let i = 0; i < orderData.length; i++) {
+  //   const oneOrder = orderData[i];
+  //   if (oneOrder.id == parentId) {
+  //     if (oneOrder.dispatch_orders && oneOrder.dispatch_orders.length > 1) {
+  //       for (let j = 0; j < oneOrder.dispatch_orders.length; j++) {
+  //         const childOrder = oneOrder.dispatch_orders[j];
+  //         //console.log(childOrder.status);
+  //       }
+  //     }
+  //   }
+  // }
 
   const end = address;
   const travelType = "drive";
@@ -91,6 +100,9 @@ const OrderDetailScreen = ({ route, navigation }) => {
     );
   };
 
+  /**
+   * This performs the completed patch for a single order
+   */
   const performPatchRequest = () => {
     console.log("order id", orderId);
     loadingButton.current.showLoading(true);
@@ -110,8 +122,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
       .then((responseJson) => {
         if (responseJson) {
           if (!responseJson.code) {
-            endTrip();
-            //getOrders();
+            getOrders();
           } else {
             if (loadingButton.current) {
               loadingButton.current.showLoading(false);
@@ -127,13 +138,17 @@ const OrderDetailScreen = ({ route, navigation }) => {
       })
       .catch((error) => {
         handleError(error);
-        console.log("here oooo", error);
+        console.log("patch error ", error);
+        dispatch(setError(error));
         if (loadingButton.current) {
           loadingButton.current.showLoading(false);
         }
       });
   };
 
+  /**
+   * this handles the parent status update to completed thus ending the journey
+   */
   const endTrip = () => {
     console.log("parent id", parentId);
     fetch(GET_RIDER_REQUESTS + "/" + parentId, {
@@ -198,7 +213,46 @@ const OrderDetailScreen = ({ route, navigation }) => {
       .then((responseJson) => {
         if (responseJson) {
           if (!responseJson.code) {
-            dispatch(saveOrder(responseJson[0].dispatch_orders));
+            //get new order state and save it to redux
+            dispatch(saveOrder(responseJson));
+            var count = 0;
+            for (let i = 0; i < responseJson.length; i++) {
+              const oneOrder = responseJson[i];
+              if (oneOrder.id == parentId) {
+                console.log("Found the match order and parent");
+                if (
+                  oneOrder.dispatch_orders &&
+                  oneOrder.dispatch_orders.length > 1
+                ) {
+                  console.log("dispatch is more than 1, batch");
+                  for (let j = 0; j < oneOrder.dispatch_orders.length; j++) {
+                    const childOrder = oneOrder.dispatch_orders[j];
+                    if (childOrder.status == "completed") {
+                      count++;
+                    }
+                    if (count == oneOrder.dispatch_orders.length) {
+                      console.log("Count is " + count);
+                      console.log(
+                        "count is equal to the dispatch length, so end trip for batch"
+                      );
+                      endTrip();
+                    }
+                  }
+                } else if (oneOrder.dispatch_orders.length == 1) {
+                  console.log("dispatch is a single order and is equal to 1");
+
+                  for (let k = 0; k < oneOrder.dispatch_orders.length; k++) {
+                    const childOrder = oneOrder.dispatch_orders[k];
+                    if (childOrder.status == "completed") {
+                      console.log(
+                        "single order is completed already, start end trip"
+                      );
+                      endTrip();
+                    }
+                  }
+                }
+              }
+            }
 
             setIsMarkComplete(true);
           } else {
