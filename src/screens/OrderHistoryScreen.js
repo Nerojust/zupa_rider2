@@ -97,7 +97,7 @@ const OrderHistoryScreen = ({ navigation }) => {
     getOrders();
   }, []);
 
-  const renderBatchList = (item) => {
+  const renderBatchList = (item, data) => {
     if (item.order) {
       let address1 =
         item.order && item.order.customer
@@ -125,7 +125,7 @@ const OrderHistoryScreen = ({ navigation }) => {
             )
           }
           onPressView={() =>
-            navigation.navigate("OrderDetails", {
+            navigation.navigate("OrderHistoryDetails", {
               id: item.id,
               name: item.order.customer ? item.order.customer.name : name,
               address: item.order.customer
@@ -136,6 +136,8 @@ const OrderHistoryScreen = ({ navigation }) => {
                 : phone,
               status: item.status,
               date: item.updatedAt,
+              parentId: data.id,
+              parentStatus: data.status,
             })
           }
         />
@@ -148,7 +150,7 @@ const OrderHistoryScreen = ({ navigation }) => {
         <FlatList
           data={data.dispatch_orders}
           keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => renderBatchList(item)}
+          renderItem={({ item, index }) => renderBatchList(item, data)}
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={
             <>
@@ -222,6 +224,8 @@ const OrderHistoryScreen = ({ navigation }) => {
                 : phone,
               status: item.status,
               date: item.updatedAt,
+              parentId: data.id,
+              parentStatus: data.status,
             })
           }
         />

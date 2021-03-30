@@ -30,10 +30,14 @@ const OrderDetailScreen = ({ route, navigation }) => {
   const address = route.params.address;
   const phoneNumber = route.params.phoneNumber;
   const status = route.params.status;
+  //console.log("child status", status);
   const orderId = route.params.id;
+  console.log("order id", orderId);
   const date = route.params.date;
   const parentId = route.params.parentId;
-  //console.log("parent id ", parentId);
+  const parentStatus = route.params.parentStatus;
+  //console.log("parent status ", parentStatus);
+  console.log("parent id ", parentId);
   const [isLoading, setIsLoading] = useState(false);
   const [isMarkComplete, setIsMarkComplete] = useState(false);
   const dispatch = useDispatch();
@@ -41,17 +45,6 @@ const OrderDetailScreen = ({ route, navigation }) => {
   const loginData = useSelector((state) => state.login.loginResults);
   const orderData = useSelector((state) => state.orders.orders);
   // console.log("order redux", orderData);
-  // for (let i = 0; i < orderData.length; i++) {
-  //   const oneOrder = orderData[i];
-  //   if (oneOrder.id == parentId) {
-  //     if (oneOrder.dispatch_orders && oneOrder.dispatch_orders.length > 1) {
-  //       for (let j = 0; j < oneOrder.dispatch_orders.length; j++) {
-  //         const childOrder = oneOrder.dispatch_orders[j];
-  //         //console.log(childOrder.status);
-  //       }
-  //     }
-  //   }
-  // }
 
   const end = address;
   const travelType = "drive";
@@ -92,7 +85,12 @@ const OrderDetailScreen = ({ route, navigation }) => {
         {
           text: "Yes",
           onPress: () => {
-            performPatchRequest();
+            console.log("journey status is " + parentStatus);
+            if (parentStatus == "started") {
+              performPatchRequest();
+            } else {
+              alert("Start trip first");
+            }
           },
         },
       ],
@@ -122,7 +120,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
       .then((responseJson) => {
         if (responseJson) {
           if (!responseJson.code) {
-            getOrders();
+            getOrders(true);
           } else {
             if (loadingButton.current) {
               loadingButton.current.showLoading(false);
@@ -172,9 +170,6 @@ const OrderDetailScreen = ({ route, navigation }) => {
             if (loadingButton.current) {
               loadingButton.current.showLoading(false);
             }
-            setTimeout(() => {
-              navigation.goBack();
-            }, 2200);
           } else {
             setIsMarkComplete(false);
             dispatch(setError(responseJson.message));
@@ -198,7 +193,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
       });
   };
 
-  const getOrders = () => {
+  const getOrders = (isLoop) => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", "Bearer " + loginData.jwt);
@@ -213,47 +208,51 @@ const OrderDetailScreen = ({ route, navigation }) => {
       .then((responseJson) => {
         if (responseJson) {
           if (!responseJson.code) {
-            //get new order state and save it to redux
-            dispatch(saveOrder(responseJson));
-            var count = 0;
-            for (let i = 0; i < responseJson.length; i++) {
-              const oneOrder = responseJson[i];
-              if (oneOrder.id == parentId) {
-                console.log("Found the match order and parent");
-                if (
-                  oneOrder.dispatch_orders &&
-                  oneOrder.dispatch_orders.length > 1
-                ) {
-                  console.log("dispatch is more than 1, batch");
-                  for (let j = 0; j < oneOrder.dispatch_orders.length; j++) {
-                    const childOrder = oneOrder.dispatch_orders[j];
-                    if (childOrder.status == "completed") {
-                      count++;
+            if (isLoop) {
+              var count = 0;
+              for (let i = 0; i < responseJson.length; i++) {
+                const oneOrder = responseJson[i];
+                if (oneOrder.id == parentId) {
+                  console.log("Found the match order and parent");
+                  if (
+                    oneOrder.dispatch_orders &&
+                    oneOrder.dispatch_orders.length > 1
+                  ) {
+                    console.log("dispatch is more than 1, batch");
+                    for (let j = 0; j < oneOrder.dispatch_orders.length; j++) {
+                      const childOrder = oneOrder.dispatch_orders[j];
+                      if (childOrder.status == "completed") {
+                        count++;
+                      }
+                      if (count == oneOrder.dispatch_orders.length) {
+                        console.log("Count is " + count);
+                        console.log(
+                          "count is equal to the dispatch length, so end trip for batch"
+                        );
+                        endTrip();
+                      }
                     }
-                    if (count == oneOrder.dispatch_orders.length) {
-                      console.log("Count is " + count);
-                      console.log(
-                        "count is equal to the dispatch length, so end trip for batch"
-                      );
-                      endTrip();
-                    }
-                  }
-                } else if (oneOrder.dispatch_orders.length == 1) {
-                  console.log("dispatch is a single order and is equal to 1");
+                  } else if (oneOrder.dispatch_orders.length == 1) {
+                    console.log("dispatch is a single order and is equal to 1");
 
-                  for (let k = 0; k < oneOrder.dispatch_orders.length; k++) {
-                    const childOrder = oneOrder.dispatch_orders[k];
-                    if (childOrder.status == "completed") {
-                      console.log(
-                        "single order is completed already, start end trip"
-                      );
-                      endTrip();
+                    for (let k = 0; k < oneOrder.dispatch_orders.length; k++) {
+                      const childOrder = oneOrder.dispatch_orders[k];
+                      if (childOrder.status == "completed") {
+                        console.log(
+                          "single order is completed already, start end trip"
+                        );
+                        endTrip();
+                      }
                     }
                   }
                 }
               }
+              if (loadingButton.current) {
+                loadingButton.current.showLoading(false);
+              }
+            } else {
+              dispatch(saveOrder(responseJson));
             }
-
             setIsMarkComplete(true);
           } else {
             setIsMarkComplete(false);
@@ -386,60 +385,57 @@ const OrderDetailScreen = ({ route, navigation }) => {
           tintColor={COLORS.lightGray3}
         />
       </View>
-      <View style={{ marginTop: 30, width: SIZES.width - 70 }}>
-        {!isMarkComplete ? (
-          <AnimateLoadingButton
-            ref={(c) => (loadingButton.current = c)}
-            width={SIZES.width - 70}
-            height={50}
-            title="Mark Complete"
-            titleWeight={"700"}
-            titleFontFamily={
-              Platform.OS == "ios"
-                ? FONTS.ROBOTO_BLACK_IOS
-                : FONTS.ROBOTO_MEDIUM
-            }
-            titleFontSize={17}
-            titleColor={COLORS.white}
-            activityIndicatorColor={COLORS.white}
-            backgroundColor={COLORS.blue}
-            borderRadius={10}
-            onPress={handleComplete.bind(this)}
-          />
-        ) : (
-          <AnimateLoadingButton
-            ref={(c) => (loadingButton.current = c)}
-            width={SIZES.width - 70}
-            height={50}
-            title="Completed"
-            titleWeight={"700"}
-            titleFontFamily={
-              Platform.OS == "ios"
-                ? FONTS.ROBOTO_BLACK_IOS
-                : FONTS.ROBOTO_MEDIUM
-            }
-            titleFontSize={18}
-            titleColor={COLORS.white}
-            activityIndicatorColor={COLORS.white}
-            backgroundColor={COLORS.green3}
-            borderRadius={10}
-            onPress={handleNothing.bind(this)}
-          />
-        )}
-      </View>
-      {/* 
-      {!isMarkComplete ? (
+      {status == "completed" ? (
         <View style={{ marginTop: 30 }}>
           <DisplayButton
-            text="Mark as Complete"
-            onPress={handleComplete}
-            color={COLORS.green3}
-            left={80}
-            //image={require("../assets/icons/success.png")}
-            //tintColor={COLORS.gray}
+            text="Completed"
+            color={COLORS.green1}
+            left={SIZES.width / 3 - 5}
           />
         </View>
-      ) : null} */}
+      ) : (
+        <View style={{ marginTop: 30, width: SIZES.width - 70 }}>
+          {!isMarkComplete ? (
+            <AnimateLoadingButton
+              ref={(c) => (loadingButton.current = c)}
+              width={SIZES.width - 70}
+              height={50}
+              title="Mark Complete"
+              titleWeight={"700"}
+              titleFontFamily={
+                Platform.OS == "ios"
+                  ? FONTS.ROBOTO_BLACK_IOS
+                  : FONTS.ROBOTO_MEDIUM
+              }
+              titleFontSize={17}
+              titleColor={COLORS.white}
+              activityIndicatorColor={COLORS.white}
+              backgroundColor={COLORS.blue}
+              borderRadius={10}
+              onPress={handleComplete.bind(this)}
+            />
+          ) : (
+            <AnimateLoadingButton
+              ref={(c) => (loadingButton.current = c)}
+              width={SIZES.width - 70}
+              height={50}
+              title="Completed"
+              titleWeight={"700"}
+              titleFontFamily={
+                Platform.OS == "ios"
+                  ? FONTS.ROBOTO_BLACK_IOS
+                  : FONTS.ROBOTO_MEDIUM
+              }
+              titleFontSize={18}
+              titleColor={COLORS.white}
+              activityIndicatorColor={COLORS.white}
+              backgroundColor={COLORS.green3}
+              borderRadius={10}
+              onPress={handleNothing.bind(this)}
+            />
+          )}
+        </View>
+      )}
     </SafeAreaView>
   );
 };

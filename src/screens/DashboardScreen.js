@@ -46,32 +46,29 @@ const DashboardScreen = ({ navigation }) => {
   let phone = "";
   let address = "";
   const travelType = "drive";
+  var newOrderList = [];
   const dispatch = useDispatch();
-  const [orderArray, setOrderArray] = useState([]);
   const [isResultOrderEmpty, setIsResultOrderEmpty] = useState(false);
   const loginData = useSelector((state) => state.login.loginResults);
-  const navData = useSelector((state) => state.others.isBackToNewPage);
-
+  const orderState = useSelector((state) => state.orders.orders);
+  //console.log("order state", orderState);
+  //filter through to get only pending and started
+  // for (let i = 0; i < orderState.length; i++) {
+  //   const element = orderState[i];
+  //   if (element.status != "completed") {
+  //     newOrderList.push(element);
+  //     //console.log("redux list done")
+  //   }
+  // }
+  // if (!newOrderList.length) {
+  //   setIsResultOrderEmpty(true);
+  // }
+  const [orderArray, setOrderArray] = useState([]);
   useEffect(() => {
     if (loginData.jwt) {
-      getOrders();
+      getOrders(true);
     }
   }, [loginData.jwt]);
-
-  // useDoubleBackPressExit(() => {
-  //   // user has pressed "back" twice. Do whatever you want!
-  //   console.log("close now");
-  //   BackHandler.exitApp();
-  // });
-
-  // const isCurrentScreenInitialOne = (state) => {
-  //   const route = state.routes[state.index];
-  //   if (route.state) {
-  //     // Dive into nested navigators
-  //     return isCurrentScreenInitialOne(route.state);
-  //   }
-  //   return state.index === 0;
-  // };
 
   const showLoader = () => {
     setIsLoading(true);
@@ -83,8 +80,8 @@ const DashboardScreen = ({ navigation }) => {
   };
   const onRefresh = useCallback(() => {
     setOrderArray([]);
-
-    getOrders();
+    newOrderList = [];
+    getOrders(true);
   }, []);
 
   const renderBatchList = (item, data) => {
@@ -127,6 +124,7 @@ const DashboardScreen = ({ navigation }) => {
               status: item.status,
               date: item.updatedAt,
               parentId: data.id,
+              parentStatus: data.status,
             })
           }
         />
@@ -261,6 +259,7 @@ const DashboardScreen = ({ navigation }) => {
               status: item.status,
               date: item.updatedAt,
               parentId: data.id,
+              parentStatus: data.status,
             })
           }
         />
@@ -296,12 +295,13 @@ const DashboardScreen = ({ navigation }) => {
   /**
    * to get all orders and then filter based on pending and started status
    */
-  const getOrders = () => {
+  const getOrders = (displayLoader) => {
     setLoadingMessage("Fetching your orders for today...");
-    setTimeout(() => {
-      showLoader();
-    }, 0);
-
+    if (displayLoader) {
+      setTimeout(() => {
+        showLoader();
+      }, 0);
+    }
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", "Bearer " + loginData.jwt);
@@ -317,7 +317,8 @@ const DashboardScreen = ({ navigation }) => {
         if (responseJson) {
           if (!responseJson.code) {
             if (responseJson.length > 0) {
-              var newOrderList = [];
+              dispatch(saveOrder(responseJson));
+
               //filter through to get only pending and started
               for (let i = 0; i < responseJson.length; i++) {
                 const element = responseJson[i];
@@ -325,9 +326,10 @@ const DashboardScreen = ({ navigation }) => {
                   newOrderList.push(element);
                 }
               }
-
+              if (!newOrderList.length) {
+                setIsResultOrderEmpty(true);
+              }
               setOrderArray(newOrderList);
-              dispatch(saveOrder(newOrderList))
               setLoadingMessage("");
               if (orderArray) {
                 dismissLoader();
@@ -358,7 +360,7 @@ const DashboardScreen = ({ navigation }) => {
   };
   const startJourneyRequest = (dispatchId) => {
     setLoadingMessage("Starting trip for this order");
-    setIsLoading(true);
+    showLoader();
     fetch(GET_RIDER_REQUESTS + "/" + dispatchId, {
       method: "PATCH",
       headers: {
@@ -376,7 +378,7 @@ const DashboardScreen = ({ navigation }) => {
         if (responseJson) {
           if (!responseJson.code) {
             setLoadingMessage("");
-            getOrders();
+            getOrders(false);
           } else {
             dispatch(setError(responseJson.message));
           }
@@ -390,6 +392,7 @@ const DashboardScreen = ({ navigation }) => {
         handleError(error);
         setIsLoading(false);
         setLoadingMessage("");
+        dispatch(setError(error));
         console.log("start journey error: ", error);
       });
   };
@@ -451,6 +454,21 @@ const DashboardScreen = ({ navigation }) => {
             <Text style={styles.noOrderTextview}>
               You have no orders {"\n"} assigned for today
             </Text>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={{
+                width: 100,
+                height: 50,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: COLORS.blue,
+                borderRadius: 10,
+                marginTop: 20,
+              }}
+              onPress={() => getOrders()}
+            >
+              <Text style={styles.refreshTextview}>Refresh</Text>
+            </TouchableOpacity>
           </View>
         ) : null}
       </>
@@ -526,6 +544,13 @@ const styles = StyleSheet.create({
     fontFamily:
       Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
     flex: 0.5,
+  },
+  refreshTextview: {
+    fontSize: 14,
+    fontWeight: "300",
+    fontFamily:
+      Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
+    color: COLORS.white,
   },
 });
 

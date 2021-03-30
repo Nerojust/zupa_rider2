@@ -28,7 +28,12 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
   const status = route.params.status;
   const date = route.params.date;
 
-  console.log("status ", status);
+  const orderId = route.params.id;
+  console.log("order id", orderId);
+  const parentId = route.params.parentId;
+  const parentStatus = route.params.parentStatus;
+  //console.log("parent status ", parentStatus);
+  console.log("parent id ", parentId);
   const end = address;
   const travelType = "drive";
 
