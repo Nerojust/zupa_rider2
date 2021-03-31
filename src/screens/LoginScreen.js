@@ -129,12 +129,12 @@ const LoginScreen = ({ navigation }) => {
               const element = responseJson[i];
               if (element.status != "completed") {
                 newOrderList.push(element);
-                console.log("redux list done");
               }
             }
             dispatch(saveOrder(newOrderList));
             console.log("login orders saved to redux");
             if ((loginData && newOrderList) || loginData) {
+              dismissLoader()
               dispatch(loginUser(loginData));
               signIn(loginData);
             }
@@ -145,7 +145,7 @@ const LoginScreen = ({ navigation }) => {
           alert(responseJson.message);
         }
 
-        dismissLoader();
+        //dismissLoader();
       })
       .catch((error) => {
         console.log("error", error);

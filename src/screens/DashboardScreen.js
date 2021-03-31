@@ -1,5 +1,5 @@
 //import liraries
-import React, { useEffect, useCallback, useState } from "react";
+import React, { useEffect, useCallback, useState, useRef } from "react";
 import {
   View,
   Text,
@@ -42,6 +42,7 @@ const DashboardScreen = ({ navigation }) => {
   const [isOrderLoading, setIsOrderLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
   const fullURL = GET_RIDER_REQUESTS + "/?status=pending";
+  const flatListRef = useRef(null);
   let name = "";
   let phone = "";
   let address = "";
@@ -53,17 +54,6 @@ const DashboardScreen = ({ navigation }) => {
   const orderState = useSelector((state) => state.orders.orders);
   //console.log("order state", orderState);
   const [orderArray, setOrderArray] = useState([]);
-
-  useEffect(() => {
-    //showLoader();
-    // loopThroughOrders(orderState, newOrderList, setIsResultOrderEmpty);
-    // if (newOrderList) {
-    //   setOrderArray(newOrderList);
-    // }
-    // if (orderArray) {
-    //   dismissLoader();
-    // }
-  }, []);
 
   const showLoader = () => {
     setIsLoading(true);
@@ -294,6 +284,7 @@ const DashboardScreen = ({ navigation }) => {
 
   /**
    * to get all orders and then filter based on pending and started status
+   *  @param {parent dispatch id} dispatchId
    */
   const getOrders = (displayLoader) => {
     setLoadingMessage("Fetching your orders for today...");
@@ -324,10 +315,11 @@ const DashboardScreen = ({ navigation }) => {
                 }
               }
               dispatch(saveOrder(refreshedList));
+              //scroll to the top
+              flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
             } else {
               setIsResultOrderEmpty(true);
             }
-            // console.log("new array is ", newArray);
           } else {
             alert(responseJson.message);
           }
@@ -336,13 +328,11 @@ const DashboardScreen = ({ navigation }) => {
         }
         setRefreshing(false);
         if (dismissLoader) {
-          console.log("here in dismiss")
           setTimeout(() => {
             dismissLoader();
           }, 0);
-          dismissLoader()
+          dismissLoader();
         }
-        //setLoadingMessage("");
       })
       .catch((error) => {
         console.log("error block", error);
@@ -352,6 +342,10 @@ const DashboardScreen = ({ navigation }) => {
         dismissLoader();
       });
   };
+  /**
+   * start journey for an order
+   * @param {parent dispatch id} dispatchId
+   */
   const startJourneyRequest = (dispatchId) => {
     setLoadingMessage("Starting trip for this order");
     showLoader();
@@ -390,13 +384,14 @@ const DashboardScreen = ({ navigation }) => {
         console.log("start journey error: ", error);
       });
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
         backgroundColor={COLORS.blue}
         barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
       />
-      {/* <DoubleTapToClose /> */}
+
       <LoadingDialog loading={isLoading} message={loadingMessage} />
 
       <>
@@ -424,6 +419,7 @@ const DashboardScreen = ({ navigation }) => {
             style={{ flex: 1 }}
           >
             <FlatList
+              ref={flatListRef}
               data={orderState}
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

@@ -90,6 +90,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
               performPatchRequest();
             } else {
               alert("Start trip first");
+              navigation.goBack();
             }
           },
         },
@@ -167,9 +168,9 @@ const OrderDetailScreen = ({ route, navigation }) => {
           if (!responseJson.code) {
             console.log("Trip ended");
             setIsMarkComplete(true);
-            if (loadingButton.current) {
-              loadingButton.current.showLoading(false);
-            }
+            // if (loadingButton.current) {
+            //   loadingButton.current.showLoading(false);
+            // }
           } else {
             setIsMarkComplete(false);
             dispatch(setError(responseJson.message));
@@ -179,9 +180,9 @@ const OrderDetailScreen = ({ route, navigation }) => {
 
           dispatch(setError(responseJson.message));
         }
-        if (loadingButton.current) {
-          loadingButton.current.showLoading(false);
-        }
+        // if (loadingButton.current) {
+        //   loadingButton.current.showLoading(false);
+        // }
       })
       .catch((error) => {
         handleError(error);
@@ -268,6 +269,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
         console.log("error", error);
         handleError(error);
         setIsMarkComplete(false);
+
         if (loadingButton.current) {
           loadingButton.current.showLoading(false);
         }
@@ -293,11 +295,11 @@ const OrderDetailScreen = ({ route, navigation }) => {
               const element = responseJson[i];
               if (element.status != "completed") {
                 newOrderList.push(element);
-                console.log("call done");
+                //console.log("call done");
               }
             }
             dispatch(saveOrder(newOrderList));
-            console.log("2nd call orders saved to redux");
+            //console.log("2nd call orders saved to redux");
           } else {
             alert(responseJson.message);
           }

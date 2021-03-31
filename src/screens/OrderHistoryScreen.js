@@ -248,7 +248,7 @@ const OrderHistoryScreen = ({ navigation }) => {
     };
     let urlAdd = url ? url : "/?status=completed";
     let fullUrl = GET_RIDER_REQUESTS + urlAdd;
-    console.log("url is", fullUrl);
+    //console.log("url is", fullUrl);
     fetch(fullUrl, requestOptions)
       .then((response) => response.json())
       .then((responseJson) => {
@@ -256,7 +256,7 @@ const OrderHistoryScreen = ({ navigation }) => {
         if (responseJson) {
           if (!responseJson.code) {
             if (responseJson.length > 0) {
-              console.log("Array size is", responseJson.length);
+              //console.log("Array size is", responseJson.length);
               setOrderArray(responseJson);
               setIsResultOrderEmpty(false);
               if (orderArray) {
