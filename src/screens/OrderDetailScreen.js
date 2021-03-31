@@ -120,7 +120,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
       .then((responseJson) => {
         if (responseJson) {
           if (!responseJson.code) {
-            getOrders(true);
+            getOrders();
           } else {
             if (loadingButton.current) {
               loadingButton.current.showLoading(false);
@@ -208,51 +208,49 @@ const OrderDetailScreen = ({ route, navigation }) => {
       .then((responseJson) => {
         if (responseJson) {
           if (!responseJson.code) {
-            if (isLoop) {
-              var count = 0;
-              for (let i = 0; i < responseJson.length; i++) {
-                const oneOrder = responseJson[i];
-                if (oneOrder.id == parentId) {
-                  console.log("Found the match order and parent");
-                  if (
-                    oneOrder.dispatch_orders &&
-                    oneOrder.dispatch_orders.length > 1
-                  ) {
-                    console.log("dispatch is more than 1, batch");
-                    for (let j = 0; j < oneOrder.dispatch_orders.length; j++) {
-                      const childOrder = oneOrder.dispatch_orders[j];
-                      if (childOrder.status == "completed") {
-                        count++;
-                      }
-                      if (count == oneOrder.dispatch_orders.length) {
-                        console.log("Count is " + count);
-                        console.log(
-                          "count is equal to the dispatch length, so end trip for batch"
-                        );
-                        endTrip();
-                      }
+            var count = 0;
+            for (let i = 0; i < responseJson.length; i++) {
+              const oneOrder = responseJson[i];
+              if (oneOrder.id == parentId) {
+                console.log("Found the match order and parent");
+                if (
+                  oneOrder.dispatch_orders &&
+                  oneOrder.dispatch_orders.length > 1
+                ) {
+                  console.log("dispatch is more than 1, batch");
+                  for (let j = 0; j < oneOrder.dispatch_orders.length; j++) {
+                    const childOrder = oneOrder.dispatch_orders[j];
+                    if (childOrder.status == "completed") {
+                      count++;
                     }
-                  } else if (oneOrder.dispatch_orders.length == 1) {
-                    console.log("dispatch is a single order and is equal to 1");
+                    if (count == oneOrder.dispatch_orders.length) {
+                      console.log("Count is " + count);
+                      console.log(
+                        "count is equal to the dispatch length, so end trip for batch"
+                      );
+                      endTrip();
+                    }
+                  }
+                } else if (oneOrder.dispatch_orders.length == 1) {
+                  console.log("dispatch is a single order and is equal to 1");
 
-                    for (let k = 0; k < oneOrder.dispatch_orders.length; k++) {
-                      const childOrder = oneOrder.dispatch_orders[k];
-                      if (childOrder.status == "completed") {
-                        console.log(
-                          "single order is completed already, start end trip"
-                        );
-                        endTrip();
-                      }
+                  for (let k = 0; k < oneOrder.dispatch_orders.length; k++) {
+                    const childOrder = oneOrder.dispatch_orders[k];
+                    if (childOrder.status == "completed") {
+                      console.log(
+                        "single order is completed already, start end trip"
+                      );
+                      endTrip();
                     }
                   }
                 }
               }
-              if (loadingButton.current) {
-                loadingButton.current.showLoading(false);
-              }
-            } else {
-              dispatch(saveOrder(responseJson));
             }
+            getOrdersAgain();
+            if (loadingButton.current) {
+              loadingButton.current.showLoading(false);
+            }
+
             setIsMarkComplete(true);
           } else {
             setIsMarkComplete(false);
@@ -275,7 +273,44 @@ const OrderDetailScreen = ({ route, navigation }) => {
         }
       });
   };
+  const getOrdersAgain = () => {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", "Bearer " + loginData.jwt);
 
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+    fetch(GET_RIDER_REQUESTS, requestOptions)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        if (responseJson) {
+          if (!responseJson.code) {
+            var newOrderList = [];
+            for (let i = 0; i < responseJson.length; i++) {
+              const element = responseJson[i];
+              if (element.status != "completed") {
+                newOrderList.push(element);
+                console.log("call done");
+              }
+            }
+            dispatch(saveOrder(newOrderList));
+            console.log("2nd call orders saved to redux");
+          } else {
+            alert(responseJson.message);
+          }
+        } else {
+          alert(responseJson.message);
+        }
+      })
+      .catch((error) => {
+        console.log("error", error);
+        dismissLoader();
+        handleError(error);
+      });
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View

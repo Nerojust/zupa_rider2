@@ -60,9 +60,17 @@ const LoginScreen = ({ navigation }) => {
   const handleRefFocus = () => {
     pinRef.current.focus();
   };
+  const dismissLoader = () => {
+    if (loadingButton.current) {
+      loadingButton.current.showLoading(false);
+    }
+  };
+  const showLoader = () => {
+    loadingButton.current.showLoading(true);
+  };
 
   const makeLoginRequest = () => {
-    loadingButton.current.showLoading(true);
+    showLoader();
 
     fetch(LOGIN_URL, {
       method: "POST",
@@ -81,11 +89,8 @@ const LoginScreen = ({ navigation }) => {
           //console.log("login response", responseJson)
           if (!responseJson.code) {
             if (responseJson.rider && responseJson.jwt) {
-              dispatch(loginUser(responseJson));
-              signIn(responseJson);
-              return () => {
-                loadingButton.current.showLoading(false);
-              };
+              getOrders(responseJson.jwt, responseJson);
+              //console.log(responseJson);
             } else {
               dispatch(setError(responseJson.message));
             }
@@ -95,12 +100,57 @@ const LoginScreen = ({ navigation }) => {
         } else {
           dispatch(setError(responseJson.message));
         }
-        loadingButton.current.showLoading(false);
+        dismissLoader();
       })
       .catch((error) => {
         handleError(error);
         console.log("here oooo", error);
-        loadingButton.current.showLoading(false);
+        dismissLoader();
+      });
+  };
+
+  const getOrders = (token, loginData) => {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", "Bearer " + token);
+
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+    fetch(GET_RIDER_REQUESTS, requestOptions)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        if (responseJson) {
+          if (!responseJson.code) {
+            var newOrderList = [];
+            for (let i = 0; i < responseJson.length; i++) {
+              const element = responseJson[i];
+              if (element.status != "completed") {
+                newOrderList.push(element);
+                console.log("redux list done");
+              }
+            }
+            dispatch(saveOrder(newOrderList));
+            console.log("login orders saved to redux");
+            if ((loginData && newOrderList) || loginData) {
+              dispatch(loginUser(loginData));
+              signIn(loginData);
+            }
+          } else {
+            alert(responseJson.message);
+          }
+        } else {
+          alert(responseJson.message);
+        }
+
+        dismissLoader();
+      })
+      .catch((error) => {
+        console.log("error", error);
+        dismissLoader();
+        handleError(error);
       });
   };
 
@@ -167,7 +217,6 @@ const LoginScreen = ({ navigation }) => {
                 ref={(c) => (loadingButton.current = c)}
                 width={Platform.OS == "ios" ? 300 : 290}
                 height={50}
-                //borderWidth={30}
                 title="Login"
                 titleWeight={"700"}
                 titleFontFamily={

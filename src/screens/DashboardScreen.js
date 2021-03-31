@@ -52,31 +52,29 @@ const DashboardScreen = ({ navigation }) => {
   const loginData = useSelector((state) => state.login.loginResults);
   const orderState = useSelector((state) => state.orders.orders);
   //console.log("order state", orderState);
-  //filter through to get only pending and started
-  // for (let i = 0; i < orderState.length; i++) {
-  //   const element = orderState[i];
-  //   if (element.status != "completed") {
-  //     newOrderList.push(element);
-  //     //console.log("redux list done")
-  //   }
-  // }
-  // if (!newOrderList.length) {
-  //   setIsResultOrderEmpty(true);
-  // }
   const [orderArray, setOrderArray] = useState([]);
+
   useEffect(() => {
-    if (loginData.jwt) {
-      getOrders(true);
-    }
-  }, [loginData.jwt]);
+    //showLoader();
+    // loopThroughOrders(orderState, newOrderList, setIsResultOrderEmpty);
+    // if (newOrderList) {
+    //   setOrderArray(newOrderList);
+    // }
+    // if (orderArray) {
+    //   dismissLoader();
+    // }
+  }, []);
 
   const showLoader = () => {
     setIsLoading(true);
   };
   const dismissLoader = () => {
-    setIsLoading(false);
-
-    setRefreshing(false);
+    if (isLoading) {
+      setIsLoading(false);
+    }
+    if (refreshing) {
+      setRefreshing(false);
+    }
   };
   const onRefresh = useCallback(() => {
     setOrderArray([]);
@@ -266,6 +264,7 @@ const DashboardScreen = ({ navigation }) => {
       );
     }
   };
+
   /**
    * Method to start the journey for an order or batch
    * @param {id to patch} data_id
@@ -292,15 +291,14 @@ const DashboardScreen = ({ navigation }) => {
       { cancelable: true }
     );
   };
+
   /**
    * to get all orders and then filter based on pending and started status
    */
   const getOrders = (displayLoader) => {
     setLoadingMessage("Fetching your orders for today...");
     if (displayLoader) {
-      setTimeout(() => {
-        showLoader();
-      }, 0);
+      //showLoader();
     }
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -317,23 +315,15 @@ const DashboardScreen = ({ navigation }) => {
         if (responseJson) {
           if (!responseJson.code) {
             if (responseJson.length > 0) {
-              dispatch(saveOrder(responseJson));
-
+              var refreshedList = [];
               //filter through to get only pending and started
               for (let i = 0; i < responseJson.length; i++) {
                 const element = responseJson[i];
                 if (element.status != "completed") {
-                  newOrderList.push(element);
+                  refreshedList.push(element);
                 }
               }
-              if (!newOrderList.length) {
-                setIsResultOrderEmpty(true);
-              }
-              setOrderArray(newOrderList);
-              setLoadingMessage("");
-              if (orderArray) {
-                dismissLoader();
-              }
+              dispatch(saveOrder(refreshedList));
             } else {
               setIsResultOrderEmpty(true);
             }
@@ -345,18 +335,22 @@ const DashboardScreen = ({ navigation }) => {
           alert(responseJson.message);
         }
         setRefreshing(false);
-        dismissLoader();
-        setLoadingMessage("");
+        if (dismissLoader) {
+          console.log("here in dismiss")
+          setTimeout(() => {
+            dismissLoader();
+          }, 0);
+          dismissLoader()
+        }
+        //setLoadingMessage("");
       })
       .catch((error) => {
         console.log("error block", error);
         handleError(error);
         setRefreshing(false);
-
         setLoadingMessage("");
         dismissLoader();
       });
-    dismissLoader();
   };
   const startJourneyRequest = (dispatchId) => {
     setLoadingMessage("Starting trip for this order");
@@ -406,7 +400,7 @@ const DashboardScreen = ({ navigation }) => {
       <LoadingDialog loading={isLoading} message={loadingMessage} />
 
       <>
-        {!isLoading && orderArray && orderArray.length > 0 ? (
+        {!isLoading && orderState && orderState.length > 0 ? (
           <Text
             style={{
               fontSize: 14,
@@ -423,14 +417,14 @@ const DashboardScreen = ({ navigation }) => {
           </Text>
         ) : null}
 
-        {orderArray && orderArray.length > 0 ? (
+        {orderState && orderState.length > 0 ? (
           <Animatable.View
             animation="fadeInUp"
             duraton="500"
             style={{ flex: 1 }}
           >
             <FlatList
-              data={orderArray}
+              data={orderState}
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }
@@ -440,7 +434,7 @@ const DashboardScreen = ({ navigation }) => {
               windowSize={201}
             />
           </Animatable.View>
-        ) : isResultOrderEmpty ? (
+        ) : isResultOrderEmpty || orderState.length == 0 ? (
           <View style={styles.parentView}>
             <Text style={styles.nameTextview}>
               Hello {loginData.rider.name}!
@@ -556,3 +550,15 @@ const styles = StyleSheet.create({
 
 //make this component available to the app
 export default DashboardScreen;
+function loopThroughOrders(orderState, newOrderList, setIsResultOrderEmpty) {
+  for (let i = 0; i < orderState.length; i++) {
+    const element = orderState[i];
+    if (element.status != "completed") {
+      newOrderList.push(element);
+      console.log("redux list done");
+    }
+    if (!newOrderList.length) {
+      setIsResultOrderEmpty(true);
+    }
+  }
+}
