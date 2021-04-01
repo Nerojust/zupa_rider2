@@ -345,13 +345,11 @@ const DashboardScreen = ({ navigation }) => {
         } else {
           dispatch(setError(responseJson.message));
         }
-        setIsLoading(false);
-        setLoadingMessage("");
+      dismissLoader()
       })
       .catch((error) => {
         handleError(error);
-        setIsLoading(false);
-        setLoadingMessage("");
+        dismissLoader()
         dispatch(setError(error));
         console.log("start journey error: ", error);
       });

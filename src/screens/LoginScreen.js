@@ -92,7 +92,16 @@ const LoginScreen = ({ navigation }) => {
               getOrders(responseJson.jwt, responseJson);
               //console.log(responseJson);
             } else {
-              dispatch(setError(responseJson.message));
+              console.log(responseJson.message);
+              //dispatch(setError(responseJson.message));
+              dispatch(
+                setError(
+                  (message =
+                    responseJson.message == "jwt malformed"
+                      ? "Oops! Server error, please try again later"
+                      : responseJson.message)
+                )
+              );
             }
           } else {
             dispatch(setError(responseJson.message));
@@ -134,7 +143,7 @@ const LoginScreen = ({ navigation }) => {
             dispatch(saveOrder(newOrderList));
             console.log("login orders saved to redux");
             if ((loginData && newOrderList) || loginData) {
-              dismissLoader()
+              dismissLoader();
               dispatch(loginUser(loginData));
               signIn(loginData);
             }
@@ -144,8 +153,6 @@ const LoginScreen = ({ navigation }) => {
         } else {
           alert(responseJson.message);
         }
-
-        //dismissLoader();
       })
       .catch((error) => {
         console.log("error", error);
