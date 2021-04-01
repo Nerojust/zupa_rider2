@@ -104,7 +104,7 @@ const LoginScreen = ({ navigation }) => {
       })
       .catch((error) => {
         handleError(error);
-        console.log("here oooo", error);
+        console.log("login error", error);
         dismissLoader();
       });
   };

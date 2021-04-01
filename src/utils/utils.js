@@ -15,6 +15,8 @@ import {
 import NetInfo from "@react-native-community/netinfo";
 import { AuthContext } from "./Context";
 import call from "react-native-phone-call";
+import { saveOrder } from "../store/Actions";
+import { GET_RIDER_REQUESTS } from "./Urls";
 
 export function handleBackPress(navigation) {
   const { signOut } = useContext(AuthContext);
@@ -207,3 +209,80 @@ export const getValue = async (key) => {
     console.log(error);
   }
 };
+export const getOrdersRequest = (
+  setLoadingMessage,
+  message,
+  loginData,
+  dispatch,
+  shouldScroll,
+  flatListRef,
+  setIsResultOrderEmpty,
+  setRefreshing,
+) => {
+  setLoadingMessage(message);
+
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", "Bearer " + loginData.jwt);
+
+  var requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  fetch(GET_RIDER_REQUESTS, requestOptions)
+    .then((response) => response.json())
+    .then((responseJson) => {
+      if (responseJson) {
+        if (!responseJson.code) {
+          if (responseJson.length > 0) {
+            var refreshedList = [];
+            //filter through to get only pending and started
+            for (let i = 0; i < responseJson.length; i++) {
+              const element = responseJson[i];
+              if (element.status != "completed") {
+                refreshedList.push(element);
+              }
+            }
+            dispatch(saveOrder(refreshedList));
+            console.log("done getting orders in utils");
+            //scroll to the top
+            if (shouldScroll) {
+              flatListRef.current.scrollToOffset({
+                animated: true,
+                offset: 0,
+              });
+            }
+          } else {
+            setIsResultOrderEmpty(true);
+          }
+        } else {
+          alert(responseJson.message);
+        }
+      } else {
+        alert(responseJson.message);
+      }
+      setRefreshing(false);
+    })
+    .catch((error) => {
+      console.log("error block", error);
+      handleError(error);
+      setRefreshing(false);
+    });
+};
+export function loopThroughOrders(
+  orderState,
+  newOrderList,
+  setIsResultOrderEmpty
+) {
+  for (let i = 0; i < orderState.length; i++) {
+    const element = orderState[i];
+    if (element.status != "completed") {
+      newOrderList.push(element);
+      console.log("redux list done");
+    }
+    if (!newOrderList.length) {
+      setIsResultOrderEmpty(true);
+    }
+  }
+}

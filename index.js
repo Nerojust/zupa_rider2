@@ -13,7 +13,8 @@ export default function Main() {
     "Warning: DatePickerAndroid has been merged with DatePickerIOS and will be removed in a future release",
     "Warning: componentWillReceiveProps has been renamed",
     "Require cycle: node_modules/react-native-popup-dialog/dist/type.js",
-    "Require cycle: node_modules/react-native/Libraries/Network/fetch.js"
+    "Require cycle: node_modules/react-native/Libraries/Network/fetch.js",
+    "Warning: Can't perform a React state update on an unmounted component",
   ]);
   return <App />;
 }

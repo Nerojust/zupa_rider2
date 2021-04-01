@@ -22,7 +22,7 @@ import * as Animatable from "react-native-animatable";
 import LoadingDialog from "../components/LoadingDialog";
 import { GET_RIDER_REQUESTS } from "../utils/Urls";
 
-import { useDoubleBackPressExit } from "../utils/utils";
+import { getOrdersRequest, useDoubleBackPressExit } from "../utils/utils";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
@@ -55,6 +55,19 @@ const DashboardScreen = ({ navigation }) => {
   //console.log("order state", orderState);
   const [orderArray, setOrderArray] = useState([]);
 
+  useEffect(() => {
+    console.log("about to refresh orders");
+    getOrdersRequest(
+      setLoadingMessage,
+      "Fetching your orders for today...",
+      loginData,
+      dispatch,
+      true,
+      flatListRef,
+      setIsResultOrderEmpty,
+      setRefreshing
+    );
+  }, []);
   const showLoader = () => {
     setIsLoading(true);
   };
@@ -69,7 +82,17 @@ const DashboardScreen = ({ navigation }) => {
   const onRefresh = useCallback(() => {
     setOrderArray([]);
     newOrderList = [];
-    getOrders(true);
+
+    getOrdersRequest(
+      setLoadingMessage,
+      "Fetching your orders for today...",
+      loginData,
+      dispatch,
+      true,
+      flatListRef,
+      setIsResultOrderEmpty,
+      setRefreshing
+    );
   }, []);
 
   const renderBatchList = (item, data) => {
@@ -283,66 +306,6 @@ const DashboardScreen = ({ navigation }) => {
   };
 
   /**
-   * to get all orders and then filter based on pending and started status
-   *  @param {parent dispatch id} dispatchId
-   */
-  const getOrders = (displayLoader) => {
-    setLoadingMessage("Fetching your orders for today...");
-    if (displayLoader) {
-      //showLoader();
-    }
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", "Bearer " + loginData.jwt);
-
-    var requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
-    fetch(GET_RIDER_REQUESTS, requestOptions)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        if (responseJson) {
-          if (!responseJson.code) {
-            if (responseJson.length > 0) {
-              var refreshedList = [];
-              //filter through to get only pending and started
-              for (let i = 0; i < responseJson.length; i++) {
-                const element = responseJson[i];
-                if (element.status != "completed") {
-                  refreshedList.push(element);
-                }
-              }
-              dispatch(saveOrder(refreshedList));
-              //scroll to the top
-              flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
-            } else {
-              setIsResultOrderEmpty(true);
-            }
-          } else {
-            alert(responseJson.message);
-          }
-        } else {
-          alert(responseJson.message);
-        }
-        setRefreshing(false);
-        if (dismissLoader) {
-          setTimeout(() => {
-            dismissLoader();
-          }, 0);
-          dismissLoader();
-        }
-      })
-      .catch((error) => {
-        console.log("error block", error);
-        handleError(error);
-        setRefreshing(false);
-        setLoadingMessage("");
-        dismissLoader();
-      });
-  };
-  /**
    * start journey for an order
    * @param {parent dispatch id} dispatchId
    */
@@ -365,8 +328,17 @@ const DashboardScreen = ({ navigation }) => {
       .then((responseJson) => {
         if (responseJson) {
           if (!responseJson.code) {
-            setLoadingMessage("");
-            getOrders(false);
+            getOrdersRequest(
+              setLoadingMessage,
+              "Fetching your orders for today...",
+              loginData,
+              dispatch,
+              true,
+              flatListRef,
+              setIsResultOrderEmpty,
+              setRefreshing,
+              dismissLoader
+            );
           } else {
             dispatch(setError(responseJson.message));
           }
@@ -455,7 +427,18 @@ const DashboardScreen = ({ navigation }) => {
                 borderRadius: 10,
                 marginTop: 20,
               }}
-              onPress={() => getOrders()}
+              onPress={() =>
+                getOrdersRequest(
+                  setLoadingMessage,
+                  "Fetching your orders for today...",
+                  loginData,
+                  dispatch,
+                  true,
+                  flatListRef,
+                  setIsResultOrderEmpty,
+                  setRefreshing
+                )
+              }
             >
               <Text style={styles.refreshTextview}>Refresh</Text>
             </TouchableOpacity>
@@ -546,15 +529,3 @@ const styles = StyleSheet.create({
 
 //make this component available to the app
 export default DashboardScreen;
-function loopThroughOrders(orderState, newOrderList, setIsResultOrderEmpty) {
-  for (let i = 0; i < orderState.length; i++) {
-    const element = orderState[i];
-    if (element.status != "completed") {
-      newOrderList.push(element);
-      console.log("redux list done");
-    }
-    if (!newOrderList.length) {
-      setIsResultOrderEmpty(true);
-    }
-  }
-}
