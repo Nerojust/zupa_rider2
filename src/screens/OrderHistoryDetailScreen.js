@@ -39,6 +39,21 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
 
   const openLocation = createOpenLink({ travelType, end, provider: "google" });
 
+  const sendWhatsappMessage = () => {
+    let whatsAppMessage = `Hello ${name} I will be delivering your package today. Please be on standby. Thank you`;
+    let URL =
+      "whatsapp://send?text=" + whatsAppMessage + "&phone=234" + phoneNumber;
+
+    Linking.openURL(URL)
+      .then((data) => {
+        console.log("WhatsApp Opened", data);
+      })
+      .catch((error) => {
+        alert("Oops! seems whatsapp is not installed on your device");
+        console.log("No whatsapp app found", error);
+      });
+  };
+
   const sendTextMessage = () => {
     SendSMS.send(
       {
@@ -125,9 +140,11 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
         <Image
           source={require("../assets/icons/smartphone.png")}
           resizeMode={"contain"}
-          style={{ width: 13, height: 13,   flex: 0.37,}}
+          style={{ width: 13, height: 13, flex: 0.37 }}
         />
-        <Text style={{ fontSize: 15,flex: 1.9, left: -10  }}>{phoneNumber}</Text>
+        <Text style={{ fontSize: 15, flex: 1.9, left: -10 }}>
+          {phoneNumber}
+        </Text>
       </View>
 
       <View style={{ marginTop: 40 }}>
@@ -152,16 +169,35 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
           tintColor={COLORS.white}
         />
       </View>
-      <View style={{ marginTop: 30 }}>
-        <DisplayButton
-          text="Text"
-          onPress={sendTextMessage}
-          color={COLORS.blue}
-          left={SIZES.width / 3 - 5}
-          width={SIZES.width - 70}
-          image={require("../assets/icons/smartphone.png")}
-          tintColor={COLORS.white}
-        />
+
+      <View
+        style={{
+          flexDirection: "row",
+          marginTop: 30,
+          justifyContent: "center",
+          alignItems: "center",
+          width: SIZES.width - 70,
+        }}
+      >
+        <View style={{ flex: 1, marginRight: 3 }}>
+          <DisplayButton
+            text="Text"
+            onPress={sendTextMessage}
+            color={COLORS.blue}
+            image={require("../assets/icons/smartphone.png")}
+            tintColor={COLORS.lightGray3}
+          />
+        </View>
+        <View style={{ flex: 1, marginLeft: 3 }}>
+          <DisplayButton
+            text="Whatsapp"
+            onPress={sendWhatsappMessage}
+            color={COLORS.blue}
+            //left={SIZES.width / 3 - 5}
+            image={require("../assets/icons/smartphone.png")}
+            tintColor={COLORS.lightGray3}
+          />
+        </View>
       </View>
       {status == "completed" ? (
         <View style={{ marginTop: 30 }}>

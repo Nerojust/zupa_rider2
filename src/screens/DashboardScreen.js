@@ -325,7 +325,6 @@ const DashboardScreen = ({ navigation }) => {
    */
   const startJourneyRequest = (dispatchId) => {
     setLoadingMessage("Starting trip for this order");
-    //showLoader();
 
     fetch(GET_RIDER_REQUESTS + "/" + dispatchId, {
       method: "PATCH",

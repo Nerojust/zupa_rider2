@@ -47,7 +47,7 @@ const Order1 = ({
                   : FONTS.ROBOTO_MEDIUM,
             }}
           >
-            Single Order
+            TRIP
           </Text>
           
         </View>

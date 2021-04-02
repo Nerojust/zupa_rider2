@@ -55,6 +55,8 @@ const OrderHistoryScreen = ({ navigation }) => {
   const [isResultOrderEmpty, setIsResultOrderEmpty] = useState(false);
   const [userNameRider, setUserNameRider] = useState("");
   const [token, setToken] = useState("");
+  const [singleTripCount, setSingleTripCount] = useState(0);
+  const [batchTripCount, setBatchTripCount] = useState(0);
   const dispatch = useDispatch();
   const loginData = useSelector((state) => state.login.loginResults);
   //console.log("login data redux", loginData);
@@ -175,7 +177,7 @@ const OrderHistoryScreen = ({ navigation }) => {
                         : FONTS.ROBOTO_MEDIUM,
                   }}
                 >
-                  Batch Order
+                  TRIP
                 </Text>
               </View>
             </>
@@ -256,9 +258,33 @@ const OrderHistoryScreen = ({ navigation }) => {
         if (responseJson) {
           if (!responseJson.code) {
             if (responseJson.length > 0) {
-              //console.log("Array size is", responseJson.length);
+              var batchCount = 0;
+              var singleCount = 0;
               setOrderArray(responseJson);
-              setIsResultOrderEmpty(false);
+              //setIsResultOrderEmpty(false);
+
+              for (let i = 0; i < responseJson.length; i++) {
+                const oneOrder = responseJson[i];
+                //console.log(oneOrder.dispatch_orders.length);
+                if (
+                  oneOrder.dispatch_orders &&
+                  oneOrder.dispatch_orders.length > 1
+                ) {
+                  //console.log("dispatch is more than 1, batch");
+                  batchCount++;
+                } else if (
+                  oneOrder.dispatch_orders &&
+                  oneOrder.dispatch_orders.length == 1
+                ) {
+                  //console.log("dispatch is a single order and is equal to 1");
+                  singleCount++;
+                } else if (!oneOrder.dispatch_orders) {
+                  setIsResultOrderEmpty(false);
+                }
+              }
+              setSingleTripCount(singleCount);
+              setBatchTripCount(batchCount);
+
               if (orderArray) {
                 dismissLoader();
               }
@@ -506,8 +532,8 @@ const OrderHistoryScreen = ({ navigation }) => {
           <View
             style={{
               flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
+              justifyContent: "space-between",
+              //alignItems: "center",
               paddingVertical: 15,
             }}
           >
@@ -515,14 +541,15 @@ const OrderHistoryScreen = ({ navigation }) => {
               style={{
                 flexDirection: "row",
                 flex: 1,
-                marginLeft: 15,
+                justifyContent: "center",
                 alignItems: "center",
               }}
             >
               <Text
                 style={{
                   fontSize: 14,
-                  color: COLORS.gray1,
+                  color: COLORS.black,
+                  opacity: 0.3,
                   marginRight: 3,
                   fontFamily:
                     Platform.OS == "ios"
@@ -530,7 +557,7 @@ const OrderHistoryScreen = ({ navigation }) => {
                       : FONTS.ROBOTO_MEDIUM,
                 }}
               >
-                Total count:
+                Total trips:
               </Text>
               <Text
                 style={{
@@ -542,6 +569,74 @@ const OrderHistoryScreen = ({ navigation }) => {
                 }}
               >
                 {orderArray.length}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: COLORS.black,
+                  opacity: 0.3,
+                  marginRight: 3,
+                  fontFamily:
+                    Platform.OS == "ios"
+                      ? FONTS.ROBOTO_MEDIUM_IOS
+                      : FONTS.ROBOTO_MEDIUM,
+                }}
+              >
+                Single:
+              </Text>
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontFamily:
+                    Platform.OS == "ios"
+                      ? FONTS.ROBOTO_MEDIUM_IOS
+                      : FONTS.ROBOTO_MEDIUM,
+                }}
+              >
+                {singleTripCount}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: COLORS.black,
+                  opacity: 0.3,
+                  marginRight: 3,
+                  fontFamily:
+                    Platform.OS == "ios"
+                      ? FONTS.ROBOTO_MEDIUM_IOS
+                      : FONTS.ROBOTO_MEDIUM,
+                }}
+              >
+                Batch:
+              </Text>
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontFamily:
+                    Platform.OS == "ios"
+                      ? FONTS.ROBOTO_MEDIUM_IOS
+                      : FONTS.ROBOTO_MEDIUM,
+                }}
+              >
+                {batchTripCount}
               </Text>
             </View>
           </View>
