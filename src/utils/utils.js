@@ -211,14 +211,16 @@ export const getValue = async (key) => {
 };
 export const getOrdersRequest = (
   setLoadingMessage,
+  setIsLoading,
   message,
   loginData,
   dispatch,
   shouldScroll,
   flatListRef,
   setIsResultOrderEmpty,
-  setRefreshing,
+  setRefreshing
 ) => {
+  setIsLoading(true);
   setLoadingMessage(message);
 
   var myHeaders = new Headers();
@@ -263,11 +265,13 @@ export const getOrdersRequest = (
         alert(responseJson.message);
       }
       setRefreshing(false);
+      setIsLoading(false);
     })
     .catch((error) => {
       console.log("error block", error);
       handleError(error);
       setRefreshing(false);
+      setIsLoading(false);
     });
 };
 export function loopThroughOrders(

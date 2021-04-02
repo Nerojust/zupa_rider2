@@ -57,8 +57,12 @@ const DashboardScreen = ({ navigation }) => {
 
   useEffect(() => {
     console.log("about to refresh orders");
+    setTimeout(() => {
+      showLoader();
+    }, 0);
     getOrdersRequest(
       setLoadingMessage,
+      setIsLoading,
       "Fetching your orders for today...",
       loginData,
       dispatch,
@@ -67,6 +71,12 @@ const DashboardScreen = ({ navigation }) => {
       setIsResultOrderEmpty,
       setRefreshing
     );
+    setTimeout(() => {
+      dismissLoader();
+    }, 0);
+    setTimeout(() => {
+      dismissLoader();
+    }, 0);
   }, []);
   const showLoader = () => {
     setIsLoading(true);
@@ -85,6 +95,7 @@ const DashboardScreen = ({ navigation }) => {
 
     getOrdersRequest(
       setLoadingMessage,
+      setIsLoading,
       "Fetching your orders for today...",
       loginData,
       dispatch,
@@ -297,6 +308,9 @@ const DashboardScreen = ({ navigation }) => {
           text: "Yes",
           onPress: () => {
             console.log("Start id is", data_id);
+            setTimeout(() => {
+              showLoader();
+            }, 0);
             startJourneyRequest(data_id);
           },
         },
@@ -311,7 +325,8 @@ const DashboardScreen = ({ navigation }) => {
    */
   const startJourneyRequest = (dispatchId) => {
     setLoadingMessage("Starting trip for this order");
-    showLoader();
+    //showLoader();
+
     fetch(GET_RIDER_REQUESTS + "/" + dispatchId, {
       method: "PATCH",
       headers: {
@@ -330,14 +345,14 @@ const DashboardScreen = ({ navigation }) => {
           if (!responseJson.code) {
             getOrdersRequest(
               setLoadingMessage,
+              setIsLoading,
               "Fetching your orders for today...",
               loginData,
               dispatch,
               true,
               flatListRef,
               setIsResultOrderEmpty,
-              setRefreshing,
-              dismissLoader
+              setRefreshing
             );
           } else {
             dispatch(setError(responseJson.message));
@@ -345,14 +360,15 @@ const DashboardScreen = ({ navigation }) => {
         } else {
           dispatch(setError(responseJson.message));
         }
-      dismissLoader()
+        setIsLoading(false);
       })
       .catch((error) => {
         handleError(error);
-        dismissLoader()
+        dismissLoader();
         dispatch(setError(error));
         console.log("start journey error: ", error);
       });
+    setIsLoading(false);
   };
 
   return (
@@ -428,6 +444,7 @@ const DashboardScreen = ({ navigation }) => {
               onPress={() =>
                 getOrdersRequest(
                   setLoadingMessage,
+                  setIsLoading,
                   "Fetching your orders for today...",
                   loginData,
                   dispatch,

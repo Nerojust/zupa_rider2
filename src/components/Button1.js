@@ -6,13 +6,13 @@ import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { COLORS, SIZES, FONTS } from "../utils/theme";
 
 // create a component
-const ButtonComponent = ({ text, onPress, color, left, image, tintColor }) => {
+const ButtonComponent = ({ text, onPress, color, width }) => {
   return (
     <TouchableWithoutFeedback
       style={{
         // flexDirection: "row",
         height: 50,
-        width: SIZES.width - 70,
+        width: width,
         backgroundColor: color,
         justifyContent: "center",
         alignItems: "center",

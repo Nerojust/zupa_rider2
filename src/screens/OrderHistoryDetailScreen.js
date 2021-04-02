@@ -136,6 +136,7 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
           onPress={openLocation}
           color={COLORS.blue}
           left={SIZES.width / 3 - 5}
+          width={SIZES.width - 70}
           image={require("../assets/icons/pin.png")}
           tintColor={COLORS.white}
         />
@@ -146,6 +147,7 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
           onPress={() => dialNumber(phoneNumber)}
           color={COLORS.blue}
           left={SIZES.width / 3 - 5}
+          width={SIZES.width - 70}
           image={require("../assets/icons/phone.png")}
           tintColor={COLORS.white}
         />
@@ -156,6 +158,7 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
           onPress={sendTextMessage}
           color={COLORS.blue}
           left={SIZES.width / 3 - 5}
+          width={SIZES.width - 70}
           image={require("../assets/icons/smartphone.png")}
           tintColor={COLORS.white}
         />
@@ -164,6 +167,7 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
         <View style={{ marginTop: 30 }}>
           <DisplayButton
             text="Completed"
+            width={SIZES.width - 70}
             color={COLORS.green1}
             left={SIZES.width / 3 - 5}
           />

@@ -41,6 +41,7 @@ const WelcomeScreen = ({ navigation }) => {
             text="Get started"
             onPress={() => navigation.push("Login")}
             color={COLORS.blue}
+            width={SIZES.width - 70}
           />
         </View>
       </ImageBackground>

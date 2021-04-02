@@ -96,6 +96,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
               text="Reset Password"
               onPress={performValidation}
               color={COLORS.blue}
+              width={SIZES.width - 70}
             />
           </View>
           <View style={styles.signRowView}>
