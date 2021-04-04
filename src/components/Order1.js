@@ -53,7 +53,7 @@ const Order1 = ({
                   : FONTS.ROBOTO_MEDIUM,
             }}
           >
-            Single Order
+            Single Order (1)
           </Text>
 
           {statusMessage == "pending" ? (

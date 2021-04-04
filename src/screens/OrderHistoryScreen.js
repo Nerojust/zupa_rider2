@@ -177,7 +177,21 @@ const OrderHistoryScreen = ({ navigation }) => {
                         : FONTS.ROBOTO_MEDIUM,
                   }}
                 >
-                  TRIP
+                1 TRIP
+                </Text>
+
+                <Text
+                  style={{
+                    fontSize: 15,
+                    color: COLORS.white,
+                    //marginBottom: 50,
+                    fontFamily:
+                      Platform.OS == "ios"
+                        ? FONTS.ROBOTO_MEDIUM_IOS
+                        : FONTS.ROBOTO_MEDIUM,
+                  }}
+                >
+                 {data.dispatch_orders.length} orders
                 </Text>
               </View>
             </>

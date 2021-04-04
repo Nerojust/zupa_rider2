@@ -12,7 +12,7 @@ import {
   Image,
   StatusBar,
 } from "react-native";
-import NetInfo from "@react-native-community/netinfo";
+//import NetInfo from "@react-native-community/netinfo";
 import { AuthContext } from "./Context";
 import call from "react-native-phone-call";
 import { saveOrder } from "../store/Actions";
@@ -108,17 +108,17 @@ export const validateEmail = (email) => {
   }
   return true;
 };
-export const checkNetworkConnection = (setisNetworkAvailable) => {
-  useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      //console.log("Is connected?", state.isConnected);
-      setisNetworkAvailable(state.isConnected);
-    });
-    return () => {
-      if (unsubscribe != null) unsubscribe();
-    };
-  }, []);
-};
+// export const checkNetworkConnection = (setisNetworkAvailable) => {
+//   useEffect(() => {
+//     const unsubscribe = NetInfo.addEventListener((state) => {
+//       //console.log("Is connected?", state.isConnected);
+//       setisNetworkAvailable(state.isConnected);
+//     });
+//     return () => {
+//       if (unsubscribe != null) unsubscribe();
+//     };
+//   }, []);
+// };
 
 export const handleError = (error) => {
   if (

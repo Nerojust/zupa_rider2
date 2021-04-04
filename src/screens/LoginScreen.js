@@ -212,12 +212,12 @@ const LoginScreen = ({ navigation }) => {
                 <TogglePasswordEye securePassword={securePassword} />
               </TouchableOpacity>
             </View>
-            {/* <TouchableOpacity
+            <TouchableOpacity
               onPress={gotoForgotPasswordPage}
               activeOpacity={0.8}
             >
               <Text style={styles.forgotPasswordView}>Forgot Password?</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
 
             <View style={{ marginTop: 18 }}>
               <AnimateLoadingButton

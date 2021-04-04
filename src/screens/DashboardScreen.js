@@ -9,6 +9,7 @@ import {
   Image,
   RefreshControl,
   TouchableOpacity,
+  Platform,
   Alert,
   ActivityIndicator,
   BackHandler,
@@ -184,7 +185,7 @@ const DashboardScreen = ({ navigation }) => {
                         : FONTS.ROBOTO_MEDIUM,
                   }}
                 >
-                  Batch Order
+                  Batch Order ({data.dispatch_orders.length})
                 </Text>
                 {!isOrderLoading && data.status == "pending" ? (
                   <TouchableOpacity

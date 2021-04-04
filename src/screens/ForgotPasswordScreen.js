@@ -1,11 +1,5 @@
 //import liraries
-import React, {
-  Component,
-  useEffect,
-  useState,
-  useContext,
-  useRef,
-} from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -16,45 +10,23 @@ import {
   Platform,
   SafeAreaView,
 } from "react-native";
-import { AuthContext } from "../utils/Context";
-import { COLORS, FONTS, SIZES } from "../utils/theme";
-import TogglePasswordEye from "../components/TogglePassword";
-import LoadingDialog from "../components/LoadingDialog";
-import TextInputComponent from "../components/TextInputComponent";
-import TextInputComponent2 from "../components/TextInputComponent2";
-import DisplayButton from "../components/Button";
+import { COLORS, FONTS } from "../utils/theme";
+import email from "react-native-email";
 
 // create a component
 const ForgotPasswordScreen = ({ navigation }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [securePasswordRe, setSecurePasswordRe] = useState(true);
-
-  //const { signIn } = useContext(AuthContext);
-  const [emailAddress, setEmailAddress] = useState("");
-  const emailAddressRef = useRef(null);
-  const passwordRef = useRef(null);
-  const [securePassword, setSecurePassword] = useState(true);
-  const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(false);
-
-  const handleEmailAddress = (value) => {
-    setEmailAddress(value);
+  const sendEmail = () => {
+    const to = ["hello@zupa.ng"]; // string or array of email addresses
+    email(to, {
+      // Optional additional arguments
+      // cc: ["bazzy@moo.com", "doooo@daaa.com"], // string or array of email addresses
+      // bcc: "mee@mee.com", // string or array of email addresses
+      subject: "",
+      body: "",
+    }).catch(console.error);
   };
-
-  const performValidation = () => {
-    if (emailAddress) {
-      alert("Please check your email and change your password");
-    } else {
-      alert("Email is required");
-    }
-  };
-
-  const handleRefFocus = () => {
-    passwordRef.current.focus();
-  };
-
   return (
     <SafeAreaView style={styles.container}>
-      <LoadingDialog loading={isLoading} />
       <StatusBar
         backgroundColor={COLORS.primary}
         barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
@@ -65,46 +37,29 @@ const ForgotPasswordScreen = ({ navigation }) => {
           resizeMode={"contain"}
           style={styles.logoImage}
         />
-        <Text
-          style={{
-            color: COLORS.gray,
-            marginTop: 80,
-            fontSize: 14,
-            alignSelf: "center",
-            fontFamily:
-              Platform.OS == "ios"
-                ? FONTS.ROBOTO_REGULAR_IOS
-                : FONTS.ROBOTO_REGULAR,
-          }}
-        >
-          Enter your email to reset your password
-        </Text>
-        <View style={styles.emailAndPasswordView}>
-          <TextInputComponent
-            placeholder={"Email"}
-            handleTextChange={handleEmailAddress}
-            defaultValue={emailAddress}
-            refInput={emailAddressRef}
-            onSubmitEditing={handleRefFocus}
-            keyboardType={"email-address"}
-            secureTextEntry={false}
-            returnKeyType="next"
-          />
-
-          <View style={{ marginTop: 28 }}>
-            <DisplayButton
-              text="Reset Password"
-              onPress={performValidation}
-              color={COLORS.blue}
-              width={SIZES.width - 70}
-            />
-          </View>
-          <View style={styles.signRowView}>
+        <View style={{ marginTop: 30 }}>
+          <Text
+            style={{
+              //flex: 0.7,
+              color: COLORS.gray,
+              fontSize: 14,
+              alignSelf: "center",
+              fontFamily:
+                Platform.OS == "ios"
+                  ? FONTS.ROBOTO_REGULAR_IOS
+                  : FONTS.ROBOTO_REGULAR,
+            }}
+          >
+            To get a new password, please send an email to our admin using the
+            email address below.
+          </Text>
+          <TouchableOpacity activeOpacity={0.6} onPress={sendEmail}>
             <Text
               style={{
-                color: COLORS.gray,
-
-                fontSize: 14,
+                //flex: 0.7,
+                color: COLORS.blue,
+                marginTop: 20,
+                fontSize: 18,
                 alignSelf: "center",
                 fontFamily:
                   Platform.OS == "ios"
@@ -112,16 +67,9 @@ const ForgotPasswordScreen = ({ navigation }) => {
                     : FONTS.ROBOTO_REGULAR,
               }}
             >
-              Have an account?
+              hello@zupa.ng
             </Text>
-
-            <TouchableOpacity
-              style={{ marginLeft: 5 }}
-              onPress={() => navigation.goBack()}
-            >
-              <Text style={styles.signUp}>Login</Text>
-            </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>

@@ -1,6 +1,6 @@
 //import liraries
 import React, { Component } from "react";
-import { View, Text, StyleSheet, TextInput } from "react-native";
+import { View, Text, StyleSheet, TextInput,Platform } from "react-native";
 import { COLORS,FONTS,SIZES } from "../utils/theme";
 
 // create a component
