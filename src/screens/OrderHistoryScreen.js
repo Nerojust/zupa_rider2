@@ -596,8 +596,8 @@ const OrderHistoryScreen = ({ navigation }) => {
               <Text
                 style={{
                   fontSize: 14,
-                  color: COLORS.black,
-                  opacity: 0.3,
+                  color: COLORS.blue,
+                  //opacity: 0.3,
                   marginRight: 3,
                   fontFamily:
                     Platform.OS == "ios"
@@ -630,8 +630,8 @@ const OrderHistoryScreen = ({ navigation }) => {
               <Text
                 style={{
                   fontSize: 14,
-                  color: COLORS.black,
-                  opacity: 0.3,
+                  color: COLORS.blue1,
+                  //opacity: 0.3,
                   marginRight: 3,
                   fontFamily:
                     Platform.OS == "ios"
