@@ -121,9 +121,11 @@ export const validateEmail = (email) => {
 // };
 
 export const handleError = (error) => {
+  //console.log("er", error);
   if (
     error == "TypeError: Network request failed" ||
-    error == "Network request failed"
+    error == "Network request failed" ||
+    error == "SyntaxError: JSON Parse error: Unrecognized token '<'"
   ) {
     alert("Network error, please try again");
   }

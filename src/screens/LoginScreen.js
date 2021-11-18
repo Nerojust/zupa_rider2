@@ -29,15 +29,15 @@ import { GET_RIDER_REQUESTS } from "../utils/Urls";
 import { LOGIN_URL } from "../utils/Urls";
 import TextInputComponent2 from "../components/TextInputComponent2";
 import DisplayButton from "../components/Button";
-import { loginUser, saveOrder, setError } from "../store/Actions";
+import { login, loginUser, saveOrder, setError } from "../store/Actions";
 import { handleError } from "../utils/utils";
 
 // create a component
 const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const { signIn } = useContext(AuthContext);
-  const [phoneNumber, setPhoneNumber] = useState("08069809921");
-  const [pin, setPin] = useState("1234");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [password, setPassword] = useState("");
   const phoneNumberRef = useRef(null);
   const pinRef = useRef(null);
   const [securePassword, setSecurePassword] = useState(true);
@@ -47,7 +47,7 @@ const LoginScreen = ({ navigation }) => {
     setPhoneNumber(value);
   };
   const handlePin = (value) => {
-    setPin(value);
+    setPassword(value);
   };
   const togglePassword = () => {
     setSecurePassword(!securePassword);
@@ -70,6 +70,10 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const makeLoginRequest = () => {
+    //validate entry
+    if (!phoneNumber || !password) {
+      return alert("please enter your phone number and password");
+    }
     showLoader();
 
     fetch(LOGIN_URL, {
@@ -80,7 +84,7 @@ const LoginScreen = ({ navigation }) => {
       },
       body: JSON.stringify({
         phoneNumber: phoneNumber,
-        pin: pin,
+        pin: password,
       }),
     })
       .then((response) => response.json())
@@ -180,7 +184,7 @@ const LoginScreen = ({ navigation }) => {
 
           <View style={styles.emailAndPasswordView}>
             <TextInputComponent
-              placeholder={"Email"}
+              placeholder={"Phone number"}
               handleTextChange={handlePhoneNumber}
               defaultValue={phoneNumber}
               refInput={phoneNumberRef}
@@ -198,7 +202,7 @@ const LoginScreen = ({ navigation }) => {
                 <TextInputComponent2
                   placeholder={"Password"}
                   handleTextChange={handlePin}
-                  defaultValue={pin}
+                  defaultValue={password}
                   refInput={pinRef}
                   keyboardType={"default"}
                   returnKeyType="done"

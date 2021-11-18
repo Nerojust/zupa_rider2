@@ -1,25 +1,20 @@
 //import liraries
-import React, { Component } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image,Animated } from "react-native";
+import React from "react";
+import { StyleSheet, TouchableOpacity, Image } from "react-native";
 import {
-  WelcomeScreen,
-  LoginScreen,
   DashboardScreen,
-  OrdersScreen,
   OrderDetailScreen,
   OrderHistoryScreen,
   OrderHistoryDetailScreen,
 } from "../screens";
 import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer } from "@react-navigation/native";
 import { CustomDrawerContent } from "../components/CustomerDrawer";
 import {
   createDrawerNavigator,
-  useIsDrawerOpen,
 } from "@react-navigation/drawer";
 import { COLORS, FONTS } from "../utils/theme";
 import { DrawerActions } from "@react-navigation/native";
-import { getTodaysDate, handleBackPress } from "../utils/utils";
+import { getTodaysDate } from "../utils/utils";
 const Drawer = createDrawerNavigator();
 const Home = createStackNavigator();
 const History = createStackNavigator();

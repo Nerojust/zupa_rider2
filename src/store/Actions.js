@@ -1,3 +1,6 @@
+import { useContext } from "react";
+import { AuthContext } from "../utils/Context";
+import { LOGIN_URL } from "../utils/Urls";
 import {
   LOGIN,
   LOADING_ENDED,
@@ -59,23 +62,40 @@ export const logoutUser = () => {
   };
 };
 
-// export const fetchTest = () => {
-//   return async (dispatch) => {
-//     fetch("http://dummy.restapiexample.com/api/v1/employee/1", {
-//       method: "GET",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//     })
-//       .then((response) => response.json())
-//       .then((json) => {
-//         dispatch({
-//           type: SET_TEST,
-//           test: json.data.employee_name,
-//         });
-//       })
-//       .catch((error) => {
-//         console.error(error);
-//       });
-//   };
-// };
+export const login = ({ phoneNumber, pin }) => {
+  return async (dispatch) => {
+    fetch(LOGIN_URL, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        phoneNumber: phoneNumber,
+        pin: pin,
+      }),
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        console.log("LOGIN RESPONSE", response);
+        var token = response.jwt;
+        dispatch({
+          type: LOGIN,
+          payload: response,
+          token: token,
+        });
+
+        return response;
+      })
+      .catch((error) => {
+        console.log("login error block", error);
+        dispatch({
+          type: ERROR,
+          error: error,
+        });
+        if (error?.response?.message) {
+          alert(error?.response?.message);
+        }
+      });
+  };
+};

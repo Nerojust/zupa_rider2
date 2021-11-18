@@ -7,3 +7,6 @@ export const LOGIN_ERROR = "LOGIN_ERROR";
 export const ERROR = "ERROR";
 export const ORDER = "ORDER";
 export const NEW_PAGE = "NEW_PAGE";
+export const LOGIN_PENDING = "LOGIN_PENDING"
+export const LOGIN_SUCCESS="LOGIN_SUCCESS"
+export const LOGIN_FAILED = "LOGIN_FAILED"
