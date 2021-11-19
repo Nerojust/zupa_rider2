@@ -11,4 +11,7 @@ export const IMAGES = {
   arrowLeft: require('../assets/icons/arrowleft.png'),
   zupaLogo: require('../assets/icons/zupa_small.png'),
   menu: require('../assets/icons/menu_.png'),
+  successImage: require('../assets/icons/success.png'),
+  location: require('../assets/icons/location.png'),
+  call: require('../assets/icons/call.png'),
 };

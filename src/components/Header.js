@@ -18,7 +18,7 @@ import { COLOURS } from "../utils/Colours";
 import { FONTS } from "../utils/Fonts";
 import { SIZES } from "../utils/Fonts";
 import { IMAGES } from '../utils/Images';
-import { deviceHeight } from '../utils/responsive-screen';
+import { deviceHeight, fp } from '../utils/responsive-screen';
 
 export const BackViewHeader = ({
   onClose,
@@ -40,7 +40,7 @@ export const BackViewHeader = ({
         />
       </TouchableOpacity>
       <ProductSansBold
-        style={{fontSize: 19, flex: 1.3, color: COLOURS.gray2}}
+        style={{fontSize: fp(16), flex: 1.3, color: COLOURS.gray2}}
         numberOfLines={1}>
         {backText}
       </ProductSansBold>

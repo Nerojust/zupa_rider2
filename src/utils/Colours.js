@@ -3,6 +3,7 @@ const {width, height} = Dimensions.get('window');
 
 export const COLOURS = {
   zupa_rider_bg: '#F5F7FC',
+  riderTextColour:'#191344',
   primary: '#3a48bb',
   secondary: '#5D2DFD',
   purple: '#515DF1',
@@ -51,6 +52,7 @@ export const COLOURS = {
   lightGray6: '#EBEFF4',
   lightGray7: '#E0E2E3',
   gray: 'gray',
+  circleBg: '#FFE6D6',
   offWhite: '#00000040',
   red: 'red',
   red1: '#F22121',

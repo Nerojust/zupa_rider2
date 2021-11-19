@@ -1,19 +1,19 @@
 //import liraries
-import React, { Component } from "react";
+import React from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   Image,
   TouchableOpacity,
-  Platform,
-  ActivityIndicator,
-} from "react-native";
+} from 'react-native';
 
-import { COLOURS } from "../utils/Colours";
-import { FONTS } from "../utils/Fonts";
-import { SIZES } from "../utils/Sizes";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import {COLOURS} from '../utils/Colours';
+import {SIZES} from '../utils/Sizes';
+import MontserratSemiBold from './Text/MontserratSemiBold';
+import {deviceWidth, fp, hp} from '../utils/responsive-screen';
+import MontserratBold from './Text/MontserratBold';
+import {IMAGES} from '../utils/Images';
+import MontserratMedium from './Text/MontserratMedium';
 
 // create a component
 const Order1 = ({
@@ -26,213 +26,217 @@ const Order1 = ({
   onPressView,
   date,
   pressStart,
-  pressEnd,
-  isJourneyStarted,
-  isOrderLoading,
   statusMessage,
 }) => {
   return (
-    <View style={{ justifyContent: "center", marginBottom: 10 }}>
-      <>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingVertical: 5,
-            paddingHorizontal: 20,
-            backgroundColor: COLOURS.blue,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 15,
-              color: COLOURS.white,
-              //marginBottom: 50,
-              fontFamily:
-                Platform.OS == "ios"
-                  ? FONTS.ROBOTO_MEDIUM_IOS
-                  : FONTS.ROBOTO_MEDIUM,
-            }}
-          >
-            Single Order (1)
-          </Text>
+    <View style={styles.containerView}>
+      {/* header row */}
+      <View style={styles.countView}>
+        <MontserratSemiBold style={styles.orderCountText}>
+          1 Order
+        </MontserratSemiBold>
 
-          {statusMessage == "pending" ? (
-            <TouchableOpacity activeOpacity={0.6} onPress={pressStart}>
-              <Text
-                style={{
-                  fontSize: 15,
-                  color: COLOURS.white,
-                  fontFamily:
-                    Platform.OS == "ios"
-                      ? FONTS.ROBOTO_MEDIUM_IOS
-                      : FONTS.ROBOTO_MEDIUM,
-                }}
-              >
-                Start
-              </Text>
-            </TouchableOpacity>
-          ) : statusMessage == "started" ? (
-            <TouchableOpacity activeOpacity={0.8}>
-              <Text
-                style={{
-                  fontSize: 15,
-                  color: COLOURS.white,
-                  fontFamily:
-                    Platform.OS == "ios"
-                      ? FONTS.ROBOTO_MEDIUM_IOS
-                      : FONTS.ROBOTO_MEDIUM,
-                }}
-              >
-                In progress
-              </Text>
-            </TouchableOpacity>
+        {statusMessage == 'pending' ? (
+          <TouchableOpacity
+            activeOpacity={0.6}
+            onPress={pressStart}
+            style={styles.startRideView}>
+            <MontserratSemiBold style={styles.startRideText}>
+              Start ride
+            </MontserratSemiBold>
+          </TouchableOpacity>
+        ) : statusMessage == 'started' ? (
+          <TouchableOpacity activeOpacity={0.8} style={styles.inProgressView}>
+            <MontserratSemiBold style={styles.inProgressText}>
+              In progress
+            </MontserratSemiBold>
+          </TouchableOpacity>
+        ) : null}
+      </View>
+
+      {/* card details section */}
+      <TouchableOpacity
+        style={styles.mainView(statusMessage)}
+        onPress={onPressView}
+        activeOpacity={0.6}>
+        <View style={styles.nameViewContainer}>
+          <MontserratBold numberOfLines={3} style={[styles.nameView]}>
+            {name}
+          </MontserratBold>
+
+          {status == 'completed' ? (
+            <Image
+              source={IMAGES.successImage}
+              resizeMode={'contain'}
+              style={styles.completedImage}
+            />
           ) : null}
-          {/* {statusMessage == "pending"&& isOrderLoading ? (
-            <ActivityIndicator size="small" color={COLOURS.white} />
-          ) : null} */}
         </View>
-      </>
 
-      <View>
-        <TouchableWithoutFeedback style={styles.mainView} onPress={onPressView}>
-          <View style={styles.nameViewContainer}>
-            <Text
-              ellipsizeMode={"tail"}
-              numberOfLines={1}
-              style={[styles.nameView]}
-            >
-              {name}
-            </Text>
-            {status == "completed" ? (
-              <Image
-                source={require("../assets/icons/success.png")}
-                resizeMode={"contain"}
-                style={{
-                  width: 20,
-                  height: 20,
-                  opacity: 0.75,
-                  alignSelf: "flex-end",
-                }}
-              />
-            ) : null}
-          </View>
-          <Text
-            style={styles.addressView}
-            ellipsizeMode={"tail"}
-            numberOfLines={1}
-          >
-            {address}
-          </Text>
+        <MontserratMedium style={styles.addressView} numberOfLines={3}>
+          {address}
+        </MontserratMedium>
 
-          <Text selectable={true} style={styles.phoneNumber}>
-            {phoneNumber}
-          </Text>
+        <MontserratMedium style={styles.phoneNumber}>
+          {phoneNumber}
+        </MontserratMedium>
 
-          <Text selectable={true} style={styles.dateView}>
+        <View style={styles.timeClickView}>
+          <MontserratSemiBold style={styles.dateView}>
             {date}
-          </Text>
-        </TouchableWithoutFeedback>
-      </View>
+          </MontserratSemiBold>
 
-      <View style={{ flexDirection: "row", height: SIZES.width / 7.3 }}>
-        <TouchableOpacity
-          style={styles.clickButtonView}
-          onPress={onPressNavigate}
-          activeOpacity={0.8}
-        >
-          <View style={styles.iconImageView}>
-            <Text style={styles.actionRowView}>Navigate</Text>
+          {/* location */}
+          <TouchableOpacity
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 38,
+              backgroundColor: COLOURS.circleBg,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginLeft: 90,
+            }}
+            onPress={onPressNavigate}>
             <Image
-              source={require("../assets/icons/pin.png")}
-              resizeMode={"contain"}
-              style={styles.imageStyle}
+              source={IMAGES.location}
+              resizeMode={'contain'}
+              style={{
+                width: 17,
+                height: 17,
+              }}
             />
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
 
-        <View
-          style={{
-            //height: "100%",
-            width: 0.5,
-            height: "90%",
-            backgroundColor: COLOURS.lightGray,
-            //marginVertical: 12,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        />
-        <TouchableOpacity
-          style={styles.clickButtonView}
-          onPress={onPressCall}
-          activeOpacity={0.8}
-        >
-          <View style={styles.iconImageView}>
-            <Text style={styles.actionRowView}>Call</Text>
+          {/* call icon */}
+          <TouchableOpacity
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 38,
+              backgroundColor: COLOURS.circleBg,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginLeft: 20,
+            }}
+            onPress={onPressCall}>
             <Image
-              source={require("../assets/icons/smartphone.png")}
-              resizeMode={"contain"}
-              style={styles.imageStyle}
+              source={IMAGES.call}
+              resizeMode={'contain'}
+              style={{
+                width: 17,
+                height: 17,
+              }}
             />
-          </View>
-        </TouchableOpacity>
-      </View>
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };
 
 // define your styles
 const styles = StyleSheet.create({
-  parentView: {
-    justifyContent: "center",
-    alignItems: "center",
+  containerView: {
+    justifyContent: 'center',
+    marginBottom: 20,
+    marginTop: 10,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
-
-  mainView: {
-    //marginTop: 6,
-    width: SIZES.width - 20,
-    height: SIZES.width / 3.3,
-    //paddingVertical:20 ,
-    backgroundColor: COLOURS.lightGray4,
-    paddingHorizontal: 15,
-    justifyContent: "center",
-    //flex: 1,
-  },
+  mainView: (statusMessage) => ({
+    width: deviceWidth * 0.88,
+    height: hp(170),
+    paddingLeft: 20,
+    backgroundColor: statusMessage == 'started' ? COLOURS.blue : COLOURS.white,
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    justifyContent: 'center',
+    paddingBottom: 20,
+  }),
   actionRowView: {
     fontSize: 14,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginRight: 12,
     color: COLOURS.blue,
   },
+  timeClickView: {
+    flexDirection: 'row',
+    flex: 0.2,
+    alignItems: 'center',
+  },
+  inProgressView: {
+    width: 70,
+    height: 25,
+    backgroundColor: COLOURS.lightPurple,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
+  },
+  orderCountText: {
+    fontSize: fp(15),
+    color: COLOURS.riderTextColour,
+    flex: 1,
+  },
+  countView: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    paddingVertical: 5,
+    paddingHorizontal: 20,
+    marginBottom: 10,
+  },
+  startRideView: {
+    width: 80,
+    height: 30,
+    backgroundColor: COLOURS.blue,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
+  },
+  startRideText: {
+    fontSize: fp(13),
+    color: COLOURS.white,
+  },
+  inProgressText: {
+    fontSize: fp(12),
+    color: COLOURS.blue,
+  },
+  completedImage: {
+    width: 20,
+    height: 20,
+    opacity: 0.75,
+    alignSelf: 'flex-end',
+  },
   iconImageView: {
-    flexDirection: "row",
+    flexDirection: 'row',
     //flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   clickButtonView: {
     flex: 0.5,
     width: SIZES.width - 20,
     height: SIZES.width / 8,
     backgroundColor: COLOURS.lightGray5,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   nameViewContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginTop: 7,
-    justifyContent: "space-between",
-    //flex: 0.6,
+    justifyContent: 'space-between',
+    flex: 0.25,
   },
-  nameView: { fontSize: 15, fontWeight: "bold" },
-  phoneNumber: { fontSize: 14, fontWeight: "bold", flex: 0.5 },
+  nameView: {fontSize: fp(19), fontWeight: 'bold'},
+  phoneNumber: {fontSize: fp(16), flex: 0.2},
   addressView: {
-    fontSize: 12,
+    fontSize: fp(15),
     paddingVertical: 5,
     color: COLOURS.gray1,
-    //flex: 1,
+    flex: 0.2,
   },
   imageStyle: {
     width: 15,
@@ -241,11 +245,10 @@ const styles = StyleSheet.create({
     tintColor: COLOURS.blue,
   },
   dateView: {
-    fontSize: 11,
-    fontWeight: "normal",
+    fontSize: fp(15),
+    fontWeight: 'normal',
     marginTop: 3,
     color: COLOURS.gray1,
-    flex: 0.4,
   },
 });
 

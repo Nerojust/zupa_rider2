@@ -20,6 +20,7 @@ import Order from '../components/Order';
 import Order1 from '../components/Order1';
 import * as Animatable from 'react-native-animatable';
 import LoadingDialog from '../components/LoadingDialog';
+import MontserratBold from '../components/Text/MontserratBold';
 import {GET_RIDER_REQUESTS} from '../utils/Urls';
 
 import {
@@ -38,9 +39,10 @@ import {
 } from '../utils/utils';
 import ViewProviderComponent from '../components/ViewProviderComponent';
 import {BackViewHeader} from '../components/Header';
-import {deviceWidth} from '../utils/responsive-screen';
+import {deviceWidth, fp} from '../utils/responsive-screen';
 import {IMAGES} from '../utils/Images';
 import {DrawerActions} from '@react-navigation/routers';
+import MontserratMedium from '../components/Text/MontserratMedium';
 
 // create a component
 const DashboardScreen = ({navigation}) => {
@@ -376,7 +378,7 @@ const DashboardScreen = ({navigation}) => {
   return (
     <ViewProviderComponent>
       <BackViewHeader
-        backText={'Hi, its ' + getTodaysDate()}
+        backText={'Today is ' + getTodaysDate()}
         image={IMAGES.menu}
         onLeftPress={() => toggleDrawer(navigation)}
         shouldDisplayIcon
@@ -385,19 +387,25 @@ const DashboardScreen = ({navigation}) => {
 
       <>
         {!isLoading && orderState && orderState.length > 0 ? (
-          <Text
+          <View style={{justifyContent: 'center', alignItems:'center'}}>
+          <MontserratBold
             style={{
-              fontSize: 14,
-              marginTop: 15,
+              marginTop: 10,
               marginHorizontal: 5,
               marginBottom: 5,
-              fontFamily:
-                Platform.OS == 'ios'
-                  ? FONTS.ROBOTO_MEDIUM_IOS
-                  : FONTS.ROBOTO_MEDIUM,
+              fontSize:fp(18)
             }}>
-            Hi, {loginData.rider.name},{'\n'} you have new order/s
-          </Text>
+            Hi, {loginData?.rider?.name},
+          </MontserratBold>
+          <MontserratMedium
+            style={{
+             
+              marginHorizontal: 5,
+              marginBottom: 5,
+            }}>
+           you have new order/s
+          </MontserratMedium>
+          </View>
         ) : null}
 
         {orderState && orderState.length > 0 ? (
