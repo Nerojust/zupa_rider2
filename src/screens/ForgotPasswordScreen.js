@@ -10,7 +10,9 @@ import {
   Platform,
   SafeAreaView,
 } from "react-native";
-import { COLORS, FONTS } from "../utils/theme";
+import {COLOURS} from '../utils/Colours';
+import {FONTS} from '../utils/Fonts';
+import {SIZES} from '../utils/Sizes';
 import email from "react-native-email";
 
 // create a component
@@ -28,7 +30,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
-        backgroundColor={COLORS.primary}
+        backgroundColor={COLOURS.primary}
         barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
       />
       <View style={styles.parentView}>
@@ -41,7 +43,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
           <Text
             style={{
               //flex: 0.7,
-              color: COLORS.gray,
+              color: COLOURS.gray,
               fontSize: 14,
               alignSelf: "center",
               fontFamily:
@@ -57,7 +59,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
             <Text
               style={{
                 //flex: 0.7,
-                color: COLORS.blue,
+                color: COLOURS.blue,
                 marginTop: 20,
                 fontSize: 18,
                 alignSelf: "center",
@@ -81,7 +83,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: COLORS.white,
+    backgroundColor: COLOURS.white,
   },
   parentView: {
     flex: 1,
@@ -97,7 +99,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   toggleView: {
-    backgroundColor: COLORS.lightGray5,
+    backgroundColor: COLOURS.lightGray5,
     flex: 0.2,
     justifyContent: "center",
     top: 10,
@@ -107,7 +109,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 10,
   },
   signUp: {
-    color: COLORS.blue,
+    color: COLOURS.blue,
     fontSize: 15,
     fontWeight: "300",
     alignSelf: "center",
@@ -130,7 +132,7 @@ const styles = StyleSheet.create({
     marginTop: 45,
   },
   forgotPasswordView: {
-    color: COLORS.primary,
+    color: COLOURS.primary,
     marginTop: 30,
     fontSize: 14,
     alignSelf: "flex-end",

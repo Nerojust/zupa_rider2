@@ -1,7 +1,9 @@
 //import liraries
 import React, { Component } from "react";
 import { View, Text, StyleSheet, TextInput,Platform } from "react-native";
-import { COLORS,FONTS,SIZES } from "../utils/theme";
+import { COLOURS } from "../utils/Colours";
+import { FONTS } from "../utils/Fonts";
+import { SIZES } from "../utils/Fonts";
 
 // create a component
 const TextInputComponent = ({
@@ -18,9 +20,9 @@ const TextInputComponent = ({
     <TextInput
       style={styles.textInput}
       placeholder={placeholder}
-      placeholderTextColor={COLORS.gray}
+      placeholderTextColor={COLOURS.gray}
       onChangeText={(text) => handleTextChange(text)}
-      underlineColor={COLORS.white}
+      underlineColor={COLOURS.white}
       defaultValue={defaultValue}
       ref={refInput}
       onSubmitEditing={onSubmitEditing}
@@ -38,9 +40,9 @@ const styles = StyleSheet.create({
   textInput: {
     height: 50,
     marginTop: 20,
-    backgroundColor: COLORS.lightGray5,
+    backgroundColor: COLOURS.lightGray5,
     paddingLeft: 16,
-    color: COLORS.black,
+    color: COLOURS.black,
     borderTopLeftRadius: 10,
     fontFamily:
     Platform.OS == "ios" ? FONTS.ROBOTO_REGULAR_IOS : FONTS.ROBOTO_REGULAR,

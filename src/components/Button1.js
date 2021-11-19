@@ -2,8 +2,10 @@
 import React from "react";
 import { Text, TouchableOpacity, Image, Platform } from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { COLOURS } from "../utils/Colours";
+import { FONTS } from "../utils/Fonts";
 
-import { COLORS, SIZES, FONTS } from "../utils/theme";
+
 
 // create a component
 const ButtonComponent = ({ text, onPress, color, width }) => {
@@ -25,7 +27,7 @@ const ButtonComponent = ({ text, onPress, color, width }) => {
     >
       <Text
         style={{
-          color: COLORS.white,
+          color: COLOURS.white,
           fontSize: 17,
           fontWeight: "bold",
           alignSelf: "center",

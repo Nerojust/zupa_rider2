@@ -1,6 +1,6 @@
-import AsyncStorage from "@react-native-community/async-storage";
+import AsyncStorage from '@react-native-community/async-storage';
 
-import React, { useState, useContext, useEffect, useRef } from "react";
+import React, {useState, useContext, useEffect, useRef} from 'react';
 import {
   StyleSheet,
   Platform,
@@ -11,25 +11,56 @@ import {
   BackHandler,
   Image,
   StatusBar,
-} from "react-native";
+} from 'react-native';
 //import NetInfo from "@react-native-community/netinfo";
-import { AuthContext } from "./Context";
-import call from "react-native-phone-call";
-import { saveOrder } from "../store/Actions";
-import { GET_RIDER_REQUESTS } from "./Urls";
+import {AuthContext} from './Context';
+import call from 'react-native-phone-call';
+import {saveOrder} from '../store/Actions';
+import {GET_RIDER_REQUESTS} from './Urls';
+import {COLOURS} from '../utils/Colours';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {DrawerActions} from '@react-navigation/routers';
+
+export const toggleDrawer = (navigation) => {
+  navigation.dispatch(DrawerActions.toggleDrawer());
+};
+export const CustomStatusBar = ({
+  backgroundColor = Platform.OS == 'ios' ? COLOURS.white : COLOURS.blue,
+  barStyle = 'dark-content',
+  children,
+}) => {
+  const insets = useSafeAreaInsets();
+
+  return (
+    <View
+      style={{
+        paddingTop: Platform.OS == 'ios' ? insets.top : 0,
+        //height: Platform.OS == 'ios' ? deviceStatusBarHeight : 0,
+        backgroundColor,
+        flex: 1,
+      }}>
+      <StatusBar
+        animated={false}
+        backgroundColor={backgroundColor}
+        barStyle={barStyle}
+      />
+      {children}
+    </View>
+  );
+};
 
 export function handleBackPress(navigation) {
-  const { signOut } = useContext(AuthContext);
+  const {signOut} = useContext(AuthContext);
   //console.log("navigation is", navigation);
   const backAction = () => {
-    Alert.alert("Zupa Rider", "Are you sure you want to exit?", [
+    Alert.alert('Zupa Rider', 'Are you sure you want to exit?', [
       {
-        text: "Cancel",
+        text: 'Cancel',
         onPress: () => null,
-        style: "cancel",
+        style: 'cancel',
       },
       {
-        text: "YES",
+        text: 'YES',
         onPress: () => {
           //BackHandler.exitApp();
           signOut();
@@ -40,17 +71,17 @@ export function handleBackPress(navigation) {
   };
 
   useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", backAction);
+    BackHandler.addEventListener('hardwareBackPress', backAction);
 
     return () =>
-      BackHandler.removeEventListener("hardwareBackPress", backAction);
+      BackHandler.removeEventListener('hardwareBackPress', backAction);
   }, []);
 }
 
 let currentCount = 0;
 export const useDoubleBackPressExit = (exitHandler: () => void) => {
-  if (Platform.OS === "ios") return;
-  const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
+  if (Platform.OS === 'ios') return;
+  const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
     if (currentCount === 1) {
       exitHandler();
       subscription.remove();
@@ -63,7 +94,7 @@ export const useDoubleBackPressExit = (exitHandler: () => void) => {
 const backPressHandler = () => {
   if (currentCount < 1) {
     currentCount += 1;
-    ToastAndroid.show("Press again to exit", ToastAndroid.SHORT);
+    ToastAndroid.show('Press again to exit', ToastAndroid.SHORT);
   }
   setTimeout(() => {
     currentCount = 0;
@@ -82,7 +113,7 @@ export const dialNumber = (phoneNumber) => {
 export const validatePassword = (password) => {
   const pass = /^[a-zA-Z0-9.,\\s]{3,40}$/;
   if (pass.test(password) === false) {
-    Alert.alert("Invalid password character/s");
+    Alert.alert('Invalid password character/s');
     return false;
   }
   return true;
@@ -91,7 +122,7 @@ export const validatePassword = (password) => {
 export const validateNumber = (number) => {
   const num = /[0-9]{1,11}$/;
   if (num.test(number) === false) {
-    Alert.alert("Invalid number character/s");
+    Alert.alert('Invalid number character/s');
     return false;
   }
 
@@ -123,11 +154,11 @@ export const validateEmail = (email) => {
 export const handleError = (error) => {
   //console.log("er", error);
   if (
-    error == "TypeError: Network request failed" ||
-    error == "Network request failed" ||
+    error == 'TypeError: Network request failed' ||
+    error == 'Network request failed' ||
     error == "SyntaxError: JSON Parse error: Unrecognized token '<'"
   ) {
-    alert("Network error, please try again");
+    alert('Network error, please try again');
   }
 };
 
@@ -136,40 +167,40 @@ export function getReadableDateAndTime(stringDate) {
   var diffMs = currDate.getTime() - new Date(stringDate).getTime();
 
   var sec = diffMs / 1000;
-  if (sec < 0) return "now";
+  if (sec < 0) return 'now';
 
   if (sec < 60)
-    return parseInt(sec) + " second" + (parseInt(sec) > 1 ? "s" : "") + " ago";
+    return parseInt(sec) + ' second' + (parseInt(sec) > 1 ? 's' : '') + ' ago';
 
   var min = sec / 60;
   if (min < 60)
-    return parseInt(min) + " minute" + (parseInt(min) > 1 ? "s" : "") + " ago";
+    return parseInt(min) + ' minute' + (parseInt(min) > 1 ? 's' : '') + ' ago';
 
   var h = min / 60;
   if (h < 24)
-    return parseInt(h) + " hour" + (parseInt(h) > 1 ? "s" : "") + " ago";
+    return parseInt(h) + ' hour' + (parseInt(h) > 1 ? 's' : '') + ' ago';
 
   var d = h / 24;
   if (d < 30)
-    return parseInt(d) + " day" + (parseInt(d) > 1 ? "s" : "") + " ago";
+    return parseInt(d) + ' day' + (parseInt(d) > 1 ? 's' : '') + ' ago';
 
   var m = d / 30;
   if (m < 12)
-    return parseInt(m) + " month" + (parseInt(m) > 1 ? "s" : "") + " ago";
+    return parseInt(m) + ' month' + (parseInt(m) > 1 ? 's' : '') + ' ago';
 
   var y = m / 12;
-  return parseInt(y) + " year" + (parseInt(y) > 1 ? "s" : "") + " ago";
+  return parseInt(y) + ' year' + (parseInt(y) > 1 ? 's' : '') + ' ago';
 }
 
 export const getTodaysDate = (date) => {
-  var dateFormat = require("dateformat");
+  var dateFormat = require('dateformat');
   var now = new Date();
 
   // Basic usage
   if (!date) {
-    return dateFormat(now, "dS mmmm, yyyy");
+    return dateFormat(now, 'dS mmmm, yyyy');
   } else {
-    return dateFormat(date, "dS mmmm, yyyy @ hh:MM TT");
+    return dateFormat(date, 'dS mmmm, yyyy @ hh:MM TT');
   }
 };
 export const storeValue = async (key, value) => {
@@ -183,7 +214,7 @@ export const storeValue = async (key, value) => {
 export const deleteValue = async (key) => {
   try {
     await AsyncStorage.removeItem(key);
-    console.log("deleted successfully from storage");
+    console.log('deleted successfully from storage');
   } catch (error) {
     console.log(error);
   }
@@ -220,19 +251,19 @@ export const getOrdersRequest = (
   shouldScroll,
   flatListRef,
   setIsResultOrderEmpty,
-  setRefreshing
+  setRefreshing,
 ) => {
   setIsLoading(true);
   setLoadingMessage(message);
 
   var myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("Authorization", "Bearer " + loginData.jwt);
+  myHeaders.append('Content-Type', 'application/json');
+  myHeaders.append('Authorization', 'Bearer ' + loginData.jwt);
 
   var requestOptions = {
-    method: "GET",
+    method: 'GET',
     headers: myHeaders,
-    redirect: "follow",
+    redirect: 'follow',
   };
   fetch(GET_RIDER_REQUESTS, requestOptions)
     .then((response) => response.json())
@@ -244,12 +275,12 @@ export const getOrdersRequest = (
             //filter through to get only pending and started
             for (let i = 0; i < responseJson.length; i++) {
               const element = responseJson[i];
-              if (element.status != "completed") {
+              if (element.status != 'completed') {
                 refreshedList.push(element);
               }
             }
             dispatch(saveOrder(refreshedList));
-            console.log("done getting orders in utils");
+            console.log('done getting orders in utils');
             //scroll to the top
             if (shouldScroll) {
               flatListRef.current.scrollToOffset({
@@ -270,7 +301,7 @@ export const getOrdersRequest = (
       setIsLoading(false);
     })
     .catch((error) => {
-      console.log("error block", error);
+      console.log('error block', error);
       handleError(error);
       setRefreshing(false);
       setIsLoading(false);
@@ -279,13 +310,13 @@ export const getOrdersRequest = (
 export function loopThroughOrders(
   orderState,
   newOrderList,
-  setIsResultOrderEmpty
+  setIsResultOrderEmpty,
 ) {
   for (let i = 0; i < orderState.length; i++) {
     const element = orderState[i];
-    if (element.status != "completed") {
+    if (element.status != 'completed') {
       newOrderList.push(element);
-      console.log("redux list done");
+      console.log('redux list done');
     }
     if (!newOrderList.length) {
       setIsResultOrderEmpty(true);

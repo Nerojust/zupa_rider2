@@ -6,7 +6,7 @@ import React, {
   useContext,
   useCallback,
   useRef,
-} from "react";
+} from 'react';
 import {
   View,
   Text,
@@ -16,28 +16,31 @@ import {
   StatusBar,
   ImageBackground,
   Platform,
-} from "react-native";
-import { COLORS, FONTS, SIZES } from "../utils/theme";
-import { AuthContext } from "../utils/Context";
-import { useDispatch } from "react-redux";
-import TogglePasswordEye from "../components/TogglePassword";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import LoadingDialog from "../components/LoadingDialog";
-import TextInputComponent from "../components/TextInputComponent";
-import AnimateLoadingButton from "react-native-animate-loading-button";
-import { GET_RIDER_REQUESTS } from "../utils/Urls";
-import { LOGIN_URL } from "../utils/Urls";
-import TextInputComponent2 from "../components/TextInputComponent2";
-import DisplayButton from "../components/Button";
-import { login, loginUser, saveOrder, setError } from "../store/Actions";
-import { handleError } from "../utils/utils";
+} from 'react-native';
+import {COLOURS} from '../utils/Colours';
+import {FONTS} from '../utils/Fonts';
+import {SIZES} from '../utils/Sizes';
+import {AuthContext} from '../utils/Context';
+import {useDispatch} from 'react-redux';
+import TogglePasswordEye from '../components/TogglePassword';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
+import LoadingDialog from '../components/LoadingDialog';
+import TextInputComponent from '../components/TextInputComponent';
+import AnimateLoadingButton from 'react-native-animate-loading-button';
+import {GET_RIDER_REQUESTS} from '../utils/Urls';
+import {LOGIN_URL} from '../utils/Urls';
+import TextInputComponent2 from '../components/TextInputComponent2';
+import DisplayButton from '../components/Button';
+import {login, loginUser, saveOrder, setError} from '../store/Actions';
+import {handleError} from '../utils/utils';
+import ViewProviderComponent from '../components/ViewProviderComponent';
 
 // create a component
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({navigation}) => {
   const dispatch = useDispatch();
-  const { signIn } = useContext(AuthContext);
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [password, setPassword] = useState("");
+  const {signIn} = useContext(AuthContext);
+  const [phoneNumber, setPhoneNumber] = useState('08000000000');
+  const [password, setPassword] = useState('2729');
   const phoneNumberRef = useRef(null);
   const pinRef = useRef(null);
   const [securePassword, setSecurePassword] = useState(true);
@@ -54,7 +57,7 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const gotoForgotPasswordPage = () => {
-    navigation.push("ForgotPassword");
+    navigation.push('ForgotPassword');
   };
 
   const handleRefFocus = () => {
@@ -72,15 +75,15 @@ const LoginScreen = ({ navigation }) => {
   const makeLoginRequest = () => {
     //validate entry
     if (!phoneNumber || !password) {
-      return alert("please enter your phone number and password");
+      return alert('please enter your phone number and password');
     }
     showLoader();
 
     fetch(LOGIN_URL, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         phoneNumber: phoneNumber,
@@ -101,10 +104,10 @@ const LoginScreen = ({ navigation }) => {
               dispatch(
                 setError(
                   (message =
-                    responseJson.message == "jwt malformed"
-                      ? "Oops! Server error, please try again later"
-                      : responseJson.message)
-                )
+                    responseJson.message == 'jwt malformed'
+                      ? 'Oops! Server error, please try again later'
+                      : responseJson.message),
+                ),
               );
             }
           } else {
@@ -117,20 +120,20 @@ const LoginScreen = ({ navigation }) => {
       })
       .catch((error) => {
         handleError(error);
-        console.log("login error", error);
+        console.log('login error', error);
         dismissLoader();
       });
   };
 
   const getOrders = (token, loginData) => {
     var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", "Bearer " + token);
+    myHeaders.append('Content-Type', 'application/json');
+    myHeaders.append('Authorization', 'Bearer ' + token);
 
     var requestOptions = {
-      method: "GET",
+      method: 'GET',
       headers: myHeaders,
-      redirect: "follow",
+      redirect: 'follow',
     };
     fetch(GET_RIDER_REQUESTS, requestOptions)
       .then((response) => response.json())
@@ -140,12 +143,12 @@ const LoginScreen = ({ navigation }) => {
             var newOrderList = [];
             for (let i = 0; i < responseJson.length; i++) {
               const element = responseJson[i];
-              if (element.status != "completed") {
+              if (element.status != 'completed') {
                 newOrderList.push(element);
               }
             }
             dispatch(saveOrder(newOrderList));
-            console.log("login orders saved to redux");
+            console.log('login orders saved to redux');
             if ((loginData && newOrderList) || loginData) {
               dismissLoader();
               dispatch(loginUser(loginData));
@@ -159,37 +162,32 @@ const LoginScreen = ({ navigation }) => {
         }
       })
       .catch((error) => {
-        console.log("error", error);
+        console.log('error', error);
         dismissLoader();
         handleError(error);
       });
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar
-        backgroundColor={COLORS.primary}
-        barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
-      />
+    <ViewProviderComponent>
       <ImageBackground
-        source={require("../assets/images/auth_bg.png")}
-        style={styles.image}
-      >
+        source={require('../assets/images/auth_bg.png')}
+        style={styles.image}>
         <View style={styles.parentView}>
           <Image
-            source={require("../assets/icons/zupa.png")}
-            resizeMode={"contain"}
+            source={require('../assets/icons/zupa.png')}
+            resizeMode={'contain'}
             style={styles.logoImage}
           />
 
           <View style={styles.emailAndPasswordView}>
             <TextInputComponent
-              placeholder={"Phone number"}
+              placeholder={'Phone number'}
               handleTextChange={handlePhoneNumber}
               defaultValue={phoneNumber}
               refInput={phoneNumberRef}
               onSubmitEditing={handleRefFocus}
-              keyboardType={"email-address"}
+              keyboardType={'email-address'}
               secureTextEntry={false}
               returnKeyType="next"
             />
@@ -197,48 +195,45 @@ const LoginScreen = ({ navigation }) => {
               <View
                 style={{
                   flex: 1,
-                }}
-              >
+                }}>
                 <TextInputComponent2
-                  placeholder={"Password"}
+                  placeholder={'Password'}
                   handleTextChange={handlePin}
                   defaultValue={password}
                   refInput={pinRef}
-                  keyboardType={"default"}
+                  keyboardType={'default'}
                   returnKeyType="done"
                   secureTextEntry={securePassword ? true : false}
                 />
               </View>
               <TouchableOpacity
                 style={styles.toggleView}
-                onPress={togglePassword}
-              >
+                onPress={togglePassword}>
                 <TogglePasswordEye securePassword={securePassword} />
               </TouchableOpacity>
             </View>
             <TouchableOpacity
               onPress={gotoForgotPasswordPage}
-              activeOpacity={0.8}
-            >
+              activeOpacity={0.8}>
               <Text style={styles.forgotPasswordView}>Forgot Password?</Text>
             </TouchableOpacity>
 
-            <View style={{ marginTop: 18 }}>
+            <View style={{marginTop: 18}}>
               <AnimateLoadingButton
                 ref={(c) => (loadingButton.current = c)}
-                width={Platform.OS == "ios" ? 300 : 290}
+                width={Platform.OS == 'ios' ? 300 : 290}
                 height={50}
                 title="Login"
-                titleWeight={"700"}
+                titleWeight={'700'}
                 titleFontFamily={
-                  Platform.OS == "ios"
+                  Platform.OS == 'ios'
                     ? FONTS.MONTSERRAT_MEDIUM_IOS
                     : FONTS.MONTSERRAT_MEDIUM
                 }
                 titleFontSize={16}
-                titleColor={COLORS.white}
-                activityIndicatorColor={COLORS.white}
-                backgroundColor={COLORS.blue}
+                titleColor={COLOURS.white}
+                activityIndicatorColor={COLOURS.white}
+                backgroundColor={COLOURS.blue}
                 borderRadius={10}
                 onPress={makeLoginRequest.bind(this)}
               />
@@ -246,7 +241,7 @@ const LoginScreen = ({ navigation }) => {
             {/* <View style={styles.signRowView}>
               <Text
                 style={{
-                  color: COLORS.black,
+                  color: COLOURS.black,
 
                   fontSize: 14,
                   alignSelf: "center",
@@ -266,35 +261,35 @@ const LoginScreen = ({ navigation }) => {
           </View>
         </View>
       </ImageBackground>
-    </SafeAreaView>
+    </ViewProviderComponent>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
+    alignItems: 'center',
     //justifyContent: "center",
-    //backgroundColor: COLORS.white,
+    //backgroundColor: COLOURS.white,
   },
   parentView: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     //width: SIZES.width - 70,
 
     marginHorizontal: 35,
   },
-  image: { width: SIZES.width, height: SIZES.height },
-  logoImage: { width: Platform.OS == "ios" ? 190 : 170, height: 40 },
+  image: {width: SIZES.width, height: SIZES.height},
+  logoImage: {width: Platform.OS == 'ios' ? 170 : 170, height: 40},
   emailAndPasswordView: {
-    alignSelf: "center",
+    alignSelf: 'center',
     marginTop: 20,
   },
   toggleView: {
-    backgroundColor: COLORS.lightGray5,
+    backgroundColor: COLOURS.lightGray5,
     flex: 0.2,
-    justifyContent: "center",
+    justifyContent: 'center',
     top: 10,
     left: -1,
     height: 50,
@@ -302,36 +297,36 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 10,
   },
   signUp: {
-    color: COLORS.black,
+    color: COLOURS.black,
     fontSize: 15,
-    fontWeight: "bold",
-    alignSelf: "center",
+    fontWeight: 'bold',
+    alignSelf: 'center',
     fontFamily:
-      Platform.OS == "ios" ? FONTS.ROBOTO_REGULAR_IOS : FONTS.ROBOTO_REGULAR,
+      Platform.OS == 'ios' ? FONTS.ROBOTO_REGULAR_IOS : FONTS.ROBOTO_REGULAR,
   },
   passwordRowView: {
     marginTop: 10,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignContent: "center",
-    alignItems: "center",
-    alignSelf: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
     width: SIZES.width / 1.25,
   },
   signRowView: {
     //flex: 1,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: 45,
   },
   forgotPasswordView: {
-    color: COLORS.blue,
+    color: COLOURS.blue,
     marginTop: 30,
     fontSize: 13,
-    alignSelf: "flex-end",
+    alignSelf: 'flex-end',
     fontFamily:
-      Platform.OS == "ios" ? FONTS.ROBOTO_REGULAR_IOS : FONTS.ROBOTO_REGULAR,
+      Platform.OS == 'ios' ? FONTS.ROBOTO_REGULAR_IOS : FONTS.ROBOTO_REGULAR,
   },
 });
 

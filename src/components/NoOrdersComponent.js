@@ -1,7 +1,9 @@
 //import liraries
 import React, { Component } from "react";
 import { View, Text, StyleSheet,Image } from "react-native";
-import { FONTS, COLORS, SIZES } from "../utils/theme";
+import { COLOURS } from "../utils/Colours";
+import { FONTS } from "../utils/Fonts";
+import { SIZES } from "../utils/Sizes";
 
 // create a component
 const NoOrdersComponent = ({ name, message }) => {
@@ -45,7 +47,7 @@ const styles = StyleSheet.create({
     width: 15,
     height: 20,
     opacity: 0.75,
-    tintColor: COLORS.blue,
+    tintColor: COLOURS.blue,
   },
   image: {
     top: -100,

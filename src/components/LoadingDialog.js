@@ -1,6 +1,8 @@
 import React from "react";
 import { ActivityIndicator, Modal, StyleSheet, View, Text } from "react-native";
-import { COLORS } from "../utils/theme";
+import { COLOURS } from "../utils/Colours";
+import { FONTS } from "../utils/Fonts";
+import { SIZES } from "../utils/Fonts";
 
 /**
  * create the loading dialog for activities/components.
@@ -21,10 +23,10 @@ const LoadingDialog = ({ loading, message }) => {
           <ActivityIndicator
             animating={loading}
             size="small"
-            color={COLORS.blue}
+            color={COLOURS.blue}
           />
         </View>
-        <Text style={{ marginTop: 15, color: COLORS.white, fontSize: 12 }}>
+        <Text style={{ marginTop: 15, color: COLOURS.white, fontSize: 12 }}>
           {message}
         </Text>
       </View>
@@ -38,10 +40,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     //justifyContent: "space-around",
-    backgroundColor: COLORS.modalBg,
+    backgroundColor: COLOURS.modalBg,
   },
   activityIndicatorWrapper: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLOURS.white,
     height: 65,
     width: 65,
     borderRadius: 10,

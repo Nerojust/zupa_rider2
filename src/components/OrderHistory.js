@@ -9,7 +9,9 @@ import {
   Platform,
 } from "react-native";
 
-import { COLORS, FONTS, SIZES } from "../utils/theme";
+import { COLOURS } from "../utils/Colours";
+import { FONTS } from "../utils/Fonts";
+import { SIZES } from "../utils/Sizes";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 // create a component
@@ -33,13 +35,13 @@ const Order1 = ({
             alignItems: "center",
             paddingVertical: 5,
             paddingHorizontal: 20,
-            backgroundColor: COLORS.blue,
+            backgroundColor: COLOURS.blue,
           }}
         >
           <Text
             style={{
               fontSize: 15,
-              color: COLORS.white,
+              color: COLOURS.white,
               //marginBottom: 50,
               fontFamily:
                 Platform.OS == "ios"
@@ -52,7 +54,7 @@ const Order1 = ({
           <Text
             style={{
               fontSize: 15,
-              color: COLORS.white,
+              color: COLOURS.white,
               //marginBottom: 50,
               fontFamily:
                 Platform.OS == "ios"
@@ -128,7 +130,7 @@ const Order1 = ({
             //height: "100%",
             width: 0.5,
             height: "90%",
-            backgroundColor: COLORS.lightGray,
+            backgroundColor: COLOURS.lightGray,
             //marginVertical: 12,
             justifyContent: "center",
             alignItems: "center",
@@ -166,7 +168,7 @@ const styles = StyleSheet.create({
     width: SIZES.width - 20,
     height: SIZES.width / 3.3,
     //paddingVertical:20 ,
-    backgroundColor: COLORS.lightGray4,
+    backgroundColor: COLOURS.lightGray4,
     paddingHorizontal: 15,
     justifyContent: "center",
     //flex: 1,
@@ -175,7 +177,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     marginRight: 12,
-    color: COLORS.blue,
+    color: COLOURS.blue,
   },
   iconImageView: {
     flexDirection: "row",
@@ -187,7 +189,7 @@ const styles = StyleSheet.create({
     flex: 0.5,
     width: SIZES.width - 20,
     height: SIZES.width / 8,
-    backgroundColor: COLORS.lightGray5,
+    backgroundColor: COLOURS.lightGray5,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -202,20 +204,20 @@ const styles = StyleSheet.create({
   addressView: {
     fontSize: 12,
     paddingVertical: 5,
-    color: COLORS.gray1,
+    color: COLOURS.gray1,
     //flex: 1,
   },
   imageStyle: {
     width: 15,
     height: 20,
     opacity: 0.75,
-    tintColor: COLORS.blue,
+    tintColor: COLOURS.blue,
   },
   dateView: {
     fontSize: 11,
     fontWeight: "normal",
     marginTop: 3,
-    color: COLORS.gray1,
+    color: COLOURS.gray1,
     flex: 0.4,
   },
 });

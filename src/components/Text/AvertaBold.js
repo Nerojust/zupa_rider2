@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, StyleSheet } from "react-native";
-import { fp, hp } from "../../shared/utils/responsive-screen";
+import { fp } from "../../utils/responsive-screen";
 
 const AvertaBold = (props) => {
   return (

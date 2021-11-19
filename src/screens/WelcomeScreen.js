@@ -11,14 +11,16 @@ import {
   Image,
   SafeAreaView,
 } from "react-native";
-import { FONTS, SIZES, COLORS } from "../utils/theme";
+import {COLOURS} from '../utils/Colours';
+import {FONTS} from '../utils/Fonts';
+import {SIZES} from '../utils/Sizes';
 import * as Animatable from "react-native-animatable";
 import DisplayButton from "../components/Button";
 
 const WelcomeScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={COLORS.primary} barStyle="dark-content" />
+      <StatusBar backgroundColor={COLOURS.primary} barStyle="dark-content" />
       <ImageBackground
         source={require("../assets/images/auth_bg.png")}
         style={styles.image}
@@ -40,7 +42,7 @@ const WelcomeScreen = ({ navigation }) => {
           <DisplayButton
             text="Get started"
             onPress={() => navigation.push("Login")}
-            color={COLORS.blue}
+            color={COLOURS.blue}
             width={SIZES.width - 70}
           />
         </View>
@@ -52,7 +54,7 @@ const WelcomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLOURS.white,
   },
   header: {
     flex: 2,
@@ -66,7 +68,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 17,
-    color: COLORS.blue,
+    color: COLOURS.blue,
     fontFamily:
       Platform.OS == "ios" ? FONTS.ROBOTO_THIN_IOS : FONTS.ROBOTO_THIN,
     bottom: SIZES.width / 5.5,
@@ -74,7 +76,7 @@ const styles = StyleSheet.create({
     marginRight: Platform.OS == "ios" ? 68 : 70,
   },
   text: {
-    color: COLORS.gray,
+    color: COLOURS.gray,
     marginBottom: 15,
     justifyContent: "center",
     fontSize: 13,

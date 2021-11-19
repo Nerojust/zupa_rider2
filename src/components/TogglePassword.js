@@ -1,8 +1,10 @@
 //import liraries
 import React, { Component } from "react";
 import { View, Image, Text, StyleSheet, Platform } from "react-native";
-import { visibleImage, inVisibleImage } from "../utils/icons";
-import { COLORS } from "../utils/theme";
+import { visibleImage, inVisibleImage } from "../utils/Images";
+import { COLOURS } from "../utils/Colours";
+import { FONTS } from "../utils/Fonts";
+import { SIZES } from "../utils/Fonts";
 
 // create a component
 const TogglePassword = ({ securePassword }) => {
@@ -25,7 +27,7 @@ const styles = StyleSheet.create({
     width: 17,
     alignSelf: "center",
     justifyContent: "center",
-    tintColor: COLORS.gray,
+    tintColor: COLOURS.gray,
   },
 });
 

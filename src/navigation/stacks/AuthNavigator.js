@@ -11,7 +11,6 @@ export const AuthStackNavigator = () => {
       initialRouteName="Login"
       screenOptions={horizontalAnimation}
     >
-      {/* <Auth.Screen name="Welcome" component={WelcomeScreen} /> */}
       <Auth.Screen name="Login" component={LoginScreen} />
       <Auth.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
     </Auth.Navigator>

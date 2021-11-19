@@ -12,8 +12,9 @@ import {OrderHistoryStackNavigator} from './OrderHistoryNavigator';
 import {CustomDrawerContent} from '../../components/CustomerDrawer';
 import { getTodaysDate } from '../../utils/utils';
 import { DrawerActions } from '@react-navigation/routers';
-import { COLORS, FONTS } from '../../utils/theme';
+
 import { Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { COLOURS } from "../../utils/Colours";
 
 const Drawer = createDrawerNavigator();
 
@@ -31,22 +32,22 @@ export const DrawerStackNavigator = ({navigation}) => {
         component={DashboardScreen}
         options={{
           title: getTodaysDate(),
-          headerShown: true,
-          animationEnabled: false,
-          headerStyle: {
-            elevation: 0,
-            shadowOpacity: 0,
-            backgroundColor: COLORS.blue,
-          },
-          headerTintColor: COLORS.white,
-          headerTitleStyle: {
-            fontWeight: "bold",
-            fontSize: 20,
-            fontFamily:
-              Platform.OS == "android"
-                ? FONTS.ROBOTO_MEDIUM
-                : FONTS.ROBOTO_MEDIUM_IOS,
-          },
+          // headerShown: true,
+          // animationEnabled: false,
+          // headerStyle: {
+          //   elevation: 0,
+          //   shadowOpacity: 0,
+          //   backgroundColor: COLOURS.blue,
+          // },
+          // headerTintColor: COLOURS.white,
+          // headerTitleStyle: {
+          //   fontWeight: "bold",
+          //   fontSize: 20,
+          //   fontFamily:
+          //     Platform.OS == "android"
+          //       ? FONTS.ROBOTO_MEDIUM
+          //       : FONTS.ROBOTO_MEDIUM_IOS,
+          // },
           headerTitleAlign: "center",
           gestureEnabled: true,
 
@@ -74,12 +75,7 @@ const styles = StyleSheet.create({
     width: 25,
     height: 25,
     marginLeft: 15,
-    tintColor: COLORS.white,
+    tintColor: COLOURS.white,
   },
-  chatIcon: {
-    width: 20,
-    height: 20,
-    marginRight: 15,
-    tintColor: COLORS.LIGHT_GRAY4,
-  },
+  
 });

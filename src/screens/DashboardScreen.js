@@ -1,5 +1,5 @@
 //import liraries
-import React, { useEffect, useCallback, useState, useRef } from "react";
+import React, {useEffect, useCallback, useState, useRef} from 'react';
 import {
   View,
   Text,
@@ -11,43 +11,50 @@ import {
   TouchableOpacity,
   Platform,
   Alert,
-  ActivityIndicator,
-  BackHandler,
-  SafeAreaView,
-} from "react-native";
-import { createOpenLink } from "react-native-open-maps";
-import { COLORS, FONTS, SIZES } from "../utils/theme";
-import Order from "../components/Order";
-import Order1 from "../components/Order1";
-import * as Animatable from "react-native-animatable";
-import LoadingDialog from "../components/LoadingDialog";
-import { GET_RIDER_REQUESTS } from "../utils/Urls";
+} from 'react-native';
+import {createOpenLink} from 'react-native-open-maps';
+import {COLOURS} from '../utils/Colours';
+import {FONTS} from '../utils/Fonts';
+import {SIZES} from '../utils/Sizes';
+import Order from '../components/Order';
+import Order1 from '../components/Order1';
+import * as Animatable from 'react-native-animatable';
+import LoadingDialog from '../components/LoadingDialog';
+import {GET_RIDER_REQUESTS} from '../utils/Urls';
 
-import { getOrdersRequest, useDoubleBackPressExit } from "../utils/utils";
-import { useSelector, useDispatch } from "react-redux";
+import {
+  getOrdersRequest,
+  getTodaysDate,
+  toggleDrawer,
+  useDoubleBackPressExit,
+} from '../utils/utils';
+import {useSelector, useDispatch} from 'react-redux';
 
 import {
   dialNumber,
   getReadableDateAndTime,
   getValue,
   handleError,
-} from "../utils/utils";
-import DoubleTapToClose from "../components/BackToExit";
-import { saveNavState, saveOrder } from "../store/Actions";
+} from '../utils/utils';
+import ViewProviderComponent from '../components/ViewProviderComponent';
+import {BackViewHeader} from '../components/Header';
+import {deviceWidth} from '../utils/responsive-screen';
+import {IMAGES} from '../utils/Images';
+import {DrawerActions} from '@react-navigation/routers';
 
 // create a component
-const DashboardScreen = ({ navigation }) => {
+const DashboardScreen = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [isJourneyStarted, setIsJourneyStarted] = useState(false);
   const [isOrderLoading, setIsOrderLoading] = useState(false);
-  const [loadingMessage, setLoadingMessage] = useState("");
-  const fullURL = GET_RIDER_REQUESTS + "/?status=pending";
+  const [loadingMessage, setLoadingMessage] = useState('');
+  const fullURL = GET_RIDER_REQUESTS + '/?status=pending';
   const flatListRef = useRef(null);
-  let name = "";
-  let phone = "";
-  let address = "";
-  const travelType = "drive";
+  let name = '';
+  let phone = '';
+  let address = '';
+  const travelType = 'drive';
   var newOrderList = [];
   const dispatch = useDispatch();
   const [isResultOrderEmpty, setIsResultOrderEmpty] = useState(false);
@@ -57,20 +64,20 @@ const DashboardScreen = ({ navigation }) => {
   const [orderArray, setOrderArray] = useState([]);
 
   useEffect(() => {
-    console.log("about to refresh orders");
+    console.log('about to refresh orders');
     setTimeout(() => {
       showLoader();
     }, 0);
     getOrdersRequest(
       setLoadingMessage,
       setIsLoading,
-      "Fetching your orders for today...",
+      'Fetching your orders for today...',
       loginData,
       dispatch,
       true,
       flatListRef,
       setIsResultOrderEmpty,
-      setRefreshing
+      setRefreshing,
     );
     setTimeout(() => {
       dismissLoader();
@@ -97,13 +104,13 @@ const DashboardScreen = ({ navigation }) => {
     getOrdersRequest(
       setLoadingMessage,
       setIsLoading,
-      "Fetching your orders for today...",
+      'Fetching your orders for today...',
       loginData,
       dispatch,
       true,
       flatListRef,
       setIsResultOrderEmpty,
-      setRefreshing
+      setRefreshing,
     );
   }, []);
 
@@ -127,15 +134,15 @@ const DashboardScreen = ({ navigation }) => {
           onPressNavigate={createOpenLink({
             travelType,
             end,
-            provider: "google",
+            provider: 'google',
           })}
           onPressCall={() =>
             dialNumber(
-              item.order.customer ? item.order.customer.phoneNumber : phone
+              item.order.customer ? item.order.customer.phoneNumber : phone,
             )
           }
           onPressView={() =>
-            navigation.navigate("OrderDetails", {
+            navigation.navigate('OrderDetails', {
               id: item.id,
               name: item.order.customer ? item.order.customer.name : name,
               address: item.order.customer
@@ -160,72 +167,67 @@ const DashboardScreen = ({ navigation }) => {
         <FlatList
           data={data.dispatch_orders}
           keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => renderBatchList(item, data)}
+          renderItem={({item, index}) => renderBatchList(item, data)}
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={
             <>
               <View
                 style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
                   paddingVertical: 5,
                   paddingHorizontal: 20,
-                  backgroundColor: COLORS.blue1,
-                }}
-              >
+                  backgroundColor: COLOURS.blue1,
+                }}>
                 <Text
                   style={{
                     fontSize: 15,
-                    color: COLORS.white,
+                    color: COLOURS.white,
                     //marginBottom: 50,
                     fontFamily:
-                      Platform.OS == "ios"
+                      Platform.OS == 'ios'
                         ? FONTS.ROBOTO_MEDIUM_IOS
                         : FONTS.ROBOTO_MEDIUM,
-                  }}
-                >
+                  }}>
                   Batch Order ({data.dispatch_orders.length})
                 </Text>
-                {!isOrderLoading && data.status == "pending" ? (
+                {!isOrderLoading && data.status == 'pending' ? (
                   <TouchableOpacity
                     activeOpacity={0.6}
                     onPress={() => {
-                      console.log("batch start id is", data.id);
+                      console.log('batch start id is', data.id);
                       handleStartJourneyDialog(data.id);
-                    }}
-                  >
+                    }}>
                     <Text
                       style={{
                         fontSize: 15,
-                        color: COLORS.white,
+                        color: COLOURS.white,
                         fontFamily:
-                          Platform.OS == "ios"
+                          Platform.OS == 'ios'
                             ? FONTS.ROBOTO_MEDIUM_IOS
                             : FONTS.ROBOTO_MEDIUM,
-                      }}
-                    >
+                      }}>
                       Start
                     </Text>
                   </TouchableOpacity>
-                ) : !isOrderLoading && data.status == "started" ? (
+                ) : !isOrderLoading && data.status == 'started' ? (
                   <TouchableOpacity activeOpacity={0.8}>
                     <Text
                       style={{
                         fontSize: 15,
-                        color: COLORS.white,
+                        color: COLOURS.white,
                         fontFamily:
-                          Platform.OS == "ios"
+                          Platform.OS == 'ios'
                             ? FONTS.ROBOTO_MEDIUM_IOS
                             : FONTS.ROBOTO_MEDIUM,
-                      }}
-                    >
+                      }}>
                       In progress
                     </Text>
                   </TouchableOpacity>
                 ) : null}
                 {/* {isOrderLoading ? (
-                  <ActivityIndicator size="small" color={COLORS.white} />
+                  <ActivityIndicator size="small" color={COLOURS.white} />
                 ) : null} */}
               </View>
             </>
@@ -255,22 +257,22 @@ const DashboardScreen = ({ navigation }) => {
           onPressNavigate={createOpenLink({
             travelType,
             end,
-            provider: "google",
+            provider: 'google',
           })}
           onPressCall={() =>
             dialNumber(
-              item.order.customer ? item.order.customer.phoneNumber : phone
+              item.order.customer ? item.order.customer.phoneNumber : phone,
             )
           }
           statusMessage={data.status}
           isJourneyStarted={isJourneyStarted}
           isOrderLoading={isOrderLoading}
           pressStart={() => {
-            console.log("Start id is", data.id);
+            console.log('Start id is', data.id);
             handleStartJourneyDialog(data.id);
           }}
           onPressView={() =>
-            navigation.navigate("OrderDetails", {
+            navigation.navigate('OrderDetails', {
               id: item.id,
               name: item.order.customer ? item.order.customer.name : name,
               address: item.order.customer
@@ -296,19 +298,19 @@ const DashboardScreen = ({ navigation }) => {
    */
   const handleStartJourneyDialog = (data_id) => {
     Alert.alert(
-      "Trip Alert",
-      "Do you want to start this trip?",
+      'Trip Alert',
+      'Do you want to start this trip?',
       [
         {
-          text: "No",
+          text: 'No',
           onPress: () => {
-            console.log("cancel Pressed");
+            console.log('cancel Pressed');
           },
         },
         {
-          text: "Yes",
+          text: 'Yes',
           onPress: () => {
-            console.log("Start id is", data_id);
+            console.log('Start id is', data_id);
             setTimeout(() => {
               showLoader();
             }, 0);
@@ -316,7 +318,7 @@ const DashboardScreen = ({ navigation }) => {
           },
         },
       ],
-      { cancelable: true }
+      {cancelable: true},
     );
   };
 
@@ -325,18 +327,18 @@ const DashboardScreen = ({ navigation }) => {
    * @param {parent dispatch id} dispatchId
    */
   const startJourneyRequest = (dispatchId) => {
-    setLoadingMessage("Starting trip for this order");
+    setLoadingMessage('Starting trip for this order');
 
-    fetch(GET_RIDER_REQUESTS + "/" + dispatchId, {
-      method: "PATCH",
+    fetch(GET_RIDER_REQUESTS + '/' + dispatchId, {
+      method: 'PATCH',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + loginData.jwt,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + loginData.jwt,
       },
       body: JSON.stringify({
-        status: "started",
-        model: "dispatch",
+        status: 'started',
+        model: 'dispatch',
       }),
     })
       .then((response) => response.json())
@@ -346,13 +348,13 @@ const DashboardScreen = ({ navigation }) => {
             getOrdersRequest(
               setLoadingMessage,
               setIsLoading,
-              "Fetching your orders for today...",
+              'Fetching your orders for today...',
               loginData,
               dispatch,
               true,
               flatListRef,
               setIsResultOrderEmpty,
-              setRefreshing
+              setRefreshing,
             );
           } else {
             dispatch(setError(responseJson.message));
@@ -366,19 +368,20 @@ const DashboardScreen = ({ navigation }) => {
         handleError(error);
         dismissLoader();
         dispatch(setError(error));
-        console.log("start journey error: ", error);
+        console.log('start journey error: ', error);
       });
     setIsLoading(false);
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar
-        backgroundColor={COLORS.blue}
-        barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
+    <ViewProviderComponent>
+      <BackViewHeader
+        backText={'Hi, its ' + getTodaysDate()}
+        image={IMAGES.menu}
+        onLeftPress={() => toggleDrawer(navigation)}
+        shouldDisplayIcon
+        style={{width: deviceWidth, borderBottomWidth: 0}}
       />
-
-      <LoadingDialog loading={isLoading} message={loadingMessage} />
 
       <>
         {!isLoading && orderState && orderState.length > 0 ? (
@@ -389,21 +392,16 @@ const DashboardScreen = ({ navigation }) => {
               marginHorizontal: 5,
               marginBottom: 5,
               fontFamily:
-                Platform.OS == "ios"
+                Platform.OS == 'ios'
                   ? FONTS.ROBOTO_MEDIUM_IOS
                   : FONTS.ROBOTO_MEDIUM,
-            }}
-          >
-            Hi, {loginData.rider.name},{"\n"} you have new order/s
+            }}>
+            Hi, {loginData.rider.name},{'\n'} you have new order/s
           </Text>
         ) : null}
 
         {orderState && orderState.length > 0 ? (
-          <Animatable.View
-            animation="fadeInUp"
-            duraton="500"
-            style={{ flex: 1 }}
-          >
+          <Animatable.View animation="fadeInUp" duraton="500" style={{flex: 1}}>
             <FlatList
               ref={flatListRef}
               data={orderState}
@@ -411,7 +409,7 @@ const DashboardScreen = ({ navigation }) => {
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }
               keyExtractor={(item, index) => item.id + index}
-              renderItem={({ item, index }) => renderItem(item)}
+              renderItem={({item, index}) => renderItem(item)}
               showsVerticalScrollIndicator={false}
               windowSize={201}
             />
@@ -423,21 +421,21 @@ const DashboardScreen = ({ navigation }) => {
             </Text>
 
             <Image
-              source={require("../assets/images/rider.png")}
-              resizeMode={"contain"}
+              source={require('../assets/images/rider.png')}
+              resizeMode={'contain'}
               style={styles.image}
             />
             <Text style={styles.noOrderTextview}>
-              You have no orders {"\n"} assigned for today
+              You have no orders {'\n'} assigned for today
             </Text>
             <TouchableOpacity
               activeOpacity={0.7}
               style={{
                 width: 100,
                 height: 50,
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: COLORS.blue,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: COLOURS.blue,
                 borderRadius: 10,
                 marginTop: 20,
               }}
@@ -445,22 +443,22 @@ const DashboardScreen = ({ navigation }) => {
                 getOrdersRequest(
                   setLoadingMessage,
                   setIsLoading,
-                  "Fetching your orders for today...",
+                  'Fetching your orders for today...',
                   loginData,
                   dispatch,
                   true,
                   flatListRef,
                   setIsResultOrderEmpty,
-                  setRefreshing
+                  setRefreshing,
                 )
-              }
-            >
+              }>
               <Text style={styles.refreshTextview}>Refresh</Text>
             </TouchableOpacity>
           </View>
         ) : null}
       </>
-    </SafeAreaView>
+      <LoadingDialog loading={isLoading} message={loadingMessage} />
+    </ViewProviderComponent>
   );
 };
 
@@ -469,50 +467,50 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     //justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: COLORS.white,
+    alignItems: 'center',
+    backgroundColor: COLOURS.white,
   },
   parentView: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
     paddingHorizontal: 10,
   },
   bg_view: {
     width: SIZES.width - 20,
     height: SIZES.width / 2.4,
-    backgroundColor: COLORS.white,
-    justifyContent: "center",
+    backgroundColor: COLOURS.white,
+    justifyContent: 'center',
   },
-  mainView: { padding: 13, flex: 0.7, justifyContent: "center" },
+  mainView: {padding: 13, flex: 0.7, justifyContent: 'center'},
   actionRowView: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginRight: 12,
-    color: COLORS.blue,
+    color: COLOURS.blue,
   },
   iconImageView: {
-    flexDirection: "row",
+    flexDirection: 'row',
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   clickButtonView: {
     flex: 0.5,
     width: SIZES.width - 20,
     height: SIZES.width / 7,
-    backgroundColor: COLORS.lightGray5,
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: COLOURS.lightGray5,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  nameView: { fontSize: 18, fontWeight: "bold" },
-  phoneNumber: { fontSize: 15, fontWeight: "bold" },
-  addressView: { fontSize: 14, paddingVertical: 7 },
+  nameView: {fontSize: 18, fontWeight: 'bold'},
+  phoneNumber: {fontSize: 15, fontWeight: 'bold'},
+  addressView: {fontSize: 14, paddingVertical: 7},
   imageStyle: {
     width: 15,
     height: 20,
     opacity: 0.75,
-    tintColor: COLORS.blue,
+    tintColor: COLOURS.blue,
   },
   image: {
     top: -100,
@@ -521,24 +519,24 @@ const styles = StyleSheet.create({
   },
   noOrderTextview: {
     fontSize: 14,
-    fontWeight: "300",
+    fontWeight: '300',
     fontFamily:
-      Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
+      Platform.OS == 'ios' ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
     //marginTop:50
   },
   nameTextview: {
     fontSize: 18,
-    fontWeight: "400",
+    fontWeight: '400',
     fontFamily:
-      Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
+      Platform.OS == 'ios' ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
     flex: 0.5,
   },
   refreshTextview: {
     fontSize: 14,
-    fontWeight: "300",
+    fontWeight: '300',
     fontFamily:
-      Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
-    color: COLORS.white,
+      Platform.OS == 'ios' ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
+    color: COLOURS.white,
   },
 });
 

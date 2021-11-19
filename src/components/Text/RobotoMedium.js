@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, StyleSheet } from "react-native";
-import { fp, hp } from "../../shared/utils/responsive-screen";
-import { COLOURS } from "../../shared/utils/utitlity";
+import { fp } from "../../utils/responsive-screen";
+
 
 const RobotoMedium = ({ style, ...props }) => {
   return (
@@ -15,7 +15,7 @@ export default RobotoMedium;
 const styles = StyleSheet.create({
   defaultStyles: {
     fontFamily: "Roboto-medium",
-    color: COLOURS.white,
+    //color: COLOURS.white,
     fontSize: fp(14)
   }
 });

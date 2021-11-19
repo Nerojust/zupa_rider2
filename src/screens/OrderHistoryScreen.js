@@ -21,7 +21,9 @@ import {
   SafeAreaView,
 } from "react-native";
 import { createOpenLink } from "react-native-open-maps";
-import { COLORS, FONTS, SIZES } from "../utils/theme";
+import {COLOURS} from '../utils/Colours';
+import {FONTS} from '../utils/Fonts';
+import {SIZES} from '../utils/Sizes';
 import OrderHistory from "../components/OrderHistory";
 import Order from "../components/Order";
 import * as Animatable from "react-native-animatable";
@@ -163,13 +165,13 @@ const OrderHistoryScreen = ({ navigation }) => {
                   alignItems: "center",
                   paddingVertical: 5,
                   paddingHorizontal: 20,
-                  backgroundColor: COLORS.blue1,
+                  backgroundColor: COLOURS.blue1,
                 }}
               >
                 <Text
                   style={{
                     fontSize: 15,
-                    color: COLORS.white,
+                    color: COLOURS.white,
                     //marginBottom: 50,
                     fontFamily:
                       Platform.OS == "ios"
@@ -183,7 +185,7 @@ const OrderHistoryScreen = ({ navigation }) => {
                 <Text
                   style={{
                     fontSize: 15,
-                    color: COLORS.white,
+                    color: COLOURS.white,
                     //marginBottom: 50,
                     fontFamily:
                       Platform.OS == "ios"
@@ -362,7 +364,7 @@ const OrderHistoryScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
-        backgroundColor={COLORS.blue}
+        backgroundColor={COLOURS.blue}
         barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
       />
       <LoadingDialog loading={isLoading} message={"Fetching your orders..."} />
@@ -379,7 +381,7 @@ const OrderHistoryScreen = ({ navigation }) => {
             backgroundColor: "transparent",
           },
           draggableIcon: {
-            backgroundColor: COLORS.blue,
+            backgroundColor: COLOURS.blue,
           },
         }}
       >
@@ -412,7 +414,7 @@ const OrderHistoryScreen = ({ navigation }) => {
               style={{
                 marginRight: 10,
                 height: 50,
-                backgroundColor: COLORS.lightGray1,
+                backgroundColor: COLOURS.lightGray1,
                 justifyContent: "center",
                 alignItems: "center",
                 borderRadius: 5,
@@ -438,7 +440,7 @@ const OrderHistoryScreen = ({ navigation }) => {
                   //   marginLeft: 0,
                   // },
                   dateInput: {
-                    borderColor: COLORS.transparent,
+                    borderColor: COLOURS.transparent,
                   },
                 }}
                 onDateChange={(date) => {
@@ -450,7 +452,7 @@ const OrderHistoryScreen = ({ navigation }) => {
               style={{
                 marginLeft: 10,
                 height: 50,
-                backgroundColor: COLORS.lightGray1,
+                backgroundColor: COLOURS.lightGray1,
                 justifyContent: "center",
                 alignItems: "center",
                 borderRadius: 5,
@@ -476,7 +478,7 @@ const OrderHistoryScreen = ({ navigation }) => {
                   //   marginLeft: 0,
                   // },
                   dateInput: {
-                    borderColor: COLORS.transparent,
+                    borderColor: COLOURS.transparent,
                   },
                 }}
                 onDateChange={(date) => {
@@ -499,7 +501,7 @@ const OrderHistoryScreen = ({ navigation }) => {
               activeOpacity={0.4}
               style={{
                 flex: 1,
-                backgroundColor: COLORS.lightGray2,
+                backgroundColor: COLOURS.lightGray2,
                 height: 45,
                 justifyContent: "center",
                 alignItems: "center",
@@ -508,7 +510,7 @@ const OrderHistoryScreen = ({ navigation }) => {
               <Text
                 style={{
                   fontSize: 15,
-                  color: COLORS.gray,
+                  color: COLOURS.gray,
                   alignSelf: "center",
                   fontWeight: "bold",
                 }}
@@ -521,7 +523,7 @@ const OrderHistoryScreen = ({ navigation }) => {
               activeOpacity={0.5}
               style={{
                 flex: 1,
-                backgroundColor: COLORS.blue,
+                backgroundColor: COLOURS.blue,
                 height: 45,
                 justifyContent: "center",
                 alignItems: "center",
@@ -531,7 +533,7 @@ const OrderHistoryScreen = ({ navigation }) => {
                 style={{
                   fontWeight: "bold",
                   fontSize: 15,
-                  color: COLORS.white,
+                  color: COLOURS.white,
                   alignSelf: "center",
                 }}
               >
@@ -562,7 +564,7 @@ const OrderHistoryScreen = ({ navigation }) => {
               <Text
                 style={{
                   fontSize: 14,
-                  color: COLORS.black,
+                  color: COLOURS.black,
                   opacity: 0.3,
                   marginRight: 3,
                   fontFamily:
@@ -596,7 +598,7 @@ const OrderHistoryScreen = ({ navigation }) => {
               <Text
                 style={{
                   fontSize: 14,
-                  color: COLORS.blue,
+                  color: COLOURS.blue,
                   //opacity: 0.3,
                   marginRight: 3,
                   fontFamily:
@@ -630,7 +632,7 @@ const OrderHistoryScreen = ({ navigation }) => {
               <Text
                 style={{
                   fontSize: 14,
-                  color: COLORS.blue1,
+                  color: COLOURS.blue1,
                   //opacity: 0.3,
                   marginRight: 3,
                   fontFamily:
@@ -692,7 +694,7 @@ const OrderHistoryScreen = ({ navigation }) => {
                 height: 50,
                 justifyContent: "center",
                 alignItems: "center",
-                backgroundColor: COLORS.blue,
+                backgroundColor: COLOURS.blue,
                 borderRadius: 10,
                 marginTop: 20,
               }}
@@ -713,7 +715,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: COLORS.white,
+    backgroundColor: COLOURS.white,
   },
   parentView: {
     justifyContent: "center",
@@ -724,7 +726,7 @@ const styles = StyleSheet.create({
   bg_view: {
     width: SIZES.width - 20,
     height: SIZES.width / 2.4,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLOURS.white,
     justifyContent: "center",
   },
   mainView: { padding: 13, flex: 0.7, justifyContent: "center" },
@@ -732,7 +734,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginRight: 12,
-    color: COLORS.blue,
+    color: COLOURS.blue,
   },
   iconImageView: {
     flexDirection: "row",
@@ -744,7 +746,7 @@ const styles = StyleSheet.create({
     flex: 0.5,
     width: SIZES.width - 20,
     height: SIZES.width / 7,
-    backgroundColor: COLORS.lightGray5,
+    backgroundColor: COLOURS.lightGray5,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -755,7 +757,7 @@ const styles = StyleSheet.create({
     width: 15,
     height: 20,
     opacity: 0.75,
-    tintColor: COLORS.blue,
+    tintColor: COLOURS.blue,
   },
   image: {
     top: -100,
@@ -774,7 +776,7 @@ const styles = StyleSheet.create({
     fontWeight: "300",
     fontFamily:
       Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
-    color: COLORS.white,
+    color: COLOURS.white,
   },
   nameTextview: {
     fontSize: 18,
@@ -787,7 +789,7 @@ const styles = StyleSheet.create({
     width: 19,
     height: 19,
     // alignSelf: "flex-end",
-    tintColor: COLORS.white,
+    tintColor: COLOURS.white,
   },
 });
 

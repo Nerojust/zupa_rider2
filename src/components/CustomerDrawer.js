@@ -13,7 +13,10 @@ import {
 import { AuthContext } from "../utils/Context";
 import { useDispatch } from "react-redux";
 import { DrawerActions } from "@react-navigation/native";
-import { COLORS, SIZES, FONTS } from "../utils/theme";
+import { COLOURS } from "../utils/Colours";
+import { FONTS } from "../utils/Fonts";
+
+import { SIZES } from "../utils/Sizes";
 import { logoutUser } from "../store/Actions";
 
 export function CustomDrawerContent(props) {
@@ -67,7 +70,7 @@ export function CustomDrawerContent(props) {
               <Text
                 style={{
                   marginLeft: 27,
-                  color: COLORS.blue,
+                  color: COLOURS.blue,
                   alignSelf: "center",
                 }}
               >
@@ -96,7 +99,7 @@ export function CustomDrawerContent(props) {
               <Text
                 style={{
                   marginLeft: 27,
-                  color: COLORS.blue,
+                  color: COLOURS.blue,
                   alignSelf: "center",
                 }}
               >
@@ -180,7 +183,7 @@ export function CustomDrawerContent(props) {
         </Drawer.Section>
       </View>
       <View style={styles.footerView}>
-        <Text style={{ fontSize: 10, color: COLORS.gray }}>Version 1.0.0</Text>
+        <Text style={{ fontSize: 10, color: COLOURS.gray }}>Version 1.0.0</Text>
       </View>
     </SafeAreaView>
   );
@@ -191,57 +194,57 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginTop: Platform.OS === "ios" ? 0 : 0,
-    backgroundColor: COLORS.lightGray5,
+    backgroundColor: COLOURS.lightGray5,
     paddingHorizontal: 17,
     marginBottom: Platform.OS == "ios" ? 13 : 35,
   },
 
   taskText: {
-    color: COLORS.blue,
+    color: COLOURS.blue,
     opacity: 0.8,
     fontSize: 23,
     fontFamily:
       Platform.OS == "android" ? FONTS.ROBOTO_MEDIUM : FONTS.ROBOTO_MEDIUM_IOS,
   },
   labelColor: {
-    color: COLORS.black,
+    color: COLOURS.black,
     fontFamily:
       Platform.OS == "android" ? FONTS.ROBOTO_MEDIUM : FONTS.ROBOTO_MEDIUM_IOS,
     opacity: 0.6,
   },
   drawerBg: {
     flex: 1,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLOURS.white,
     //opacity: 0.9,
   },
   drawerBg2: {
     flex: 3,
-    //backgroundColor: Colors.LIGHT_GRAY4,
-    tintColor: COLORS.darkslateblue,
+    //backgroundColor: COLOURS.LIGHT_GRAY4,
+    tintColor: COLOURS.darkslateblue,
     //opacity: 0.8,
   },
   line: {
     // borderBottomWidth: StyleSheet.hairlineWidth,
     width: SIZES.width,
     height: 0.5,
-    backgroundColor: COLORS.lightGray,
+    backgroundColor: COLOURS.lightGray,
   },
   imageStyle: {
     width: 20,
     height: 20,
     opacity: 0.75,
-    tintColor: COLORS.blue,
+    tintColor: COLOURS.blue,
   },
   imageStyle1: {
     width: 23,
     height: 22,
     //opacity: 0.4,
-    tintColor: COLORS.blue,
+    tintColor: COLOURS.blue,
   },
   menuIcon: {
     width: 85,
     height: 55,
-    //tintColor: COLORS.white,
+    //tintColor: COLOURS.white,
   },
   menuIcon1View: {
     justifyContent: "center",

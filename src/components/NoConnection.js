@@ -1,7 +1,9 @@
 //import liraries
 import React, { Component } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { COLORS, SIZES, FONTS } from "../utils/theme";
+import { COLOURS } from "../utils/Colours";
+import { FONTS } from "../utils/Fonts";
+import { SIZES } from "../utils/Fonts";
 
 // create a component
 const NoConnection = (props) => {
@@ -10,7 +12,7 @@ const NoConnection = (props) => {
       <Text
         style={{
           fontSize: 17,
-          color: COLORS.gray,
+          color: COLOURS.gray,
           marginBottom: 50,
           fontFamily:
             Platform.OS == "ios"
@@ -24,7 +26,7 @@ const NoConnection = (props) => {
         <Text
           style={{
             fontSize: 17,
-            color: COLORS.blue,
+            color: COLOURS.blue,
             fontFamily:
             Platform.OS == "ios"
               ? FONTS.ROBOTO_MEDIUM_IOS
@@ -44,7 +46,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    //backgroundColor: Colors.white,
+    //backgroundColor: COLOURS.white,
   },
 });
 

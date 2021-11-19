@@ -55,6 +55,10 @@
 		<string>Montserrat-ExtraLight.ttf</string>
 		<string>Montserrat-Light.ttf</string>
 		<string>Montserrat-Thin.ttf</string>
+		<string>ProductSans-Bold.ttf</string>
+		<string>ProductSans-Regular.ttf</string>
+		<string>Averta-Regular.ttf</string>
+		<string>Averta-Bold.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

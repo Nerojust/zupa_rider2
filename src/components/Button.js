@@ -2,7 +2,9 @@
 import React from "react";
 import { Text, TouchableOpacity, Platform, Image } from "react-native";
 
-import { COLORS, SIZES, FONTS } from "../utils/theme";
+import { COLOURS } from "../utils/Colours";
+import { FONTS } from "../utils/Fonts";
+import { SIZES } from "../utils/Sizes";
 
 // create a component
 const ButtonComponent = ({ text, onPress, color }) => {
@@ -24,7 +26,7 @@ const ButtonComponent = ({ text, onPress, color }) => {
     >
       <Text
         style={{
-          color: COLORS.white,
+          color: COLOURS.white,
           fontSize: 16,
           //fontWeight: "bold",
           fontFamily:

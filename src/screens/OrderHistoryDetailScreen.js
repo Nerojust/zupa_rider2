@@ -12,7 +12,9 @@ import {
   Alert,
   SafeAreaView,
 } from "react-native";
-import { COLORS, FONTS, SIZES } from "../utils/theme";
+import {COLOURS} from '../utils/Colours';
+import {FONTS} from '../utils/Fonts';
+import {SIZES} from '../utils/Sizes';
 import DisplayButton from "../components/Button1";
 import SendSMS from "react-native-sms";
 import call from "react-native-phone-call";
@@ -151,22 +153,22 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
         <DisplayButton
           text="Navigate"
           onPress={openLocation}
-          color={COLORS.blue}
+          color={COLOURS.blue}
           left={SIZES.width / 3 - 5}
           width={SIZES.width - 70}
           image={require("../assets/icons/pin.png")}
-          tintColor={COLORS.white}
+          tintColor={COLOURS.white}
         />
       </View>
       <View style={{ marginTop: 30 }}>
         <DisplayButton
           text="Call"
           onPress={() => dialNumber(phoneNumber)}
-          color={COLORS.blue}
+          color={COLOURS.blue}
           left={SIZES.width / 3 - 5}
           width={SIZES.width - 70}
           image={require("../assets/icons/phone.png")}
-          tintColor={COLORS.white}
+          tintColor={COLOURS.white}
         />
       </View>
 
@@ -183,19 +185,19 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
           <DisplayButton
             text="Text"
             onPress={sendTextMessage}
-            color={COLORS.blue}
+            color={COLOURS.blue}
             image={require("../assets/icons/smartphone.png")}
-            tintColor={COLORS.lightGray3}
+            tintColor={COLOURS.lightGray3}
           />
         </View>
         <View style={{ flex: 1, marginLeft: 3 }}>
           <DisplayButton
             text="Whatsapp"
             onPress={sendWhatsappMessage}
-            color={COLORS.blue}
+            color={COLOURS.blue}
             //left={SIZES.width / 3 - 5}
             image={require("../assets/icons/smartphone.png")}
-            tintColor={COLORS.lightGray3}
+            tintColor={COLOURS.lightGray3}
           />
         </View>
       </View>
@@ -204,7 +206,7 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
           <DisplayButton
             text="Completed"
             width={SIZES.width - 70}
-            color={COLORS.green1}
+            color={COLOURS.green1}
             left={SIZES.width / 3 - 5}
           />
         </View>
@@ -219,7 +221,7 @@ const styles = StyleSheet.create({
     flex: 1,
     //justifyContent: 'center',
     alignItems: "center",
-    backgroundColor: COLORS.white,
+    backgroundColor: COLOURS.white,
   },
 });
 
