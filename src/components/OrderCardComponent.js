@@ -1,12 +1,6 @@
 //import liraries
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
-
+import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {COLOURS} from '../utils/Colours';
 import {SIZES} from '../utils/Sizes';
 import MontserratSemiBold from './Text/MontserratSemiBold';
@@ -16,7 +10,7 @@ import {IMAGES} from '../utils/Images';
 import MontserratMedium from './Text/MontserratMedium';
 
 // create a component
-const Order1 = ({
+const OrderCardComponent = ({
   name,
   address,
   phoneNumber,
@@ -25,42 +19,19 @@ const Order1 = ({
   onPressCall,
   onPressView,
   date,
-  pressStart,
   statusMessage,
 }) => {
   return (
     <View style={styles.containerView}>
-      {/* header row */}
-      <View style={styles.countView}>
-        <MontserratSemiBold style={styles.orderCountText}>
-          1 Order
-        </MontserratSemiBold>
-
-        {statusMessage == 'pending' ? (
-          <TouchableOpacity
-            activeOpacity={0.6}
-            onPress={pressStart}
-            style={styles.startRideView}>
-            <MontserratSemiBold style={styles.startRideText}>
-              Start ride
-            </MontserratSemiBold>
-          </TouchableOpacity>
-        ) : statusMessage == 'started' ? (
-          <TouchableOpacity activeOpacity={0.8} style={styles.inProgressView}>
-            <MontserratSemiBold style={styles.inProgressText}>
-              In progress
-            </MontserratSemiBold>
-          </TouchableOpacity>
-        ) : null}
-      </View>
-
       {/* card details section */}
       <TouchableOpacity
         style={styles.mainView(statusMessage)}
         onPress={onPressView}
         activeOpacity={0.6}>
         <View style={styles.nameViewContainer}>
-          <MontserratBold numberOfLines={3} style={[styles.nameView]}>
+          <MontserratBold
+            numberOfLines={3}
+            style={styles.nameText(statusMessage)}>
             {name}
           </MontserratBold>
 
@@ -73,30 +44,24 @@ const Order1 = ({
           ) : null}
         </View>
 
-        <MontserratMedium style={styles.addressView} numberOfLines={3}>
+        <MontserratMedium
+          style={styles.addressView(statusMessage)}
+          numberOfLines={4}>
           {address}
         </MontserratMedium>
 
-        <MontserratMedium style={styles.phoneNumber}>
+        <MontserratMedium style={styles.phoneNumber(statusMessage)}>
           {phoneNumber}
         </MontserratMedium>
 
         <View style={styles.timeClickView}>
-          <MontserratSemiBold style={styles.dateView}>
+          <MontserratSemiBold style={styles.dateView(statusMessage)}>
             {date}
           </MontserratSemiBold>
 
           {/* location */}
           <TouchableOpacity
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: 38,
-              backgroundColor: COLOURS.circleBg,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginLeft: 90,
-            }}
+            style={styles.locationView(statusMessage)}
             onPress={onPressNavigate}>
             <Image
               source={IMAGES.location}
@@ -110,15 +75,7 @@ const Order1 = ({
 
           {/* call icon */}
           <TouchableOpacity
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: 38,
-              backgroundColor: COLOURS.circleBg,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginLeft: 20,
-            }}
+            style={styles.callView(statusMessage)}
             onPress={onPressCall}>
             <Image
               source={IMAGES.call}
@@ -140,7 +97,6 @@ const styles = StyleSheet.create({
   containerView: {
     justifyContent: 'center',
     marginBottom: 20,
-    marginTop: 10,
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
@@ -148,23 +104,42 @@ const styles = StyleSheet.create({
   },
   mainView: (statusMessage) => ({
     width: deviceWidth * 0.88,
-    height: hp(170),
-    paddingLeft: 20,
+    height: hp(185),
     backgroundColor: statusMessage == 'started' ? COLOURS.blue : COLOURS.white,
-    borderRadius: 20,
-    paddingHorizontal: 10,
+    borderRadius: 43,
+    paddingHorizontal: 30,
     justifyContent: 'center',
     paddingBottom: 20,
+    paddingTop: 10,
+  }),
+  locationView: (statusMessage) => ({
+    width: 44,
+    height: 44,
+    borderRadius: 38,
+    backgroundColor:
+      statusMessage == 'started' ? COLOURS.circleBg : COLOURS.lightPurple,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 80,
+  }),
+  callView: (statusMessage) => ({
+    width: 44,
+    height: 44,
+    borderRadius: 38,
+    backgroundColor:
+      statusMessage == 'started' ? COLOURS.circleBg : COLOURS.lightPurple,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 20,
   }),
   actionRowView: {
     fontSize: 14,
-    fontWeight: 'bold',
     marginRight: 12,
     color: COLOURS.blue,
   },
   timeClickView: {
     flexDirection: 'row',
-    flex: 0.2,
+    flex: 0.4,
     alignItems: 'center',
   },
   inProgressView: {
@@ -210,47 +185,33 @@ const styles = StyleSheet.create({
     opacity: 0.75,
     alignSelf: 'flex-end',
   },
-  iconImageView: {
-    flexDirection: 'row',
-    //flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  clickButtonView: {
-    flex: 0.5,
-    width: SIZES.width - 20,
-    height: SIZES.width / 8,
-    backgroundColor: COLOURS.lightGray5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   nameViewContainer: {
     flexDirection: 'row',
     marginTop: 7,
     justifyContent: 'space-between',
-    flex: 0.25,
-  },
-  nameView: {fontSize: fp(19), fontWeight: 'bold'},
-  phoneNumber: {fontSize: fp(16), flex: 0.2},
-  addressView: {
-    fontSize: fp(15),
-    paddingVertical: 5,
-    color: COLOURS.gray1,
     flex: 0.2,
   },
-  imageStyle: {
-    width: 15,
-    height: 20,
-    opacity: 0.75,
-    tintColor: COLOURS.blue,
-  },
-  dateView: {
-    fontSize: fp(15),
-    fontWeight: 'normal',
-    marginTop: 3,
-    color: COLOURS.gray1,
-  },
+  nameText: (statusMessage) => ({
+    fontSize: fp(18),
+    color: statusMessage == 'started' ? COLOURS.white : COLOURS.textInputColor,
+  }),
+  phoneNumber: (statusMessage) => ({
+    fontSize: fp(17),
+    flex: 0.2,
+    color:
+      statusMessage == 'started' ? COLOURS.lightGray : COLOURS.textInputColor,
+  }),
+  addressView: (statusMessage) => ({
+    fontSize: fp(14),
+    paddingVertical: 5,
+    color: statusMessage == 'started' ? COLOURS.white : COLOURS.textInputColor,
+    flex: 0.5,
+  }),
+  dateView: (statusMessage) => ({
+    fontSize: fp(14),
+    color: statusMessage == 'started' ? COLOURS.white : COLOURS.textInputColor,
+  }),
 });
 
 //make this component available to the app
-export default Order1;
+export default OrderCardComponent;

@@ -14,4 +14,6 @@ export const IMAGES = {
   successImage: require('../assets/icons/success.png'),
   location: require('../assets/icons/location.png'),
   call: require('../assets/icons/call.png'),
+  rider: require('../assets/images/rider.png'),
+  bike: require('../assets/images/bike.png'),
 };

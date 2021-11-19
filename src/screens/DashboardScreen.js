@@ -17,7 +17,7 @@ import {COLOURS} from '../utils/Colours';
 import {FONTS} from '../utils/Fonts';
 import {SIZES} from '../utils/Sizes';
 import Order from '../components/Order';
-import Order1 from '../components/Order1';
+import OrderCardComponent from '../components/OrderCardComponent';
 import * as Animatable from 'react-native-animatable';
 import LoadingDialog from '../components/LoadingDialog';
 import MontserratBold from '../components/Text/MontserratBold';
@@ -39,10 +39,11 @@ import {
 } from '../utils/utils';
 import ViewProviderComponent from '../components/ViewProviderComponent';
 import {BackViewHeader} from '../components/Header';
-import {deviceWidth, fp} from '../utils/responsive-screen';
+import {deviceHeight, deviceWidth, fp} from '../utils/responsive-screen';
 import {IMAGES} from '../utils/Images';
 import {DrawerActions} from '@react-navigation/routers';
 import MontserratMedium from '../components/Text/MontserratMedium';
+import MontserratSemiBold from '../components/Text/MontserratSemiBold';
 
 // create a component
 const DashboardScreen = ({navigation}) => {
@@ -125,7 +126,7 @@ const DashboardScreen = ({navigation}) => {
       //console.log("address1", address1)
       let end = address1;
       return (
-        <Order
+        <OrderCardComponent
           name={item.order.customer.name ? item.order.customer.name : name}
           address={item.order.customer ? item.order.customer.address : address}
           phoneNumber={
@@ -164,133 +165,127 @@ const DashboardScreen = ({navigation}) => {
     }
   };
   const renderItem = (data) => {
-    if (data.dispatch_orders && data.dispatch_orders.length > 1) {
+    if (data?.dispatch_orders && data?.dispatch_orders.length > 1) {
       return (
         <FlatList
-          data={data.dispatch_orders}
+          data={data?.dispatch_orders}
           keyExtractor={(item) => item.id}
           renderItem={({item, index}) => renderBatchList(item, data)}
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={
             <>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  paddingVertical: 5,
-                  paddingHorizontal: 20,
-                  backgroundColor: COLOURS.blue1,
-                }}>
-                <Text
-                  style={{
-                    fontSize: 15,
-                    color: COLOURS.white,
-                    //marginBottom: 50,
-                    fontFamily:
-                      Platform.OS == 'ios'
-                        ? FONTS.ROBOTO_MEDIUM_IOS
-                        : FONTS.ROBOTO_MEDIUM,
-                  }}>
-                  Batch Order ({data.dispatch_orders.length})
-                </Text>
+              <View style={styles.countView}>
+                <MontserratSemiBold style={styles.orderCountText}>
+                  {data.dispatch_orders.length} orders (batch)
+                </MontserratSemiBold>
+
                 {!isOrderLoading && data.status == 'pending' ? (
                   <TouchableOpacity
                     activeOpacity={0.6}
-                    onPress={() => {
-                      console.log('batch start id is', data.id);
-                      handleStartJourneyDialog(data.id);
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        color: COLOURS.white,
-                        fontFamily:
-                          Platform.OS == 'ios'
-                            ? FONTS.ROBOTO_MEDIUM_IOS
-                            : FONTS.ROBOTO_MEDIUM,
-                      }}>
-                      Start
-                    </Text>
+                    onPress={() => handleStartJourneyDialog(data.id)}
+                    style={styles.startRideView}>
+                    <MontserratSemiBold style={styles.startRideText}>
+                      Start ride
+                    </MontserratSemiBold>
                   </TouchableOpacity>
-                ) : !isOrderLoading && data.status == 'started' ? (
-                  <TouchableOpacity activeOpacity={0.8}>
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        color: COLOURS.white,
-                        fontFamily:
-                          Platform.OS == 'ios'
-                            ? FONTS.ROBOTO_MEDIUM_IOS
-                            : FONTS.ROBOTO_MEDIUM,
-                      }}>
+                ) : data.status == 'started' ? (
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    style={styles.inProgressView}>
+                    <MontserratSemiBold style={styles.inProgressText}>
                       In progress
-                    </Text>
+                    </MontserratSemiBold>
                   </TouchableOpacity>
                 ) : null}
-                {/* {isOrderLoading ? (
-                  <ActivityIndicator size="small" color={COLOURS.white} />
-                ) : null} */}
               </View>
             </>
           }
         />
       );
-    }
+    } else {
+      let item = data.dispatch_orders ? data?.dispatch_orders[0] : {};
 
-    let item = data.dispatch_orders ? data.dispatch_orders[0] : {};
+      if (item.order) {
+        let address1 =
+          item.order && item.order.customer
+            ? item.order.customer.address
+            : address;
+        //console.log("address1", address1)
+        let end = address1;
+        return (
+          <>
+            <View style={styles.countView}>
+              <MontserratSemiBold style={styles.orderCountText}>
+                1 Order
+              </MontserratSemiBold>
 
-    if (item.order) {
-      let address1 =
-        item.order && item.order.customer
-          ? item.order.customer.address
-          : address;
-      //console.log("address1", address1)
-      let end = address1;
-      return (
-        <Order1
-          name={item.order.customer.name ? item.order.customer.name : name}
-          address={item.order.customer ? item.order.customer.address : address}
-          phoneNumber={
-            item.order.customer ? item.order.customer.phoneNumber : phone
-          }
-          status={item.status}
-          date={getReadableDateAndTime(item.updatedAt)}
-          onPressNavigate={createOpenLink({
-            travelType,
-            end,
-            provider: 'google',
-          })}
-          onPressCall={() =>
-            dialNumber(
-              item.order.customer ? item.order.customer.phoneNumber : phone,
-            )
-          }
-          statusMessage={data.status}
-          isJourneyStarted={isJourneyStarted}
-          isOrderLoading={isOrderLoading}
-          pressStart={() => {
-            console.log('Start id is', data.id);
-            handleStartJourneyDialog(data.id);
-          }}
-          onPressView={() =>
-            navigation.navigate('OrderDetails', {
-              id: item.id,
-              name: item.order.customer ? item.order.customer.name : name,
-              address: item.order.customer
-                ? item.order.customer.address
-                : address,
-              phoneNumber: item.order.customer
-                ? item.order.customer.phoneNumber
-                : phone,
-              status: item.status,
-              date: item.updatedAt,
-              parentId: data.id,
-              parentStatus: data.status,
-            })
-          }
-        />
-      );
+              {data?.status == 'pending' ? (
+                <TouchableOpacity
+                  activeOpacity={0.6}
+                  onPress={() => handleStartJourneyDialog(data.id)}
+                  style={styles.startRideView}>
+                  <MontserratSemiBold style={styles.startRideText}>
+                    Start ride
+                  </MontserratSemiBold>
+                </TouchableOpacity>
+              ) : data?.status == 'started' ? (
+                <TouchableOpacity
+                  activeOpacity={0.6}
+                  style={styles.inProgressView}>
+                  <MontserratSemiBold style={styles.inProgressText}>
+                    In progress...
+                  </MontserratSemiBold>
+                </TouchableOpacity>
+              ) : null}
+            </View>
+
+            <OrderCardComponent
+              name={item.order.customer.name ? item.order.customer.name : name}
+              address={
+                item.order.customer ? item.order.customer.address : address
+              }
+              phoneNumber={
+                item.order.customer ? item.order.customer.phoneNumber : phone
+              }
+              status={item.status}
+              date={getReadableDateAndTime(item.updatedAt)}
+              onPressNavigate={createOpenLink({
+                travelType,
+                end,
+                provider: 'google',
+              })}
+              onPressCall={() =>
+                dialNumber(
+                  item.order.customer ? item.order.customer.phoneNumber : phone,
+                )
+              }
+              statusMessage={data.status}
+              isJourneyStarted={isJourneyStarted}
+              isOrderLoading={isOrderLoading}
+              pressStart={() => {
+                console.log('Start id is', data.id);
+                handleStartJourneyDialog(data.id);
+              }}
+              onPressView={() =>
+                navigation.navigate('OrderDetails', {
+                  id: item.id,
+                  name: item.order.customer ? item.order.customer.name : name,
+                  address: item.order.customer
+                    ? item.order.customer.address
+                    : address,
+                  phoneNumber: item.order.customer
+                    ? item.order.customer.phoneNumber
+                    : phone,
+                  status: item.status,
+                  date: item.updatedAt,
+                  parentId: data.id,
+                  parentStatus: data.status,
+                })
+              }
+            />
+          </>
+        );
+      }
     }
   };
 
@@ -387,24 +382,23 @@ const DashboardScreen = ({navigation}) => {
 
       <>
         {!isLoading && orderState && orderState.length > 0 ? (
-          <View style={{justifyContent: 'center', alignItems:'center'}}>
-          <MontserratBold
-            style={{
-              marginTop: 10,
-              marginHorizontal: 5,
-              marginBottom: 5,
-              fontSize:fp(18)
-            }}>
-            Hi, {loginData?.rider?.name},
-          </MontserratBold>
-          <MontserratMedium
-            style={{
-             
-              marginHorizontal: 5,
-              marginBottom: 5,
-            }}>
-           you have new order/s
-          </MontserratMedium>
+          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <MontserratBold
+              style={{
+                marginTop: 10,
+                marginHorizontal: 5,
+                marginBottom: 5,
+                fontSize: fp(18),
+              }}>
+              Hi, {loginData?.rider?.name},
+            </MontserratBold>
+            <MontserratMedium
+              style={{
+                marginHorizontal: 5,
+                marginBottom: 5,
+              }}>
+              you have new order/s
+            </MontserratMedium>
           </View>
         ) : null}
 
@@ -416,37 +410,31 @@ const DashboardScreen = ({navigation}) => {
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }
-              keyExtractor={(item, index) => item.id + index}
+              keyExtractor={(item, index) => item?.id + index}
               renderItem={({item, index}) => renderItem(item)}
               showsVerticalScrollIndicator={false}
-              windowSize={201}
+              ListFooterComponent={<View style={{paddingBottom: 50}} />}
             />
           </Animatable.View>
         ) : isResultOrderEmpty || orderState.length == 0 ? (
           <View style={styles.parentView}>
-            <Text style={styles.nameTextview}>
-              Hello {loginData.rider.name}!
-            </Text>
+            <MontserratBold style={styles.nameTextview}>
+              Hello {loginData?.rider?.name}!
+            </MontserratBold>
 
-            <Image
-              source={require('../assets/images/rider.png')}
-              resizeMode={'contain'}
-              style={styles.image}
-            />
-            <Text style={styles.noOrderTextview}>
-              You have no orders {'\n'} assigned for today
-            </Text>
-            <TouchableOpacity
-              activeOpacity={0.7}
+            <MontserratMedium
               style={{
-                width: 100,
-                height: 50,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: COLOURS.blue,
-                borderRadius: 10,
-                marginTop: 20,
-              }}
+                marginHorizontal: 5,
+                marginBottom: 5,
+                flex: 0.5,
+                fontSize: fp(19),
+              }}>
+              You have no orders {'\n'} assigned for today
+            </MontserratMedium>
+
+            <TouchableOpacity
+              activeOpacity={0.6}
+              style={styles.refreshView}
               onPress={() =>
                 getOrdersRequest(
                   setLoadingMessage,
@@ -460,8 +448,15 @@ const DashboardScreen = ({navigation}) => {
                   setRefreshing,
                 )
               }>
-              <Text style={styles.refreshTextview}>Refresh</Text>
+              <MontserratSemiBold style={styles.refreshTextview}>
+                Refresh
+              </MontserratSemiBold>
             </TouchableOpacity>
+            <Image
+              source={IMAGES.bike}
+              // resizeMode={'center'}
+              style={[styles.image, {flex: 1.5}]}
+            />
           </View>
         ) : null}
       </>
@@ -483,6 +478,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     paddingHorizontal: 10,
+    marginTop: 40,
   },
   bg_view: {
     width: SIZES.width - 20,
@@ -497,11 +493,58 @@ const styles = StyleSheet.create({
     marginRight: 12,
     color: COLOURS.blue,
   },
+  inProgressView: {
+    width: 90,
+    height: 30,
+    backgroundColor: COLOURS.lightPurple,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
+  },
+  orderCountText: {
+    fontSize: fp(15),
+    color: COLOURS.riderTextColour,
+    flex: 1,
+  },
+  countView: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    paddingVertical: 5,
+    paddingHorizontal: 30,
+    marginVertical: 10,
+  },
+  startRideView: {
+    width: 80,
+    height: 30,
+    backgroundColor: COLOURS.blue,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
+  },
+  startRideText: {
+    fontSize: fp(13),
+    color: COLOURS.white,
+  },
+  inProgressText: {
+    fontSize: fp(12),
+    color: COLOURS.blue,
+  },
   iconImageView: {
     flexDirection: 'row',
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  refreshView: {
+    width: 124,
+    height: 62,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLOURS.blue,
+    borderRadius: 10,
+    top: -deviceHeight * 0.1,
+    borderRadius: 30,
   },
   clickButtonView: {
     flex: 0.5,
@@ -514,36 +557,24 @@ const styles = StyleSheet.create({
   nameView: {fontSize: 18, fontWeight: 'bold'},
   phoneNumber: {fontSize: 15, fontWeight: 'bold'},
   addressView: {fontSize: 14, paddingVertical: 7},
-  imageStyle: {
-    width: 15,
-    height: 20,
-    opacity: 0.75,
-    tintColor: COLOURS.blue,
-  },
+
   image: {
-    top: -100,
-    width: SIZES.width,
-    height: SIZES.width / 3,
+    //top: -100,
+    width: deviceWidth,
+    height: deviceHeight * 0.3,
   },
   noOrderTextview: {
     fontSize: 14,
     fontWeight: '300',
-    fontFamily:
-      Platform.OS == 'ios' ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
-    //marginTop:50
   },
   nameTextview: {
-    fontSize: 18,
-    fontWeight: '400',
-    fontFamily:
-      Platform.OS == 'ios' ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
-    flex: 0.5,
+    fontSize: fp(21),
+    flex: 0.15,
   },
   refreshTextview: {
-    fontSize: 14,
-    fontWeight: '300',
-    fontFamily:
-      Platform.OS == 'ios' ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
+    fontSize: fp(15),
+    // fontWeight: '300',
+
     color: COLOURS.white,
   },
 });

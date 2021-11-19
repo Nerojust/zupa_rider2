@@ -13,12 +13,13 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
-import ProductSansBold from '../components/Text/ProductSansBold'
-import { COLOURS } from "../utils/Colours";
-import { FONTS } from "../utils/Fonts";
-import { SIZES } from "../utils/Fonts";
-import { IMAGES } from '../utils/Images';
-import { deviceHeight, fp } from '../utils/responsive-screen';
+import ProductSansBold from '../components/Text/ProductSansBold';
+import {COLOURS} from '../utils/Colours';
+import {FONTS} from '../utils/Fonts';
+import {SIZES} from '../utils/Fonts';
+import {IMAGES} from '../utils/Images';
+import {deviceHeight, fp} from '../utils/responsive-screen';
+import MontserratMedium from './Text/MontserratMedium';
 
 export const BackViewHeader = ({
   onClose,
@@ -26,12 +27,13 @@ export const BackViewHeader = ({
   backText,
   shouldDisplayIcon,
   handleLogout,
-  style,image
+  style,
+  image,
 }) => {
   return (
     <View style={[styles.exitView]}>
       <TouchableOpacity
-        onPress={() => onLeftPress()}
+        onPress={onLeftPress}
         style={{flex: 0.2, paddingLeft: 15}}>
         <Image
           source={image}
@@ -39,11 +41,11 @@ export const BackViewHeader = ({
           style={{width: 25, height: 18}}
         />
       </TouchableOpacity>
-      <ProductSansBold
-        style={{fontSize: fp(16), flex: 1.3, color: COLOURS.gray2}}
+      <MontserratMedium
+        style={{fontSize: fp(18), flex: 1.3, color: COLOURS.gray2}}
         numberOfLines={1}>
         {backText}
-      </ProductSansBold>
+      </MontserratMedium>
 
       <View
         style={{
@@ -73,7 +75,7 @@ const styles = StyleSheet.create({
   exitText: {
     fontSize: 18,
     color: COLOURS.textInputColor,
-    flex: 0.9
+    flex: 0.9,
   },
   exitView: {
     flexDirection: 'row',
@@ -82,6 +84,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: COLOURS.white,
     borderBottomWidth: 0.4,
-    borderBottomColor: COLOURS.lightGray
+    borderBottomColor: COLOURS.lightGray,
   },
 });
