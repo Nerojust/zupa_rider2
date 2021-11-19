@@ -22,9 +22,8 @@ import { createOpenLink } from "react-native-open-maps";
 import AnimateLoadingButton from "react-native-animate-loading-button";
 
 import LoadingDialog from "../components/LoadingDialog";
-import { GET_RIDER_REQUESTS } from "../utils/Urls";
+import { GET_RIDER_REQUESTS } from "../utils/Api";
 import { useDispatch, useSelector } from "react-redux";
-import { saveNavState, saveOrder, setError } from "../store/Actions";
 import { dialNumber, getTodaysDate, handleError } from "../utils/utils";
 
 const OrderDetailScreen = ({ route, navigation }) => {

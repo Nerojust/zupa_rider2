@@ -1,23 +1,29 @@
 import React, {useEffect, useReducer, useMemo} from 'react';
 import {Provider, useSelector} from 'react-redux';
-import {store, persistor} from '../store/Store';
 import {createStackNavigator} from '@react-navigation/stack';
 import LoadingDialog from '../components/LoadingDialog';
 import {PersistGate} from 'redux-persist/integration/react';
 import {horizontalAnimation} from './Animation';
-import { AuthStackNavigator } from './stacks/AuthNavigator';
-import { HomeStackNavigator } from './stacks/HomeNavigator';
+import {AuthStackNavigator} from './stacks/AuthNavigator';
+import {HomeStackNavigator} from './stacks/HomeNavigator';
+import {persistor, store} from '../store/root.store';
+import client from '../utils/Api';
 
-const AppNav = createStackNavigator();
-export const AppStack = ({state}) => {
-  const renderLoading = () => <LoadingDialog loading={true} />;
+export const AppStack = () => {
+  const AppNav = createStackNavigator();
+  //retrieve saved token and add to header before calls
+  const {accessToken} = useSelector((x) => x.users);
 
-  //console.log("state is ", state)
+  //add to header
+  client.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+
   return (
     <Provider store={store}>
-      <PersistGate persistor={persistor} loading={renderLoading()}>
+      <PersistGate
+        loading={<LoadingDialog loading={true} />}
+        persistor={persistor}>
         <AppNav.Navigator screenOptions={horizontalAnimation}>
-          {state.userToken == null ? (
+          {!accessToken ? (
             <AppNav.Screen name="Auth" component={AuthStackNavigator} />
           ) : (
             <AppNav.Screen name="Home" component={HomeStackNavigator} />

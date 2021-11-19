@@ -12,11 +12,9 @@ import {
   Image,
   StatusBar,
 } from 'react-native';
-//import NetInfo from "@react-native-community/netinfo";
 import {AuthContext} from './Context';
 import call from 'react-native-phone-call';
-import {saveOrder} from '../store/Actions';
-import {GET_RIDER_REQUESTS} from './Urls';
+import {GET_RIDER_REQUESTS} from './Api';
 import {COLOURS} from '../utils/Colours';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {DrawerActions} from '@react-navigation/routers';
@@ -49,6 +47,15 @@ export const CustomStatusBar = ({
   );
 };
 
+
+export const clearStorage = async () => {
+  try {
+    await AsyncStorage.clear();
+    console.log('Cleared all storage');
+  } catch (error) {
+    console.log(error);
+  }
+};
 export function handleBackPress(navigation) {
   const {signOut} = useContext(AuthContext);
   //console.log("navigation is", navigation);
@@ -150,15 +157,52 @@ export const validateEmail = (email) => {
 //     };
 //   }, []);
 // };
+export const LIMIT_FIGURE = 50;
+export const INDEX_PAGE_SIZE_DEFAULT = 50;
+export const INDEX_PAGE_SIZE_OPTIONS = [5, 10, 20, 30, 50, 100];
 
-export const handleError = (error) => {
-  //console.log("er", error);
+export const handleError = (errormessage, dispatch, extMessage) => {
+  var error = errormessage?.message;
+  //console.log('the error is ', error);
+
   if (
-    error == 'TypeError: Network request failed' ||
-    error == 'Network request failed' ||
-    error == "SyntaxError: JSON Parse error: Unrecognized token '<'"
+    error == 'Network Error' ||
+    error == 'Request failed with status code 502' ||
+    error == 'timeout of 0ms exceeded'
   ) {
-    alert('Network error, please try again');
+    alert('Network error, please check your network and try again');
+    return;
+  } else if (error == 'Request failed with status code 401') {
+    console.log('session expired. try to go back to auth page.');
+    dispatch(logoutUser());
+    return;
+  } else if (error == 'Request failed with status code 500') {
+    alert('Oops! Server error, unable to ' + extMessage);
+    return;
+  } else if (error.includes('undefined is not an object (evaluating ')) {
+    alert('Oops! Server error, unable to ' + extMessage + '. 3');
+    return;
+  } else if (error == 'Request failed with status code 403') {
+    alert('Sorry!, Invalid credentials, please check and try again');
+    return;
+  } else if (error == 'Request failed with status code 409') {
+    alert(
+      'Sorry!, this email address already exists, please check and try again'
+    );
+    return;
+  } else if (
+    error == 'undefined is not an object (evaluating "t.response.status")'
+  ) {
+    alert(
+      'Sorry!, this email address already exists, please check and try again'
+    );
+    return;
+  } else {
+    alert(
+      'Oops!, we ran into a little issue, no worries, just refresh the page.'
+    );
+    // alert(error + '');
+    return;
   }
 };
 
@@ -279,7 +323,7 @@ export const getOrdersRequest = (
                 refreshedList.push(element);
               }
             }
-            dispatch(saveOrder(refreshedList));
+            //dispatch(saveOrder(refreshedList));
             console.log('done getting orders in utils');
             //scroll to the top
             if (shouldScroll) {

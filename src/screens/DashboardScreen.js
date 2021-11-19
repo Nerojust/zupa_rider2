@@ -21,7 +21,7 @@ import OrderCardComponent from '../components/OrderCardComponent';
 import * as Animatable from 'react-native-animatable';
 import LoadingDialog from '../components/LoadingDialog';
 import MontserratBold from '../components/Text/MontserratBold';
-import {GET_RIDER_REQUESTS} from '../utils/Urls';
+import {GET_RIDER_REQUESTS} from '../utils/Api';
 
 import {
   getOrdersRequest,
@@ -61,8 +61,8 @@ const DashboardScreen = ({navigation}) => {
   var newOrderList = [];
   const dispatch = useDispatch();
   const [isResultOrderEmpty, setIsResultOrderEmpty] = useState(false);
-  const loginData = useSelector((state) => state.login.loginResults);
-  const orderState = useSelector((state) => state.orders.orders);
+  const {user} = useSelector((state) => state.users);
+  const orderState = useSelector((state) => state.orders);
   //console.log("order state", orderState);
   const [orderArray, setOrderArray] = useState([]);
 
@@ -71,17 +71,17 @@ const DashboardScreen = ({navigation}) => {
     setTimeout(() => {
       showLoader();
     }, 0);
-    getOrdersRequest(
-      setLoadingMessage,
-      setIsLoading,
-      'Fetching your orders for today...',
-      loginData,
-      dispatch,
-      true,
-      flatListRef,
-      setIsResultOrderEmpty,
-      setRefreshing,
-    );
+    // getOrdersRequest(
+    //   setLoadingMessage,
+    //   setIsLoading,
+    //   'Fetching your orders for today...',
+    //   loginData,
+    //   dispatch,
+    //   true,
+    //   flatListRef,
+    //   setIsResultOrderEmpty,
+    //   setRefreshing,
+    // );
     setTimeout(() => {
       dismissLoader();
     }, 0);
@@ -104,190 +104,190 @@ const DashboardScreen = ({navigation}) => {
     setOrderArray([]);
     newOrderList = [];
 
-    getOrdersRequest(
-      setLoadingMessage,
-      setIsLoading,
-      'Fetching your orders for today...',
-      loginData,
-      dispatch,
-      true,
-      flatListRef,
-      setIsResultOrderEmpty,
-      setRefreshing,
-    );
+    // getOrdersRequest(
+    //   setLoadingMessage,
+    //   setIsLoading,
+    //   'Fetching your orders for today...',
+    //   loginData,
+    //   dispatch,
+    //   true,
+    //   flatListRef,
+    //   setIsResultOrderEmpty,
+    //   setRefreshing,
+    // );
   }, []);
 
-  const renderBatchList = (item, data) => {
-    if (item.order) {
-      let address1 =
-        item.order && item.order.customer
-          ? item.order.customer.address
-          : address;
-      //console.log("address1", address1)
-      let end = address1;
-      return (
-        <OrderCardComponent
-          name={item.order.customer.name ? item.order.customer.name : name}
-          address={item.order.customer ? item.order.customer.address : address}
-          phoneNumber={
-            item.order.customer ? item.order.customer.phoneNumber : phone
-          }
-          status={item.status}
-          date={getReadableDateAndTime(item.updatedAt)}
-          onPressNavigate={createOpenLink({
-            travelType,
-            end,
-            provider: 'google',
-          })}
-          onPressCall={() =>
-            dialNumber(
-              item.order.customer ? item.order.customer.phoneNumber : phone,
-            )
-          }
-          onPressView={() =>
-            navigation.navigate('OrderDetails', {
-              id: item.id,
-              name: item.order.customer ? item.order.customer.name : name,
-              address: item.order.customer
-                ? item.order.customer.address
-                : address,
-              phoneNumber: item.order.customer
-                ? item.order.customer.phoneNumber
-                : phone,
-              status: item.status,
-              date: item.updatedAt,
-              parentId: data.id,
-              parentStatus: data.status,
-            })
-          }
-        />
-      );
-    }
-  };
-  const renderItem = (data) => {
-    if (data?.dispatch_orders && data?.dispatch_orders.length > 1) {
-      return (
-        <FlatList
-          data={data?.dispatch_orders}
-          keyExtractor={(item) => item.id}
-          renderItem={({item, index}) => renderBatchList(item, data)}
-          showsVerticalScrollIndicator={false}
-          ListHeaderComponent={
-            <>
-              <View style={styles.countView}>
-                <MontserratSemiBold style={styles.orderCountText}>
-                  {data.dispatch_orders.length} orders (batch)
-                </MontserratSemiBold>
+  // const renderBatchList = (item, data) => {
+  //   if (item.order) {
+  //     let address1 =
+  //       item.order && item.order.customer
+  //         ? item.order.customer.address
+  //         : address;
+  //     //console.log("address1", address1)
+  //     let end = address1;
+  //     return (
+  //       <OrderCardComponent
+  //         name={item.order.customer.name ? item.order.customer.name : name}
+  //         address={item.order.customer ? item.order.customer.address : address}
+  //         phoneNumber={
+  //           item.order.customer ? item.order.customer.phoneNumber : phone
+  //         }
+  //         status={item.status}
+  //         date={getReadableDateAndTime(item.updatedAt)}
+  //         onPressNavigate={createOpenLink({
+  //           travelType,
+  //           end,
+  //           provider: 'google',
+  //         })}
+  //         onPressCall={() =>
+  //           dialNumber(
+  //             item.order.customer ? item.order.customer.phoneNumber : phone,
+  //           )
+  //         }
+  //         onPressView={() =>
+  //           navigation.navigate('OrderDetails', {
+  //             id: item.id,
+  //             name: item.order.customer ? item.order.customer.name : name,
+  //             address: item.order.customer
+  //               ? item.order.customer.address
+  //               : address,
+  //             phoneNumber: item.order.customer
+  //               ? item.order.customer.phoneNumber
+  //               : phone,
+  //             status: item.status,
+  //             date: item.updatedAt,
+  //             parentId: data.id,
+  //             parentStatus: data.status,
+  //           })
+  //         }
+  //       />
+  //     );
+  //   }
+  // };
+  // const renderItem = (data) => {
+  //   if (data?.dispatch_orders && data?.dispatch_orders.length > 1) {
+  //     return (
+  //       <FlatList
+  //         data={data?.dispatch_orders}
+  //         keyExtractor={(item) => item.id}
+  //         renderItem={({item, index}) => renderBatchList(item, data)}
+  //         showsVerticalScrollIndicator={false}
+  //         ListHeaderComponent={
+  //           <>
+  //             <View style={styles.countView}>
+  //               <MontserratSemiBold style={styles.orderCountText}>
+  //                 {data.dispatch_orders.length} orders (batch)
+  //               </MontserratSemiBold>
 
-                {!isOrderLoading && data.status == 'pending' ? (
-                  <TouchableOpacity
-                    activeOpacity={0.6}
-                    onPress={() => handleStartJourneyDialog(data.id)}
-                    style={styles.startRideView}>
-                    <MontserratSemiBold style={styles.startRideText}>
-                      Start ride
-                    </MontserratSemiBold>
-                  </TouchableOpacity>
-                ) : data.status == 'started' ? (
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    style={styles.inProgressView}>
-                    <MontserratSemiBold style={styles.inProgressText}>
-                      In progress
-                    </MontserratSemiBold>
-                  </TouchableOpacity>
-                ) : null}
-              </View>
-            </>
-          }
-        />
-      );
-    } else {
-      let item = data.dispatch_orders ? data?.dispatch_orders[0] : {};
+  //               {!isOrderLoading && data.status == 'pending' ? (
+  //                 <TouchableOpacity
+  //                   activeOpacity={0.6}
+  //                   onPress={() => handleStartJourneyDialog(data.id)}
+  //                   style={styles.startRideView}>
+  //                   <MontserratSemiBold style={styles.startRideText}>
+  //                     Start ride
+  //                   </MontserratSemiBold>
+  //                 </TouchableOpacity>
+  //               ) : data.status == 'started' ? (
+  //                 <TouchableOpacity
+  //                   activeOpacity={0.8}
+  //                   style={styles.inProgressView}>
+  //                   <MontserratSemiBold style={styles.inProgressText}>
+  //                     In progress
+  //                   </MontserratSemiBold>
+  //                 </TouchableOpacity>
+  //               ) : null}
+  //             </View>
+  //           </>
+  //         }
+  //       />
+  //     );
+  //   } else {
+  //     let item = data.dispatch_orders ? data?.dispatch_orders[0] : {};
 
-      if (item.order) {
-        let address1 =
-          item.order && item.order.customer
-            ? item.order.customer.address
-            : address;
-        //console.log("address1", address1)
-        let end = address1;
-        return (
-          <>
-            <View style={styles.countView}>
-              <MontserratSemiBold style={styles.orderCountText}>
-                1 Order
-              </MontserratSemiBold>
+  //     if (item.order) {
+  //       let address1 =
+  //         item.order && item.order.customer
+  //           ? item.order.customer.address
+  //           : address;
+  //       //console.log("address1", address1)
+  //       let end = address1;
+  //       return (
+  //         <>
+  //           <View style={styles.countView}>
+  //             <MontserratSemiBold style={styles.orderCountText}>
+  //               1 Order
+  //             </MontserratSemiBold>
 
-              {data?.status == 'pending' ? (
-                <TouchableOpacity
-                  activeOpacity={0.6}
-                  onPress={() => handleStartJourneyDialog(data.id)}
-                  style={styles.startRideView}>
-                  <MontserratSemiBold style={styles.startRideText}>
-                    Start ride
-                  </MontserratSemiBold>
-                </TouchableOpacity>
-              ) : data?.status == 'started' ? (
-                <TouchableOpacity
-                  activeOpacity={0.6}
-                  style={styles.inProgressView}>
-                  <MontserratSemiBold style={styles.inProgressText}>
-                    In progress...
-                  </MontserratSemiBold>
-                </TouchableOpacity>
-              ) : null}
-            </View>
+  //             {data?.status == 'pending' ? (
+  //               <TouchableOpacity
+  //                 activeOpacity={0.6}
+  //                 onPress={() => handleStartJourneyDialog(data.id)}
+  //                 style={styles.startRideView}>
+  //                 <MontserratSemiBold style={styles.startRideText}>
+  //                   Start ride
+  //                 </MontserratSemiBold>
+  //               </TouchableOpacity>
+  //             ) : data?.status == 'started' ? (
+  //               <TouchableOpacity
+  //                 activeOpacity={0.6}
+  //                 style={styles.inProgressView}>
+  //                 <MontserratSemiBold style={styles.inProgressText}>
+  //                   In progress...
+  //                 </MontserratSemiBold>
+  //               </TouchableOpacity>
+  //             ) : null}
+  //           </View>
 
-            <OrderCardComponent
-              name={item.order.customer.name ? item.order.customer.name : name}
-              address={
-                item.order.customer ? item.order.customer.address : address
-              }
-              phoneNumber={
-                item.order.customer ? item.order.customer.phoneNumber : phone
-              }
-              status={item.status}
-              date={getReadableDateAndTime(item.updatedAt)}
-              onPressNavigate={createOpenLink({
-                travelType,
-                end,
-                provider: 'google',
-              })}
-              onPressCall={() =>
-                dialNumber(
-                  item.order.customer ? item.order.customer.phoneNumber : phone,
-                )
-              }
-              statusMessage={data.status}
-              isJourneyStarted={isJourneyStarted}
-              isOrderLoading={isOrderLoading}
-              pressStart={() => {
-                console.log('Start id is', data.id);
-                handleStartJourneyDialog(data.id);
-              }}
-              onPressView={() =>
-                navigation.navigate('OrderDetails', {
-                  id: item.id,
-                  name: item.order.customer ? item.order.customer.name : name,
-                  address: item.order.customer
-                    ? item.order.customer.address
-                    : address,
-                  phoneNumber: item.order.customer
-                    ? item.order.customer.phoneNumber
-                    : phone,
-                  status: item.status,
-                  date: item.updatedAt,
-                  parentId: data.id,
-                  parentStatus: data.status,
-                })
-              }
-            />
-          </>
-        );
-      }
-    }
-  };
+  //           <OrderCardComponent
+  //             name={item.order.customer.name ? item.order.customer.name : name}
+  //             address={
+  //               item.order.customer ? item.order.customer.address : address
+  //             }
+  //             phoneNumber={
+  //               item.order.customer ? item.order.customer.phoneNumber : phone
+  //             }
+  //             status={item.status}
+  //             date={getReadableDateAndTime(item.updatedAt)}
+  //             onPressNavigate={createOpenLink({
+  //               travelType,
+  //               end,
+  //               provider: 'google',
+  //             })}
+  //             onPressCall={() =>
+  //               dialNumber(
+  //                 item.order.customer ? item.order.customer.phoneNumber : phone,
+  //               )
+  //             }
+  //             statusMessage={data.status}
+  //             isJourneyStarted={isJourneyStarted}
+  //             isOrderLoading={isOrderLoading}
+  //             pressStart={() => {
+  //               console.log('Start id is', data.id);
+  //               handleStartJourneyDialog(data.id);
+  //             }}
+  //             onPressView={() =>
+  //               navigation.navigate('OrderDetails', {
+  //                 id: item.id,
+  //                 name: item.order.customer ? item.order.customer.name : name,
+  //                 address: item.order.customer
+  //                   ? item.order.customer.address
+  //                   : address,
+  //                 phoneNumber: item.order.customer
+  //                   ? item.order.customer.phoneNumber
+  //                   : phone,
+  //                 status: item.status,
+  //                 date: item.updatedAt,
+  //                 parentId: data.id,
+  //                 parentStatus: data.status,
+  //               })
+  //             }
+  //           />
+  //         </>
+  //       );
+  //     }
+  //   }
+  // };
 
   /**
    * Method to start the journey for an order or batch
@@ -385,7 +385,7 @@ const DashboardScreen = ({navigation}) => {
           <View style={{justifyContent: 'center', alignItems: 'center'}}>
             <MontserratBold
               style={{
-                marginTop: 10,
+                marginTop: 5,
                 marginHorizontal: 5,
                 marginBottom: 5,
                 fontSize: fp(18),
@@ -454,7 +454,6 @@ const DashboardScreen = ({navigation}) => {
             </TouchableOpacity>
             <Image
               source={IMAGES.bike}
-              // resizeMode={'center'}
               style={[styles.image, {flex: 1.5}]}
             />
           </View>

@@ -17,11 +17,10 @@ import { COLOURS } from "../utils/Colours";
 import { FONTS } from "../utils/Fonts";
 
 import { SIZES } from "../utils/Sizes";
-import { logoutUser } from "../store/Actions";
+import { logoutUser } from "../store/actions/users";
 
 export function CustomDrawerContent(props) {
   const dispatch = useDispatch();
-  const { signOut } = useContext(AuthContext);
   return (
     <SafeAreaView style={styles.drawerBg}>
       <View style={styles.container}>
@@ -170,9 +169,8 @@ export function CustomDrawerContent(props) {
                   {
                     text: "Yes",
                     onPress: () => {
-                      // props.navigation.navigate("Login");
-                      // dispatch(logoutUser());
-                      signOut();
+                      dispatch(logoutUser());
+                      
                     },
                   },
                 ],

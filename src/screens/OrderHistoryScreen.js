@@ -28,7 +28,7 @@ import OrderHistory from "../components/OrderHistory";
 import Order from "../components/Order";
 import * as Animatable from "react-native-animatable";
 import LoadingDialog from "../components/LoadingDialog";
-import { GET_RIDER_REQUESTS } from "../utils/Urls";
+import { GET_RIDER_REQUESTS } from "../utils/Api";
 import { useDispatch } from "react-redux";
 import RBSheet from "react-native-raw-bottom-sheet";
 import DatePicker from "react-native-datepicker";

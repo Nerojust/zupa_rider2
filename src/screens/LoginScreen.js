@@ -1,19 +1,11 @@
 //import liraries
-import React, {
-  Component,
-  useEffect,
-  useState,
-  useContext,
-  useCallback,
-  useRef,
-} from 'react';
+import React, {useState, useContext, useRef} from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Image,
-  StatusBar,
   ImageBackground,
   Platform,
 } from 'react-native';
@@ -23,22 +15,16 @@ import {SIZES} from '../utils/Sizes';
 import {AuthContext} from '../utils/Context';
 import {useDispatch} from 'react-redux';
 import TogglePasswordEye from '../components/TogglePassword';
-import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
-import LoadingDialog from '../components/LoadingDialog';
 import TextInputComponent from '../components/TextInputComponent';
 import AnimateLoadingButton from 'react-native-animate-loading-button';
-import {GET_RIDER_REQUESTS} from '../utils/Urls';
-import {LOGIN_URL} from '../utils/Urls';
 import TextInputComponent2 from '../components/TextInputComponent2';
-import DisplayButton from '../components/Button';
-import {login, loginUser, saveOrder, setError} from '../store/Actions';
-import {handleError} from '../utils/utils';
+
 import ViewProviderComponent from '../components/ViewProviderComponent';
+import {login} from '../store/actions/users';
 
 // create a component
 const LoginScreen = ({navigation}) => {
   const dispatch = useDispatch();
-  const {signIn} = useContext(AuthContext);
   const [phoneNumber, setPhoneNumber] = useState('08000000000');
   const [password, setPassword] = useState('2729');
   const phoneNumberRef = useRef(null);
@@ -77,96 +63,57 @@ const LoginScreen = ({navigation}) => {
     if (!phoneNumber || !password) {
       return alert('please enter your phone number and password');
     }
-    showLoader();
-
-    fetch(LOGIN_URL, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        phoneNumber: phoneNumber,
-        pin: password,
-      }),
-    })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        if (responseJson) {
-          //console.log("login response", responseJson)
-          if (!responseJson.code) {
-            if (responseJson.rider && responseJson.jwt) {
-              getOrders(responseJson.jwt, responseJson);
-              //console.log(responseJson);
-            } else {
-              console.log(responseJson.message);
-              //dispatch(setError(responseJson.message));
-              dispatch(
-                setError(
-                  (message =
-                    responseJson.message == 'jwt malformed'
-                      ? 'Oops! Server error, please try again later'
-                      : responseJson.message),
-                ),
-              );
-            }
-          } else {
-            dispatch(setError(responseJson.message));
-          }
-        } else {
-          dispatch(setError(responseJson.message));
-        }
-        dismissLoader();
-      })
-      .catch((error) => {
-        handleError(error);
-        console.log('login error', error);
-        dismissLoader();
-      });
-  };
-
-  const getOrders = (token, loginData) => {
-    var myHeaders = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    myHeaders.append('Authorization', 'Bearer ' + token);
-
-    var requestOptions = {
-      method: 'GET',
-      headers: myHeaders,
-      redirect: 'follow',
+    var payload = {
+      phoneNumber: phoneNumber,
+      pin: password,
     };
-    fetch(GET_RIDER_REQUESTS, requestOptions)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        if (responseJson) {
-          if (!responseJson.code) {
-            var newOrderList = [];
-            for (let i = 0; i < responseJson.length; i++) {
-              const element = responseJson[i];
-              if (element.status != 'completed') {
-                newOrderList.push(element);
-              }
-            }
-            dispatch(saveOrder(newOrderList));
-            console.log('login orders saved to redux');
-            if ((loginData && newOrderList) || loginData) {
-              dismissLoader();
-              dispatch(loginUser(loginData));
-              signIn(loginData);
-            }
-          } else {
-            alert(responseJson.message);
-          }
-        } else {
-          alert(responseJson.message);
-        }
-      })
-      .catch((error) => {
-        console.log('error', error);
-        dismissLoader();
-        handleError(error);
-      });
+    showLoader();
+    dispatch(login(payload));
+    dismissLoader();
   };
+
+  // const getOrders = (token, loginData) => {
+  //   var myHeaders = new Headers();
+  //   myHeaders.append('Content-Type', 'application/json');
+  //   myHeaders.append('Authorization', 'Bearer ' + token);
+
+  //   var requestOptions = {
+  //     method: 'GET',
+  //     headers: myHeaders,
+  //     redirect: 'follow',
+  //   };
+  //   fetch(GET_RIDER_REQUESTS, requestOptions)
+  //     .then((response) => response.json())
+  //     .then((responseJson) => {
+  //       if (responseJson) {
+  //         if (!responseJson.code) {
+  //           var newOrderList = [];
+  //           for (let i = 0; i < responseJson.length; i++) {
+  //             const element = responseJson[i];
+  //             if (element.status != 'completed') {
+  //               newOrderList.push(element);
+  //             }
+  //           }
+  //           dispatch(saveOrder(newOrderList));
+  //           console.log('login orders saved to redux');
+  //           if ((loginData && newOrderList) || loginData) {
+  //             dismissLoader();
+  //             dispatch(loginUser(loginData));
+  //             signIn(loginData);
+  //           }
+  //         } else {
+  //           alert(responseJson.message);
+  //         }
+  //       } else {
+  //         alert(responseJson.message);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log('error', error);
+  //       dismissLoader();
+  //       handleError(error);
+  //     });
+  // };
 
   return (
     <ViewProviderComponent>
@@ -238,26 +185,6 @@ const LoginScreen = ({navigation}) => {
                 onPress={makeLoginRequest.bind(this)}
               />
             </View>
-            {/* <View style={styles.signRowView}>
-              <Text
-                style={{
-                  color: COLOURS.black,
-
-                  fontSize: 14,
-                  alignSelf: "center",
-                  fontFamily:
-                    Platform.OS == "ios"
-                      ? FONTS.ROBOTO_REGULAR_IOS
-                      : FONTS.ROBOTO_REGULAR,
-                }}
-              >
-                Don't have an account?
-              </Text>
-
-              <TouchableOpacity style={{ marginLeft: 5 }}>
-                <Text style={styles.signUp}>Sign Up</Text>
-              </TouchableOpacity>
-            </View> */}
           </View>
         </View>
       </ImageBackground>
