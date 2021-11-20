@@ -47,7 +47,29 @@ export const CustomStatusBar = ({
   );
 };
 
-
+/**
+ * Method to start the journey for an order or batch
+ * @param {id to patch} data_id
+ */
+export const displayDialog = (message, method) => {
+  Alert.alert(
+    'Alert',
+    message,
+    [
+      {
+        text: 'No',
+        onPress: () => {
+          console.log('cancel Pressed');
+        },
+      },
+      {
+        text: 'Yes',
+        onPress: () => method,
+      },
+    ],
+    {cancelable: true},
+  );
+};
 export const clearStorage = async () => {
   try {
     await AsyncStorage.clear();
@@ -187,19 +209,19 @@ export const handleError = (errormessage, dispatch, extMessage) => {
     return;
   } else if (error == 'Request failed with status code 409') {
     alert(
-      'Sorry!, this email address already exists, please check and try again'
+      'Sorry!, this email address already exists, please check and try again',
     );
     return;
   } else if (
     error == 'undefined is not an object (evaluating "t.response.status")'
   ) {
     alert(
-      'Sorry!, this email address already exists, please check and try again'
+      'Sorry!, this email address already exists, please check and try again',
     );
     return;
   } else {
     alert(
-      'Oops!, we ran into a little issue, no worries, just refresh the page.'
+      'Oops!, we ran into a little issue, no worries, just refresh the page.',
     );
     // alert(error + '');
     return;

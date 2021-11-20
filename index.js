@@ -15,6 +15,7 @@ export default function Main() {
     "Require cycle: node_modules/react-native-popup-dialog/dist/type.js",
     "Require cycle: node_modules/react-native/Libraries/Network/fetch.js",
     "Warning: Can't perform a React state update on an unmounted component",
+    "Warning: An effect function must not return ",
   ]);
   return <App />;
 }

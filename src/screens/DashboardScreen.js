@@ -17,6 +17,7 @@ import MontserratBold from '../components/Text/MontserratBold';
 
 import {
   dialNumber,
+  displayDialog,
   getOrdersRequest,
   getReadableDateAndTime,
   getTodaysDate,
@@ -40,8 +41,6 @@ import LoaderShimmerComponent from '../components/LoaderShimmerComponent';
 const DashboardScreen = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [isJourneyStarted, setIsJourneyStarted] = useState(false);
-  const [isOrderLoading, setIsOrderLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
   const flatListRef = useRef(null);
   let name = '';
@@ -50,7 +49,7 @@ const DashboardScreen = ({navigation}) => {
   const travelType = 'drive';
   var newOrderList = [];
   const dispatch = useDispatch();
-  const [isResultOrderEmpty, setIsResultOrderEmpty] = useState(false);
+  const [hasDataLoaded, setHasDataLoaded] = useState(false);
   const {user} = useSelector((state) => state.users);
   //console.log("redux user", user)
 
@@ -61,15 +60,20 @@ const DashboardScreen = ({navigation}) => {
     patchOrderLoading,
   } = useSelector((state) => state.orders);
   //console.log("orders redux", orders);
-  const [orderArray, setOrderArray] = useState([]);
 
   useEffect(() => {
     fetchData();
   }, []);
 
   async function fetchData() {
-    await dispatch(getAllOrders());
+    setHasDataLoaded(false);
+    await dispatch(getAllOrders()).then((result) => {
+      if (result) {
+        setHasDataLoaded(true);
+      }
+    });
   }
+
   const onRefresh = () => {
     fetchData();
   };
@@ -121,6 +125,34 @@ const DashboardScreen = ({navigation}) => {
       );
     }
   };
+  const renderHeaderCounter = (data) => {
+    return (
+      <View style={styles.countView}>
+        <MontserratSemiBold style={styles.orderCountText}>
+          {data?.dispatch_orders.length > 1
+            ? data?.dispatch_orders.length + ' orders (batch)'
+            : data?.dispatch_orders.length + ' order'}
+        </MontserratSemiBold>
+
+        {hasDataLoaded && data?.status == 'pending' ? (
+          <TouchableOpacity
+            activeOpacity={0.6}
+            onPress={() => handleStartJourneyDialog(data.id)}
+            style={styles.startRideView}>
+            <MontserratSemiBold style={styles.startRideText}>
+              Start ride
+            </MontserratSemiBold>
+          </TouchableOpacity>
+        ) : data?.status == 'started' ? (
+          <TouchableOpacity activeOpacity={0.8} style={styles.inProgressView}>
+            <MontserratSemiBold style={styles.inProgressText}>
+              In progress
+            </MontserratSemiBold>
+          </TouchableOpacity>
+        ) : null}
+      </View>
+    );
+  };
   const renderItem = (data) => {
     if (data?.dispatch_orders && data?.dispatch_orders.length > 1) {
       return (
@@ -129,34 +161,7 @@ const DashboardScreen = ({navigation}) => {
           keyExtractor={(item) => item.id}
           renderItem={({item, index}) => renderBatchList(item, data)}
           showsVerticalScrollIndicator={false}
-          ListHeaderComponent={
-            <>
-              <View style={styles.countView}>
-                <MontserratSemiBold style={styles.orderCountText}>
-                  {data.dispatch_orders.length} orders (batch)
-                </MontserratSemiBold>
-
-                {!isOrderLoading && data.status == 'pending' ? (
-                  <TouchableOpacity
-                    activeOpacity={0.6}
-                    onPress={() => handleStartJourneyDialog(data.id)}
-                    style={styles.startRideView}>
-                    <MontserratSemiBold style={styles.startRideText}>
-                      Start ride
-                    </MontserratSemiBold>
-                  </TouchableOpacity>
-                ) : data.status == 'started' ? (
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    style={styles.inProgressView}>
-                    <MontserratSemiBold style={styles.inProgressText}>
-                      In progress
-                    </MontserratSemiBold>
-                  </TouchableOpacity>
-                ) : null}
-              </View>
-            </>
-          }
+          ListHeaderComponent={renderHeaderCounter(data)}
         />
       );
     } else {
@@ -171,30 +176,7 @@ const DashboardScreen = ({navigation}) => {
         let end = address1;
         return (
           <>
-            <View style={styles.countView}>
-              <MontserratSemiBold style={styles.orderCountText}>
-                1 Order
-              </MontserratSemiBold>
-
-              {data?.status == 'pending' ? (
-                <TouchableOpacity
-                  activeOpacity={0.6}
-                  onPress={() => handleStartJourneyDialog(data.id)}
-                  style={styles.startRideView}>
-                  <MontserratSemiBold style={styles.startRideText}>
-                    Start ride
-                  </MontserratSemiBold>
-                </TouchableOpacity>
-              ) : data?.status == 'started' ? (
-                <TouchableOpacity
-                  activeOpacity={0.6}
-                  style={styles.inProgressView}>
-                  <MontserratSemiBold style={styles.inProgressText}>
-                    In progress...
-                  </MontserratSemiBold>
-                </TouchableOpacity>
-              ) : null}
-            </View>
+            {renderHeaderCounter(data)}
 
             <OrderCardComponent
               name={item.order.customer.name ? item.order.customer.name : name}
@@ -217,8 +199,6 @@ const DashboardScreen = ({navigation}) => {
                 )
               }
               statusMessage={data.status}
-              isJourneyStarted={isJourneyStarted}
-              isOrderLoading={isOrderLoading}
               pressStart={() => {
                 console.log('Start id is', data.id);
                 handleStartJourneyDialog(data.id);
@@ -283,6 +263,60 @@ const DashboardScreen = ({navigation}) => {
     };
     dispatch(patchOrder(dispatchId, payload));
   };
+  const renderNoOrdersView = () => {
+    return (
+      <View style={styles.parentView}>
+        <MontserratBold style={styles.nameTextview}>
+          Hello {user?.rider?.name}!
+        </MontserratBold>
+
+        <MontserratMedium style={styles.newOrderText}>
+          You have no orders {'\n'} assigned for today
+        </MontserratMedium>
+
+        <TouchableOpacity
+          activeOpacity={0.6}
+          style={styles.refreshView}
+          onPress={fetchData}>
+          <MontserratSemiBold style={styles.refreshTextview}>
+            Refresh
+          </MontserratSemiBold>
+        </TouchableOpacity>
+        <Image source={IMAGES.bike} style={styles.image} />
+      </View>
+    );
+  };
+
+  const renderOrderListView = () => {
+    return (
+      <Animatable.View animation="fadeInUp" duraton="500" style={{flex: 1}}>
+        <FlatList
+          ref={flatListRef}
+          data={orders}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          keyExtractor={(item, index) => item?.id + index}
+          renderItem={({item}) => renderItem(item)}
+          showsVerticalScrollIndicator={false}
+          ListFooterComponent={<View style={{paddingBottom: 50}} />}
+        />
+      </Animatable.View>
+    );
+  };
+
+  const renderGreetingView = () => {
+    return (
+      <View style={styles.helloView}>
+        <MontserratBold style={styles.helloText}>
+          Hi, {user?.rider?.name},
+        </MontserratBold>
+        <MontserratMedium style={styles.helloText1}>
+          you have new order/s
+        </MontserratMedium>
+      </View>
+    );
+  };
 
   return (
     <ViewProviderComponent>
@@ -295,80 +329,15 @@ const DashboardScreen = ({navigation}) => {
       />
 
       <>
-        {!isLoading && orders && orders.length > 0 ? (
-          <View style={{justifyContent: 'center', alignItems: 'center'}}>
-            <MontserratBold
-              style={{
-                marginTop: 5,
-                marginHorizontal: 5,
-                marginBottom: 5,
-                fontSize: fp(18),
-              }}>
-              Hi, {user?.rider?.name},
-            </MontserratBold>
-            <MontserratMedium
-              style={{
-                marginHorizontal: 5,
-                marginBottom: 5,
-              }}>
-              you have new order/s
-            </MontserratMedium>
-          </View>
-        ) : null}
+        {!hasDataLoaded && orders && orders.length > 0
+          ? renderGreetingView()
+          : null}
 
-        {orders && orders.length > 0 ? (
-          <Animatable.View animation="fadeInUp" duraton="500" style={{flex: 1}}>
-            <FlatList
-              ref={flatListRef}
-              data={orders}
-              refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-              }
-              keyExtractor={(item, index) => item?.id + index}
-              renderItem={({item, index}) => renderItem(item)}
-              showsVerticalScrollIndicator={false}
-              ListFooterComponent={<View style={{paddingBottom: 50}} />}
-            />
-          </Animatable.View>
-        ) : isResultOrderEmpty || orders.length == 0 ? (
-          <View style={styles.parentView}>
-            <MontserratBold style={styles.nameTextview}>
-              Hello {user?.rider?.name}!
-            </MontserratBold>
-
-            <MontserratMedium
-              style={{
-                marginHorizontal: 5,
-                marginBottom: 5,
-                flex: 0.5,
-                fontSize: fp(19),
-              }}>
-              You have no orders {'\n'} assigned for today
-            </MontserratMedium>
-
-            <TouchableOpacity
-              activeOpacity={0.6}
-              style={styles.refreshView}
-              onPress={() =>
-                getOrdersRequest(
-                  setLoadingMessage,
-                  setIsLoading,
-                  'Fetching your orders for today...',
-                  loginData,
-                  dispatch,
-                  true,
-                  flatListRef,
-                  setIsResultOrderEmpty,
-                  setRefreshing,
-                )
-              }>
-              <MontserratSemiBold style={styles.refreshTextview}>
-                Refresh
-              </MontserratSemiBold>
-            </TouchableOpacity>
-            <Image source={IMAGES.bike} style={[styles.image, {flex: 1.5}]} />
-          </View>
-        ) : null}
+        {hasDataLoaded && orders && orders.length > 0
+          ? renderOrderListView()
+          : hasDataLoaded && orders?.length == 0
+          ? renderNoOrdersView()
+          : null}
       </>
 
       <LoaderShimmerComponent isLoading={ordersLoading} />
@@ -385,6 +354,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: COLOURS.white,
   },
+  newOrderText: {
+    marginHorizontal: 5,
+    marginBottom: 5,
+    flex: 0.5,
+    fontSize: fp(19),
+  },
   parentView: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -397,6 +372,17 @@ const styles = StyleSheet.create({
     height: SIZES.width / 2.4,
     backgroundColor: COLOURS.white,
     justifyContent: 'center',
+  },
+  helloView: {justifyContent: 'center', alignItems: 'center'},
+  helloText: {
+    marginTop: 5,
+    marginHorizontal: 5,
+    marginBottom: 5,
+    fontSize: fp(18),
+  },
+  helloText1: {
+    marginHorizontal: 5,
+    marginBottom: 5,
   },
   mainView: {padding: 13, flex: 0.7, justifyContent: 'center'},
   actionRowView: {
@@ -471,7 +457,7 @@ const styles = StyleSheet.create({
   addressView: {fontSize: 14, paddingVertical: 7},
 
   image: {
-    //top: -100,
+    flex: 1.5,
     width: deviceWidth,
     height: deviceHeight * 0.3,
   },
