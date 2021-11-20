@@ -1,5 +1,5 @@
 //import liraries
-import React, { Component, useRef, useEffect, useState } from "react";
+import React, {Component, useRef, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -11,106 +11,111 @@ import {
   Platform,
   Alert,
   SafeAreaView,
-} from "react-native";
+} from 'react-native';
 import {COLOURS} from '../utils/Colours';
 import {FONTS} from '../utils/Fonts';
 import {SIZES} from '../utils/Sizes';
-import DisplayButton from "../components/Button1";
-import SendSMS from "react-native-sms";
-import openMap from "react-native-open-maps";
-import { createOpenLink } from "react-native-open-maps";
-import AnimateLoadingButton from "react-native-animate-loading-button";
+import DisplayButton from '../components/Button1';
+import SendSMS from 'react-native-sms';
+import openMap from 'react-native-open-maps';
+import {createOpenLink} from 'react-native-open-maps';
+import AnimateLoadingButton from 'react-native-animate-loading-button';
 
-import LoadingDialog from "../components/LoadingDialog";
-import { GET_RIDER_REQUESTS } from "../utils/Api";
-import { useDispatch, useSelector } from "react-redux";
-import { dialNumber, getTodaysDate, handleError } from "../utils/utils";
+import LoadingDialog from '../components/LoadingDialog';
+import {GET_RIDER_REQUESTS} from '../utils/Api';
+import {useDispatch, useSelector} from 'react-redux';
+import {dialNumber, getTodaysDate, handleError} from '../utils/utils';
+import {BackViewHeader} from '../components/Header';
+import {IMAGES} from '../utils/Images';
+import {deviceWidth, fp} from '../utils/responsive-screen';
+import ViewProviderComponent from '../components/ViewProviderComponent';
+import MontserratSemiBold from '../components/Text/MontserratSemiBold';
 
-const OrderDetailScreen = ({ route, navigation }) => {
+const OrderDetailScreen = ({route, navigation}) => {
   const name = route.params.name;
   const address = route.params.address;
   const phoneNumber = route.params.phoneNumber;
   const status = route.params.status;
   //console.log("child status", status);
   const orderId = route.params.id;
-  console.log("order id", orderId);
+  console.log('order id', orderId);
   const date = route.params.date;
   const parentId = route.params.parentId;
   const parentStatus = route.params.parentStatus;
   //console.log("parent status ", parentStatus);
-  console.log("parent id ", parentId);
+  console.log('parent id ', parentId);
   const [isLoading, setIsLoading] = useState(false);
   const [isMarkComplete, setIsMarkComplete] = useState(false);
   const dispatch = useDispatch();
   const loadingButton = useRef();
-  const loginData = useSelector((state) => state.login.loginResults);
-  const orderData = useSelector((state) => state.orders.orders);
+  const {user} = useSelector((state) => state.users);
+  const {orders} = useSelector((state) => state.orders);
   // console.log("order redux", orderData);
 
   const end = address;
-  const travelType = "drive";
-  const openLocation = createOpenLink({ travelType, end, provider: "google" });
+  const travelType = 'drive';
+  const openLocation = createOpenLink({travelType, end, provider: 'google'});
 
   const sendTextMessage = () => {
     SendSMS.send(
       {
         body: `Hello ${name}, I will be delivering your package today. Please be on standby. Thank you`,
         recipients: [phoneNumber],
-        successTypes: ["sent", "queued"],
+        successTypes: ['sent', 'queued'],
         allowAndroidSendWithoutReadPermission: true,
       },
       (completed, cancelled, error) => {
         console.log(
-          "SMS Callback: completed: " +
+          'SMS Callback: completed: ' +
             completed +
-            " cancelled: " +
+            ' cancelled: ' +
             cancelled +
-            " error: " +
-            error
+            ' error: ' +
+            error,
         );
-      }
+      },
     );
   };
   const sendWhatsappMessage = () => {
     let whatsAppMessage = `Hello ${name} I will be delivering your package today. Please be on standby. Thank you`;
     let URL =
-      "whatsapp://send?text=" + whatsAppMessage + "&phone=234" + phoneNumber;
+      'whatsapp://send?text=' + whatsAppMessage + '&phone=234' + phoneNumber;
 
     Linking.openURL(URL)
       .then((data) => {
-        console.log("WhatsApp Opened", data);
+        console.log('WhatsApp Opened', data);
       })
       .catch((error) => {
-        alert("Oops! seems whatsapp is not installed on your device");
-        console.log("No whatsapp app found", error);
+        alert('Oops! seems whatsapp is not installed on your device');
+        console.log('No whatsapp app found', error);
       });
   };
   const handleNothing = () => {};
   const handleComplete = () => {
     Alert.alert(
-      "Order Alert",
-      "Do you want to comfirm order?",
+      'Order Alert',
+      'Do you want to comfirm order?',
       [
         {
-          text: "No",
+          text: 'No',
           onPress: () => {
-            console.log("cancel Pressed");
+            console.log('cancel Pressed');
           },
         },
         {
-          text: "Yes",
+          text: 'Yes',
           onPress: () => {
-            console.log("journey status is " + parentStatus);
-            if (parentStatus == "started") {
+            console.log('journey status is ' + parentStatus);
+            if (parentStatus == 'started') {
               performPatchRequest();
             } else {
-              alert("Start trip first");
+              alert('Start trip first');
               navigation.goBack();
             }
           },
         },
       ],
-      { cancelable: true }
+      {cancelable: true},
     );
   };
 
@@ -118,106 +123,104 @@ const OrderDetailScreen = ({ route, navigation }) => {
    * This performs the completed patch for a single order
    */
   const performPatchRequest = () => {
-    console.log("order id", orderId);
-    loadingButton.current.showLoading(true);
-
-    fetch(GET_RIDER_REQUESTS + "/" + orderId, {
-      method: "PATCH",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + loginData.jwt,
-      },
-      body: JSON.stringify({
-        status: "completed",
-      }),
-    })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        if (responseJson) {
-          if (!responseJson.code) {
-            getOrders();
-          } else {
-            if (loadingButton.current) {
-              loadingButton.current.showLoading(false);
-            }
-            dispatch(setError(responseJson.message));
-          }
-        } else {
-          if (loadingButton.current) {
-            loadingButton.current.showLoading(false);
-          }
-          dispatch(setError(responseJson.message));
-        }
-      })
-      .catch((error) => {
-        handleError(error);
-        console.log("patch error ", error);
-        dispatch(setError(error));
-        if (loadingButton.current) {
-          loadingButton.current.showLoading(false);
-        }
-      });
+    // console.log("order id", orderId);
+    // loadingButton.current.showLoading(true);
+    // fetch(GET_RIDER_REQUESTS + "/" + orderId, {
+    //   method: "PATCH",
+    //   headers: {
+    //     Accept: "application/json",
+    //     "Content-Type": "application/json",
+    //     Authorization: "Bearer " + loginData.jwt,
+    //   },
+    //   body: JSON.stringify({
+    //     status: "completed",
+    //   }),
+    // })
+    //   .then((response) => response.json())
+    //   .then((responseJson) => {
+    //     if (responseJson) {
+    //       if (!responseJson.code) {
+    //         getOrders();
+    //       } else {
+    //         if (loadingButton.current) {
+    //           loadingButton.current.showLoading(false);
+    //         }
+    //         dispatch(setError(responseJson.message));
+    //       }
+    //     } else {
+    //       if (loadingButton.current) {
+    //         loadingButton.current.showLoading(false);
+    //       }
+    //       dispatch(setError(responseJson.message));
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     handleError(error);
+    //     console.log("patch error ", error);
+    //     dispatch(setError(error));
+    //     if (loadingButton.current) {
+    //       loadingButton.current.showLoading(false);
+    //     }
+    //   });
   };
 
   /**
    * this handles the parent status update to completed thus ending the journey
    */
   const endTrip = () => {
-    console.log("parent id", parentId);
-    fetch(GET_RIDER_REQUESTS + "/" + parentId, {
-      method: "PATCH",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + loginData.jwt,
-      },
-      body: JSON.stringify({
-        status: "completed",
-        model: "dispatch",
-      }),
-    })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        if (responseJson) {
-          if (!responseJson.code) {
-            console.log("Trip ended");
-            setIsMarkComplete(true);
-            // if (loadingButton.current) {
-            //   loadingButton.current.showLoading(false);
-            // }
-          } else {
-            setIsMarkComplete(false);
-            dispatch(setError(responseJson.message));
-          }
-        } else {
-          setIsMarkComplete(false);
-
-          dispatch(setError(responseJson.message));
-        }
-        // if (loadingButton.current) {
-        //   loadingButton.current.showLoading(false);
-        // }
-      })
-      .catch((error) => {
-        handleError(error);
-        if (loadingButton.current) {
-          loadingButton.current.showLoading(false);
-        }
-        setIsMarkComplete(false);
-        console.log("start journey error: ", error);
-      });
+    // console.log("parent id", parentId);
+    // fetch(GET_RIDER_REQUESTS + "/" + parentId, {
+    //   method: "PATCH",
+    //   headers: {
+    //     Accept: "application/json",
+    //     "Content-Type": "application/json",
+    //     Authorization: "Bearer " + loginData.jwt,
+    //   },
+    //   body: JSON.stringify({
+    //     status: "completed",
+    //     model: "dispatch",
+    //   }),
+    // })
+    //   .then((response) => response.json())
+    //   .then((responseJson) => {
+    //     if (responseJson) {
+    //       if (!responseJson.code) {
+    //         console.log("Trip ended");
+    //         setIsMarkComplete(true);
+    //         // if (loadingButton.current) {
+    //         //   loadingButton.current.showLoading(false);
+    //         // }
+    //       } else {
+    //         setIsMarkComplete(false);
+    //         dispatch(setError(responseJson.message));
+    //       }
+    //     } else {
+    //       setIsMarkComplete(false);
+    //       dispatch(setError(responseJson.message));
+    //     }
+    //     // if (loadingButton.current) {
+    //     //   loadingButton.current.showLoading(false);
+    //     // }
+    //   })
+    //   .catch((error) => {
+    //     handleError(error);
+    //     if (loadingButton.current) {
+    //       loadingButton.current.showLoading(false);
+    //     }
+    //     setIsMarkComplete(false);
+    //     console.log("start journey error: ", error);
+    //   });
   };
 
   const getOrders = (isLoop) => {
     var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", "Bearer " + loginData.jwt);
+    myHeaders.append('Content-Type', 'application/json');
+    myHeaders.append('Authorization', 'Bearer ' + loginData.jwt);
 
     var requestOptions = {
-      method: "GET",
+      method: 'GET',
       headers: myHeaders,
-      redirect: "follow",
+      redirect: 'follow',
     };
     fetch(GET_RIDER_REQUESTS, requestOptions)
       .then((response) => response.json())
@@ -228,33 +231,33 @@ const OrderDetailScreen = ({ route, navigation }) => {
             for (let i = 0; i < responseJson.length; i++) {
               const oneOrder = responseJson[i];
               if (oneOrder.id == parentId) {
-                console.log("Found the match order and parent");
+                console.log('Found the match order and parent');
                 if (
                   oneOrder.dispatch_orders &&
                   oneOrder.dispatch_orders.length > 1
                 ) {
-                  console.log("dispatch is more than 1, batch");
+                  console.log('dispatch is more than 1, batch');
                   for (let j = 0; j < oneOrder.dispatch_orders.length; j++) {
                     const childOrder = oneOrder.dispatch_orders[j];
-                    if (childOrder.status == "completed") {
+                    if (childOrder.status == 'completed') {
                       count++;
                     }
                     if (count == oneOrder.dispatch_orders.length) {
-                      console.log("Count is " + count);
+                      console.log('Count is ' + count);
                       console.log(
-                        "count is equal to the dispatch length, so end trip for batch"
+                        'count is equal to the dispatch length, so end trip for batch',
                       );
                       endTrip();
                     }
                   }
                 } else if (oneOrder.dispatch_orders.length == 1) {
-                  console.log("dispatch is a single order and is equal to 1");
+                  console.log('dispatch is a single order and is equal to 1');
 
                   for (let k = 0; k < oneOrder.dispatch_orders.length; k++) {
                     const childOrder = oneOrder.dispatch_orders[k];
-                    if (childOrder.status == "completed") {
+                    if (childOrder.status == 'completed') {
                       console.log(
-                        "single order is completed already, start end trip"
+                        'single order is completed already, start end trip',
                       );
                       endTrip();
                     }
@@ -281,7 +284,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
         }
       })
       .catch((error) => {
-        console.log("error", error);
+        console.log('error', error);
         handleError(error);
         setIsMarkComplete(false);
 
@@ -292,13 +295,13 @@ const OrderDetailScreen = ({ route, navigation }) => {
   };
   const getOrdersAgain = () => {
     var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", "Bearer " + loginData.jwt);
+    myHeaders.append('Content-Type', 'application/json');
+    myHeaders.append('Authorization', 'Bearer ' + loginData.jwt);
 
     var requestOptions = {
-      method: "GET",
+      method: 'GET',
       headers: myHeaders,
-      redirect: "follow",
+      redirect: 'follow',
     };
     fetch(GET_RIDER_REQUESTS, requestOptions)
       .then((response) => response.json())
@@ -308,7 +311,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
             var newOrderList = [];
             for (let i = 0; i < responseJson.length; i++) {
               const element = responseJson[i];
-              if (element.status != "completed") {
+              if (element.status != 'completed') {
                 newOrderList.push(element);
                 //console.log("call done");
               }
@@ -323,91 +326,66 @@ const OrderDetailScreen = ({ route, navigation }) => {
         }
       })
       .catch((error) => {
-        console.log("error", error);
+        console.log('error', error);
         dismissLoader();
         handleError(error);
       });
   };
-  return (
-    <SafeAreaView style={styles.container}>
+  const renderOrderDetails = () => {
+    return (
       <View
         style={{
-          //flex: 1,
-          flexDirection: "row",
+          flex: 1,
           marginTop: 15,
-          alignItems: "center",
-          justifyContent: "flex-start",
-          paddingHorizontal: 5,
-        }}
-      >
-        <>
-          <Image
-            source={require("../assets/icons/calendar.png")}
-            resizeMode={"contain"}
-            style={{
-              width: 13,
-              height: 13,
-              flex: 0.37,
-            }}
-          />
-          <Text
-            selectable={true}
-            style={{ fontSize: 15, flex: 1.9, left: -10 }}
-          >
-            {getTodaysDate(date)}
-          </Text>
-        </>
-      </View>
-      <View
-        style={{
-          //flex: 1,
-          flexDirection: "row",
-          marginTop: 17,
-          alignItems: "center",
-          justifyContent: "flex-start",
-          paddingHorizontal: 5,
-        }}
-      >
-        <>
-          <Image
-            source={require("../assets/icons/pin.png")}
-            resizeMode={"contain"}
-            style={{
-              width: 13,
-              height: 13,
-              flex: 0.37,
-            }}
-          />
-          <Text
-            selectable={true}
-            style={{ fontSize: 15, flex: 1.9, left: -10 }}
-          >
-            {address}
-          </Text>
-        </>
-      </View>
+          paddingHorizontal: 20,
+        }}>
+        <MontserratSemiBold style={{fontSize: fp(15), color: COLOURS.gray5}}>
+          Date
+        </MontserratSemiBold>
 
-      <View
-        style={{
-          flexDirection: "row",
-          marginTop: 20,
-          alignSelf: "flex-start",
-          justifyContent: "center",
-          alignItems: "center",
-          paddingHorizontal: 5,
-        }}
-      >
-        <Image
-          source={require("../assets/icons/smartphone.png")}
-          resizeMode={"contain"}
-          style={{ width: 13, height: 13, flex: 0.37 }}
-        />
-        <Text selectable={true} style={{ fontSize: 15, flex: 1.9, left: -10 }}>
+        <MontserratSemiBold
+          style={{
+            fontSize: fp(15),
+            color: COLOURS.textInputColor,
+            marginTop: 4,
+          }}>
+          {getTodaysDate(date)}
+        </MontserratSemiBold>
+
+        <MontserratSemiBold
+          style={{fontSize: fp(15), color: COLOURS.gray5, marginTop: 15}}>
+          Location
+        </MontserratSemiBold>
+
+        <MontserratSemiBold
+          style={{fontSize: 15, color: COLOURS.textInputColor, marginTop: 4}}>
+          {address}
+        </MontserratSemiBold>
+
+        <MontserratSemiBold
+          style={{fontSize: fp(15), color: COLOURS.gray5, marginTop: 15}}>
+          Phone Number
+        </MontserratSemiBold>
+        <MontserratSemiBold
+          style={{fontSize: 15, color: COLOURS.textInputColor, marginTop: 4}}>
           {phoneNumber}
-        </Text>
+        </MontserratSemiBold>
       </View>
+    );
+  };
+  return (
+    <ViewProviderComponent>
+      <BackViewHeader
+        backText={'Order Details'}
+        image={IMAGES.arrowLeft}
+        onLeftPress={() => navigation.goBack()}
+        shouldDisplayIcon={true}
+        style={{width: deviceWidth, borderBottomWidth: 0}}
+      />
 
-      <View style={{ marginTop: 40 }}>
+      {renderOrderDetails()}
+
+      <View style={{marginTop: 40}}>
         <DisplayButton
           text="Navigate"
           onPress={openLocation}
@@ -418,7 +396,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
           tintColor={COLOURS.lightGray3}
         />
       </View>
-      <View style={{ marginTop: 30 }}>
+      <View style={{marginTop: 30}}>
         <DisplayButton
           text="Call"
           onPress={() => dialNumber(phoneNumber)}
@@ -431,35 +409,34 @@ const OrderDetailScreen = ({ route, navigation }) => {
       </View>
       <View
         style={{
-          flexDirection: "row",
+          flexDirection: 'row',
           marginTop: 30,
-          justifyContent: "center",
-          alignItems: "center",
+          justifyContent: 'center',
+          alignItems: 'center',
           width: SIZES.width - 70,
-        }}
-      >
-        <View style={{ flex: 1, marginRight: 3 }}>
+        }}>
+        <View style={{flex: 1, marginRight: 3}}>
           <DisplayButton
             text="Text"
             onPress={sendTextMessage}
             color={COLOURS.blue}
-            image={require("../assets/icons/smartphone.png")}
+            image={require('../assets/icons/smartphone.png')}
             tintColor={COLOURS.lightGray3}
           />
         </View>
-        <View style={{ flex: 1, marginLeft: 3 }}>
+        <View style={{flex: 1, marginLeft: 3}}>
           <DisplayButton
             text="Whatsapp"
             onPress={sendWhatsappMessage}
             color={COLOURS.blue}
             //left={SIZES.width / 3 - 5}
-            image={require("../assets/icons/smartphone.png")}
+            image={require('../assets/icons/smartphone.png')}
             tintColor={COLOURS.lightGray3}
           />
         </View>
       </View>
-      {status == "completed" ? (
-        <View style={{ marginTop: 30 }}>
+      {status == 'completed' ? (
+        <View style={{marginTop: 30}}>
           <DisplayButton
             text="Completed"
             color={COLOURS.green1}
@@ -467,16 +444,16 @@ const OrderDetailScreen = ({ route, navigation }) => {
           />
         </View>
       ) : (
-        <View style={{ marginTop: 30, width: SIZES.width - 70 }}>
+        <View style={{marginTop: 30, width: SIZES.width - 70}}>
           {!isMarkComplete ? (
             <AnimateLoadingButton
               ref={(c) => (loadingButton.current = c)}
               width={SIZES.width - 70}
               height={50}
               title="Mark Complete"
-              titleWeight={"700"}
+              titleWeight={'700'}
               titleFontFamily={
-                Platform.OS == "ios"
+                Platform.OS == 'ios'
                   ? FONTS.ROBOTO_BLACK_IOS
                   : FONTS.ROBOTO_MEDIUM
               }
@@ -493,9 +470,9 @@ const OrderDetailScreen = ({ route, navigation }) => {
               width={SIZES.width - 70}
               height={50}
               title="Completed"
-              titleWeight={"700"}
+              titleWeight={'700'}
               titleFontFamily={
-                Platform.OS == "ios"
+                Platform.OS == 'ios'
                   ? FONTS.ROBOTO_BLACK_IOS
                   : FONTS.ROBOTO_MEDIUM
               }
@@ -509,7 +486,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
           )}
         </View>
       )}
-    </SafeAreaView>
+    </ViewProviderComponent>
   );
 };
 
@@ -518,15 +495,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     //justifyContent: 'center',
-    alignItems: "center",
+    alignItems: 'center',
     backgroundColor: COLOURS.white,
   },
   dateView: {
     fontSize: 15,
-    fontWeight: "normal",
+    fontWeight: 'normal',
     marginTop: 15,
     color: COLOURS.gray1,
-    alignSelf: "flex-start",
+    alignSelf: 'flex-start',
     marginLeft: 30,
   },
 });

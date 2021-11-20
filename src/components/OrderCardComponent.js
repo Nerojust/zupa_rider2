@@ -8,6 +8,7 @@ import {deviceWidth, fp, hp} from '../utils/responsive-screen';
 import MontserratBold from './Text/MontserratBold';
 import {IMAGES} from '../utils/Images';
 import MontserratMedium from './Text/MontserratMedium';
+import CircleImageComponent from './CircleImage';
 
 // create a component
 const OrderCardComponent = ({
@@ -60,32 +61,30 @@ const OrderCardComponent = ({
           </MontserratSemiBold>
 
           {/* location */}
-          <TouchableOpacity
-            style={styles.locationView(statusMessage)}
-            onPress={onPressNavigate}>
-            <Image
-              source={IMAGES.location}
-              resizeMode={'contain'}
-              style={{
-                width: 17,
-                height: 17,
-              }}
-            />
-          </TouchableOpacity>
-
+          <CircleImageComponent
+            image={IMAGES.location}
+            onPress={onPressNavigate}
+            style={{
+              backgroundColor:
+                statusMessage == 'started'
+                  ? COLOURS.circleBg
+                  : COLOURS.lightPurple,
+              marginLeft: 95,
+            }}
+          />
+          
           {/* call icon */}
-          <TouchableOpacity
-            style={styles.callView(statusMessage)}
-            onPress={onPressCall}>
-            <Image
-              source={IMAGES.call}
-              resizeMode={'contain'}
-              style={{
-                width: 17,
-                height: 17,
-              }}
-            />
-          </TouchableOpacity>
+          <CircleImageComponent
+            image={IMAGES.call}
+            onPress={onPressCall}
+            style={{
+              backgroundColor:
+                statusMessage == 'started'
+                  ? COLOURS.circleBg
+                  : COLOURS.lightPurple,
+              marginLeft: 20,
+            }}
+          />
         </View>
       </TouchableOpacity>
     </View>
