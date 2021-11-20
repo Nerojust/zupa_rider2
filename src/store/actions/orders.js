@@ -103,6 +103,7 @@ export const patchOrder = (orderId, payload) => {
             loading: false,
           });
           dispatch(getAllOrders());
+          return response.data
         }
       })
       .catch((error) => {

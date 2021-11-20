@@ -255,8 +255,6 @@ const DashboardScreen = ({navigation}) => {
    * @param {parent dispatch id} dispatchId
    */
   const startJourneyRequest = (dispatchId) => {
-    setLoadingMessage('Starting trip for this order');
-
     var payload = {
       status: 'started',
       model: 'dispatch',

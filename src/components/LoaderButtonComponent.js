@@ -8,7 +8,7 @@ import {COLOURS} from '../utils/Colours';
 import {deviceWidth} from '../utils/responsive-screen';
 
 // create a component
-const LoaderButtonComponent = ({buttonRef, title, method}) => {
+const LoaderButtonComponent = ({buttonRef, title, method,bgColour,radius=10}) => {
   return (
     <TouchableOpacity onPress={method.bind(this)} activeOpacity={0.6}>
       <AnimateLoadingButton
@@ -21,8 +21,8 @@ const LoaderButtonComponent = ({buttonRef, title, method}) => {
         titleFontSize={RFValue(14)}
         titleColor={COLOURS.white}
         activityIndicatorColor={COLOURS.white}
-        backgroundColor={COLOURS.blue}
-        borderRadius={10}
+        backgroundColor={bgColour}
+        borderRadius={radius}
         animationDurationWidth={Platform.OS == 'ios' ? 500 : 600}
       />
     </TouchableOpacity>

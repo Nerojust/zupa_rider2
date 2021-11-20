@@ -1,5 +1,5 @@
 //import liraries
-import React, {Component, useRef, useEffect, useState} from 'react';
+import React, {useRef, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -30,6 +30,10 @@ import {IMAGES} from '../utils/Images';
 import {deviceWidth, fp} from '../utils/responsive-screen';
 import ViewProviderComponent from '../components/ViewProviderComponent';
 import MontserratSemiBold from '../components/Text/MontserratSemiBold';
+import CircleImageComponent from '../components/CircleImage';
+import LoaderButtonComponent from '../components/LoaderButtonComponent';
+import {patchOrder} from '../store/actions/orders';
+import LoaderShimmerComponent from '../components/LoaderShimmerComponent';
 
 const OrderDetailScreen = ({route, navigation}) => {
   const name = route.params.name;
@@ -37,19 +41,19 @@ const OrderDetailScreen = ({route, navigation}) => {
   const phoneNumber = route.params.phoneNumber;
   const status = route.params.status;
   //console.log("child status", status);
+  var loadingButtonRef = useRef();
   const orderId = route.params.id;
-  console.log('order id', orderId);
+  //console.log('order id', orderId);
   const date = route.params.date;
   const parentId = route.params.parentId;
   const parentStatus = route.params.parentStatus;
   //console.log("parent status ", parentStatus);
-  console.log('parent id ', parentId);
-  const [isLoading, setIsLoading] = useState(false);
+  //console.log('parent id ', parentId);
   const [isMarkComplete, setIsMarkComplete] = useState(false);
   const dispatch = useDispatch();
   const loadingButton = useRef();
   const {user} = useSelector((state) => state.users);
-  const {orders} = useSelector((state) => state.orders);
+  const {orders, patchOrderLoading} = useSelector((state) => state.orders);
   // console.log("order redux", orderData);
 
   const end = address;
@@ -94,7 +98,7 @@ const OrderDetailScreen = ({route, navigation}) => {
   const handleComplete = () => {
     Alert.alert(
       'Order Alert',
-      'Do you want to comfirm order?',
+      'Do you want to complet this order?',
       [
         {
           text: 'No',
@@ -109,7 +113,7 @@ const OrderDetailScreen = ({route, navigation}) => {
             if (parentStatus == 'started') {
               performPatchRequest();
             } else {
-              alert('Start trip first');
+              alert('Please start the trip first');
               navigation.goBack();
             }
           },
@@ -123,45 +127,20 @@ const OrderDetailScreen = ({route, navigation}) => {
    * This performs the completed patch for a single order
    */
   const performPatchRequest = () => {
-    // console.log("order id", orderId);
-    // loadingButton.current.showLoading(true);
-    // fetch(GET_RIDER_REQUESTS + "/" + orderId, {
-    //   method: "PATCH",
-    //   headers: {
-    //     Accept: "application/json",
-    //     "Content-Type": "application/json",
-    //     Authorization: "Bearer " + loginData.jwt,
-    //   },
-    //   body: JSON.stringify({
-    //     status: "completed",
-    //   }),
-    // })
-    //   .then((response) => response.json())
-    //   .then((responseJson) => {
-    //     if (responseJson) {
-    //       if (!responseJson.code) {
-    //         getOrders();
-    //       } else {
-    //         if (loadingButton.current) {
-    //           loadingButton.current.showLoading(false);
-    //         }
-    //         dispatch(setError(responseJson.message));
-    //       }
-    //     } else {
-    //       if (loadingButton.current) {
-    //         loadingButton.current.showLoading(false);
-    //       }
-    //       dispatch(setError(responseJson.message));
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     handleError(error);
-    //     console.log("patch error ", error);
-    //     dispatch(setError(error));
-    //     if (loadingButton.current) {
-    //       loadingButton.current.showLoading(false);
-    //     }
-    //   });
+    var payload = {
+      status: 'completed',
+    };
+
+    var endTripPayload = {
+      status: 'completed',
+      model: 'dispatch',
+    };
+    
+    dispatch(patchOrder(orderId, payload)).then((result) => {
+      if (result) {
+        dispatch(patchOrder(parentId, endTripPayload));
+      }
+    });
   };
 
   /**
@@ -335,7 +314,7 @@ const OrderDetailScreen = ({route, navigation}) => {
     return (
       <View
         style={{
-          flex: 1,
+          //flex: 1,
           marginTop: 15,
           paddingHorizontal: 20,
         }}>
@@ -373,6 +352,149 @@ const OrderDetailScreen = ({route, navigation}) => {
       </View>
     );
   };
+  const renderActionbuttons = () => {
+    return (
+      <>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: 30,
+          }}>
+          <TouchableOpacity
+            onPress={openLocation}
+            style={{
+              //flex: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginLeft: 30,
+            }}>
+            <CircleImageComponent
+              image={IMAGES.location}
+              onPress={openLocation}
+              style={{
+                backgroundColor: COLOURS.lightPurple,
+                marginRight: 10,
+              }}
+            />
+            <MontserratSemiBold style={{color: COLOURS.zupaBlue}}>
+              Navigate
+            </MontserratSemiBold>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => dialNumber(phoneNumber)}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flex: 1,
+              right: 20,
+            }}>
+            <CircleImageComponent
+              image={IMAGES.call}
+              onPress={() => dialNumber(phoneNumber)}
+              style={{
+                backgroundColor: COLOURS.lightPurple,
+                marginRight: 10,
+              }}
+            />
+            <MontserratSemiBold style={{color: COLOURS.zupaBlue}}>
+              Call
+            </MontserratSemiBold>
+          </TouchableOpacity>
+        </View>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: 30,
+          }}>
+          <TouchableOpacity
+            onPress={sendTextMessage}
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+
+              marginLeft: 30,
+            }}>
+            <CircleImageComponent
+              image={IMAGES.location}
+              onPress={sendTextMessage}
+              style={{
+                backgroundColor: COLOURS.lightPurple,
+                marginRight: 10,
+              }}
+            />
+            <MontserratSemiBold style={{color: COLOURS.zupaBlue}}>
+              Text
+            </MontserratSemiBold>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={sendWhatsappMessage}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              //justifyContent: 'center',
+              flex: 1,
+              //right: 20,
+            }}>
+            <CircleImageComponent
+              image={IMAGES.call}
+              onPress={sendWhatsappMessage}
+              style={{
+                backgroundColor: COLOURS.whatsappgreen,
+                marginRight: 10,
+              }}
+            />
+            <MontserratSemiBold style={{color: COLOURS.zupaBlue}}>
+              Whatsapp
+            </MontserratSemiBold>
+          </TouchableOpacity>
+        </View>
+      </>
+    );
+  };
+  const renderCompleteButtons = () => {
+    return (
+      <>
+        {status == 'completed' ? (
+          <View style={{marginTop: 30}}>
+            <LoaderButtonComponent
+              buttonRef={loadingButtonRef}
+              title={'Completed'}
+              method={handleNothing}
+              bgColour={COLOURS.green3}
+              radius={30}
+            />
+          </View>
+        ) : (
+          <View style={{marginTop: 30}}>
+            {!isMarkComplete ? (
+              <LoaderButtonComponent
+                buttonRef={loadingButtonRef}
+                title={'Mark Complete'}
+                method={handleComplete}
+                bgColour={COLOURS.blue}
+                radius={30}
+              />
+            ) : (
+              <LoaderButtonComponent
+                buttonRef={loadingButtonRef}
+                title={'Completed'}
+                method={handleNothing}
+                bgColour={COLOURS.green3}
+                radius={30}
+              />
+            )}
+          </View>
+        )}
+      </>
+    );
+  };
   return (
     <ViewProviderComponent>
       <BackViewHeader
@@ -382,110 +504,11 @@ const OrderDetailScreen = ({route, navigation}) => {
         shouldDisplayIcon={true}
         style={{width: deviceWidth, borderBottomWidth: 0}}
       />
-
       {renderOrderDetails()}
+      {renderActionbuttons()}
+      {renderCompleteButtons()}
 
-      <View style={{marginTop: 40}}>
-        <DisplayButton
-          text="Navigate"
-          onPress={openLocation}
-          color={COLOURS.blue}
-          left={SIZES.width / 3 - 5}
-          width={SIZES.width - 70}
-          //image={require("../assets/icons/pin.png")}
-          tintColor={COLOURS.lightGray3}
-        />
-      </View>
-      <View style={{marginTop: 30}}>
-        <DisplayButton
-          text="Call"
-          onPress={() => dialNumber(phoneNumber)}
-          color={COLOURS.blue}
-          width={SIZES.width - 70}
-          left={SIZES.width / 3 - 5}
-          //image={require("../assets/icons/phone.png")}
-          tintColor={COLOURS.lightGray3}
-        />
-      </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          marginTop: 30,
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: SIZES.width - 70,
-        }}>
-        <View style={{flex: 1, marginRight: 3}}>
-          <DisplayButton
-            text="Text"
-            onPress={sendTextMessage}
-            color={COLOURS.blue}
-            image={require('../assets/icons/smartphone.png')}
-            tintColor={COLOURS.lightGray3}
-          />
-        </View>
-        <View style={{flex: 1, marginLeft: 3}}>
-          <DisplayButton
-            text="Whatsapp"
-            onPress={sendWhatsappMessage}
-            color={COLOURS.blue}
-            //left={SIZES.width / 3 - 5}
-            image={require('../assets/icons/smartphone.png')}
-            tintColor={COLOURS.lightGray3}
-          />
-        </View>
-      </View>
-      {status == 'completed' ? (
-        <View style={{marginTop: 30}}>
-          <DisplayButton
-            text="Completed"
-            color={COLOURS.green1}
-            left={SIZES.width / 3 - 5}
-          />
-        </View>
-      ) : (
-        <View style={{marginTop: 30, width: SIZES.width - 70}}>
-          {!isMarkComplete ? (
-            <AnimateLoadingButton
-              ref={(c) => (loadingButton.current = c)}
-              width={SIZES.width - 70}
-              height={50}
-              title="Mark Complete"
-              titleWeight={'700'}
-              titleFontFamily={
-                Platform.OS == 'ios'
-                  ? FONTS.ROBOTO_BLACK_IOS
-                  : FONTS.ROBOTO_MEDIUM
-              }
-              titleFontSize={17}
-              titleColor={COLOURS.white}
-              activityIndicatorColor={COLOURS.white}
-              backgroundColor={COLOURS.blue}
-              borderRadius={10}
-              onPress={handleComplete.bind(this)}
-            />
-          ) : (
-            <AnimateLoadingButton
-              ref={(c) => (loadingButton.current = c)}
-              width={SIZES.width - 70}
-              height={50}
-              title="Completed"
-              titleWeight={'700'}
-              titleFontFamily={
-                Platform.OS == 'ios'
-                  ? FONTS.ROBOTO_BLACK_IOS
-                  : FONTS.ROBOTO_MEDIUM
-              }
-              titleFontSize={18}
-              titleColor={COLOURS.white}
-              activityIndicatorColor={COLOURS.white}
-              backgroundColor={COLOURS.green3}
-              borderRadius={10}
-              onPress={handleNothing.bind(this)}
-            />
-          )}
-        </View>
-      )}
+      <LoaderShimmerComponent isLoading={patchOrderLoading} />
     </ViewProviderComponent>
   );
 };
@@ -494,7 +517,6 @@ const OrderDetailScreen = ({route, navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: COLOURS.white,
   },

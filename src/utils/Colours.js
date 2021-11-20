@@ -12,6 +12,7 @@ export const COLOURS = {
   white: '#ffffff',
   black: '#000000',
   green: '#37E39F',
+  whatsappgreen: '#c4ffdc',
   lightShadeBlue: '#BBB9E8',
   lightPink: '#F9A8BA',
   lightPink1: '#ffdfe5',

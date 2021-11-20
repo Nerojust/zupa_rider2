@@ -26,10 +26,8 @@ const styles = StyleSheet.create({
         width: 44,
         height: 44,
         borderRadius: 38,
-    
         alignItems: 'center',
         justifyContent: 'center',
-        //marginLeft: 80,
       },
 });
 

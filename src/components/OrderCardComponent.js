@@ -61,30 +61,38 @@ const OrderCardComponent = ({
           </MontserratSemiBold>
 
           {/* location */}
-          <CircleImageComponent
-            image={IMAGES.location}
-            onPress={onPressNavigate}
+          <View
             style={{
-              backgroundColor:
-                statusMessage == 'started'
-                  ? COLOURS.circleBg
-                  : COLOURS.lightPurple,
-              marginLeft: 95,
-            }}
-          />
-          
-          {/* call icon */}
-          <CircleImageComponent
-            image={IMAGES.call}
-            onPress={onPressCall}
-            style={{
-              backgroundColor:
-                statusMessage == 'started'
-                  ? COLOURS.circleBg
-                  : COLOURS.lightPurple,
-              marginLeft: 20,
-            }}
-          />
+              flex: 0.5,
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'row',
+            }}>
+            <CircleImageComponent
+              image={IMAGES.location}
+              onPress={onPressNavigate}
+              style={{
+                backgroundColor:
+                  statusMessage == 'started'
+                    ? COLOURS.circleBg
+                    : COLOURS.lightPurple,
+                marginLeft: 95,
+              }}
+            />
+
+            {/* call icon */}
+            <CircleImageComponent
+              image={IMAGES.call}
+              onPress={onPressCall}
+              style={{
+                backgroundColor:
+                  statusMessage == 'started'
+                    ? COLOURS.circleBg
+                    : COLOURS.lightPurple,
+                marginLeft: 20,
+              }}
+            />
+          </View>
         </View>
       </TouchableOpacity>
     </View>
@@ -208,6 +216,7 @@ const styles = StyleSheet.create({
   }),
   dateView: (statusMessage) => ({
     fontSize: fp(14),
+    flex: 0.4,
     color: statusMessage == 'started' ? COLOURS.white : COLOURS.textInputColor,
   }),
 });
