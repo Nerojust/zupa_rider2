@@ -51,6 +51,7 @@ const DashboardScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const [hasDataLoaded, setHasDataLoaded] = useState(false);
   const {user} = useSelector((state) => state.users);
+  const [filteredOrdersList, setFilteredOrdersList] = useState([]);
   //console.log("redux user", user)
 
   const {
@@ -69,6 +70,7 @@ const DashboardScreen = ({navigation}) => {
     setHasDataLoaded(false);
     await dispatch(getAllOrders()).then((result) => {
       if (result) {
+        filterDataResult();
         setHasDataLoaded(true);
       }
     });
@@ -77,7 +79,11 @@ const DashboardScreen = ({navigation}) => {
   const onRefresh = () => {
     fetchData();
   };
-
+  const filterDataResult = () => {
+    var newList = [];
+    return orders.filter((item, i) => item?.status != 'completed');
+    //return newList;
+  };
   const renderBatchList = (item, data) => {
     if (item.order) {
       let address1 =
@@ -94,6 +100,7 @@ const DashboardScreen = ({navigation}) => {
             item.order.customer ? item.order.customer.phoneNumber : phone
           }
           status={item.status}
+          statusMessage={data.status}
           date={getReadableDateAndTime(item.updatedAt)}
           onPressNavigate={createOpenLink({
             travelType,
@@ -259,7 +266,11 @@ const DashboardScreen = ({navigation}) => {
       status: 'started',
       model: 'dispatch',
     };
-    dispatch(patchOrder(dispatchId, payload));
+    dispatch(patchOrder(dispatchId, payload)).then((result) => {
+      if (result) {
+        filterDataResult();
+      }
+    });
   };
   const renderNoOrdersView = () => {
     return (
@@ -290,7 +301,7 @@ const DashboardScreen = ({navigation}) => {
       <Animatable.View animation="fadeInUp" duraton="500" style={{flex: 1}}>
         <FlatList
           ref={flatListRef}
-          data={orders}
+          data={filterDataResult()}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
@@ -319,7 +330,7 @@ const DashboardScreen = ({navigation}) => {
   return (
     <ViewProviderComponent>
       <BackViewHeader
-        backText={'Today is ' + getTodaysDate()}
+        backText={getTodaysDate()}
         image={IMAGES.menu}
         onLeftPress={() => toggleDrawer(navigation)}
         shouldDisplayIcon

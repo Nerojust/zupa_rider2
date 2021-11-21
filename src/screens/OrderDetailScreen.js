@@ -32,8 +32,9 @@ import ViewProviderComponent from '../components/ViewProviderComponent';
 import MontserratSemiBold from '../components/Text/MontserratSemiBold';
 import CircleImageComponent from '../components/CircleImage';
 import LoaderButtonComponent from '../components/LoaderButtonComponent';
-import {patchOrder} from '../store/actions/orders';
+import {getOrder, patchOrder} from '../store/actions/orders';
 import LoaderShimmerComponent from '../components/LoaderShimmerComponent';
+import MontserratBold from '../components/Text/MontserratBold';
 
 const OrderDetailScreen = ({route, navigation}) => {
   const name = route.params.name;
@@ -49,16 +50,29 @@ const OrderDetailScreen = ({route, navigation}) => {
   const parentStatus = route.params.parentStatus;
   //console.log("parent status ", parentStatus);
   //console.log('parent id ', parentId);
+  const [nameData, setnameData] = useState(name);
+  const [addressData, setAddressData] = useState(address);
+  const [phoneNumberData, setPhoneNumberData] = useState(phoneNumber);
+  const [statusData, setStatusData] = useState(status);
   const [isMarkComplete, setIsMarkComplete] = useState(false);
   const dispatch = useDispatch();
   const loadingButton = useRef();
   const {user} = useSelector((state) => state.users);
-  const {orders, patchOrderLoading} = useSelector((state) => state.orders);
+  const {orders, order, patchOrderLoading} = useSelector(
+    (state) => state.orders,
+  );
+  //console.log('single order redux', order);
   // console.log("order redux", orderData);
 
   const end = address;
   const travelType = 'drive';
   const openLocation = createOpenLink({travelType, end, provider: 'google'});
+
+  useEffect(() => {
+    if (orderId) {
+      dispatch(getOrder(orderId));
+    }
+  }, [orderId]);
 
   const sendTextMessage = () => {
     SendSMS.send(
@@ -98,7 +112,7 @@ const OrderDetailScreen = ({route, navigation}) => {
   const handleComplete = () => {
     Alert.alert(
       'Order Alert',
-      'Do you want to complet this order?',
+      'Do you want to complete this order?',
       [
         {
           text: 'No',
@@ -111,7 +125,7 @@ const OrderDetailScreen = ({route, navigation}) => {
           onPress: () => {
             console.log('journey status is ' + parentStatus);
             if (parentStatus == 'started') {
-              performPatchRequest();
+              performPatchForDispatchItem();
             } else {
               alert('Please start the trip first');
               navigation.goBack();
@@ -126,69 +140,72 @@ const OrderDetailScreen = ({route, navigation}) => {
   /**
    * This performs the completed patch for a single order
    */
-  const performPatchRequest = () => {
+  const performPatchForDispatchItem = () => {
     var payload = {
       status: 'completed',
     };
 
-    var endTripPayload = {
-      status: 'completed',
-      model: 'dispatch',
-    };
-    
     dispatch(patchOrder(orderId, payload)).then((result) => {
       if (result) {
-        dispatch(patchOrder(parentId, endTripPayload));
+        console.log('ended single dispatch item');
+        computeEndTrip();
       }
     });
+  };
+
+  const computeEndTrip = () => {
+    let oneOrder = orders?.find((oneOrder) => {
+      return oneOrder.id == parentId;
+    });
+    //console.log('found the order', oneOrder);
+
+    var count = 0;
+
+    if (oneOrder?.dispatch_orders && oneOrder?.dispatch_orders.length > 1) {
+      console.log('dispatch is more than 1, batch');
+
+      oneOrder?.dispatch_orders?.map((childOrder, i) => {
+        if (childOrder?.status == 'completed') {
+          count++;
+        }
+        if (count == oneOrder?.dispatch_orders.length) {
+          // console.log('Count is ' + count);
+          console.log(
+            'count is equal to the dispatch length, so end trip for batch',
+          );
+          endTrip();
+        }
+      });
+    } else if (oneOrder?.dispatch_orders.length == 1) {
+      // console.log(
+      //   'dispatch is a single order and is equal to 1',
+      //   oneOrder.dispatch_orders[0].status,
+      // );
+      if (
+        oneOrder?.dispatch_orders[0]?.status == 'completed' ||
+        oneOrder?.dispatch_orders[0]?.status == 'pending'
+      ) {
+        //console.log('single order is completed already, start end trip');
+        endTrip();
+      }
+    }
   };
 
   /**
    * this handles the parent status update to completed thus ending the journey
    */
-  const endTrip = () => {
-    // console.log("parent id", parentId);
-    // fetch(GET_RIDER_REQUESTS + "/" + parentId, {
-    //   method: "PATCH",
-    //   headers: {
-    //     Accept: "application/json",
-    //     "Content-Type": "application/json",
-    //     Authorization: "Bearer " + loginData.jwt,
-    //   },
-    //   body: JSON.stringify({
-    //     status: "completed",
-    //     model: "dispatch",
-    //   }),
-    // })
-    //   .then((response) => response.json())
-    //   .then((responseJson) => {
-    //     if (responseJson) {
-    //       if (!responseJson.code) {
-    //         console.log("Trip ended");
-    //         setIsMarkComplete(true);
-    //         // if (loadingButton.current) {
-    //         //   loadingButton.current.showLoading(false);
-    //         // }
-    //       } else {
-    //         setIsMarkComplete(false);
-    //         dispatch(setError(responseJson.message));
-    //       }
-    //     } else {
-    //       setIsMarkComplete(false);
-    //       dispatch(setError(responseJson.message));
-    //     }
-    //     // if (loadingButton.current) {
-    //     //   loadingButton.current.showLoading(false);
-    //     // }
-    //   })
-    //   .catch((error) => {
-    //     handleError(error);
-    //     if (loadingButton.current) {
-    //       loadingButton.current.showLoading(false);
-    //     }
-    //     setIsMarkComplete(false);
-    //     console.log("start journey error: ", error);
-    //   });
+  const endTrip = async () => {
+    var endTripPayload = {
+      status: 'completed',
+      model: 'dispatch',
+    };
+
+    await dispatch(patchOrder(parentId, endTripPayload)).then((result) => {
+      if (result) {
+        console.log('ended the parent trip');
+        setIsMarkComplete(true);
+      }
+    });
   };
 
   const getOrders = (isLoop) => {
@@ -316,9 +333,18 @@ const OrderDetailScreen = ({route, navigation}) => {
         style={{
           //flex: 1,
           marginTop: 15,
-          paddingHorizontal: 20,
+          paddingHorizontal: 30,
         }}>
         <MontserratSemiBold style={{fontSize: fp(15), color: COLOURS.gray5}}>
+          Customer Name
+        </MontserratSemiBold>
+
+        <MontserratBold
+          style={{fontSize: fp(17), color: COLOURS.textInputColor, marginTop: 3}}>
+          {name}
+        </MontserratBold>
+        <MontserratSemiBold
+          style={{fontSize: fp(15), color: COLOURS.gray5, marginTop: 13}}>
           Date
         </MontserratSemiBold>
 
@@ -337,12 +363,12 @@ const OrderDetailScreen = ({route, navigation}) => {
         </MontserratSemiBold>
 
         <MontserratSemiBold
-          style={{fontSize: 15, color: COLOURS.textInputColor, marginTop: 4}}>
+          style={{fontSize: fp(15), color: COLOURS.textInputColor, marginTop: 4}}>
           {address}
         </MontserratSemiBold>
 
         <MontserratSemiBold
-          style={{fontSize: fp(15), color: COLOURS.gray5, marginTop: 15}}>
+          style={{fontSize: fp(15), color: COLOURS.gray5, marginTop: 17}}>
           Phone Number
         </MontserratSemiBold>
         <MontserratSemiBold

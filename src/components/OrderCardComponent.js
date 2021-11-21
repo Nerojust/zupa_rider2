@@ -4,7 +4,7 @@ import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {COLOURS} from '../utils/Colours';
 import {SIZES} from '../utils/Sizes';
 import MontserratSemiBold from './Text/MontserratSemiBold';
-import {deviceWidth, fp, hp} from '../utils/responsive-screen';
+import {deviceHeight, deviceWidth, fp, hp} from '../utils/responsive-screen';
 import MontserratBold from './Text/MontserratBold';
 import {IMAGES} from '../utils/Images';
 import MontserratMedium from './Text/MontserratMedium';
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   },
   mainView: (statusMessage) => ({
     width: deviceWidth * 0.88,
-    height: hp(185),
+    height: deviceHeight*0.26,
     backgroundColor: statusMessage == 'started' ? COLOURS.blue : COLOURS.white,
     borderRadius: 43,
     paddingHorizontal: 30,

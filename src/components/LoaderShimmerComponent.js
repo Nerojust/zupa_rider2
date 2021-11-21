@@ -3,6 +3,7 @@ import {Text, View, StyleSheet, ActivityIndicator} from 'react-native';
 import Shimmer from 'react-native-shimmer';
 import {COLOURS} from '../utils/Colours';
 import {deviceHeight, deviceWidth, fp} from '../utils/responsive-screen';
+import MontserratMedium from './Text/MontserratMedium';
 import ProductSansBold from './Text/ProductSansBold';
 
 const LoaderShimmerComponent = ({
@@ -20,10 +21,10 @@ const LoaderShimmerComponent = ({
           direction={'right'}
           opacity={0.03}
           animationOpacity={1}>
-          <ProductSansBold
+          <MontserratMedium
             style={{color: COLOURS.textInputColor, fontSize: fp(15)}}>
             Please wait while we
-          </ProductSansBold>
+          </MontserratMedium>
         </Shimmer>
         <Shimmer
           animating={isLoading}
@@ -31,10 +32,10 @@ const LoaderShimmerComponent = ({
           direction={'right'}
           opacity={0.02}
           animationOpacity={1}>
-          <ProductSansBold
+          <MontserratMedium
             style={{color: COLOURS.textInputColor, fontSize: fp(15)}}>
             {loadingMessage || 'load your data'}
-          </ProductSansBold>
+          </MontserratMedium>
         </Shimmer>
         <Shimmer
           animating={isLoading}

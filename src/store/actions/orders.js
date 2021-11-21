@@ -21,7 +21,7 @@ export const getAllOrders = () => {
           // console.log(total, limit, offset);
           console.log('Orders gotten successfully', response.data.length);
 
-          await dispatch({
+          dispatch({
             type: 'FETCH_ALL_ORDERS_SUCCESS',
             loading: false,
             orders: data,
@@ -66,6 +66,7 @@ export const getOrder = (id) => {
           dispatch({
             type: 'GET_ORDER_SUCCESS',
             loading: false,
+            order:response.data
           });
           return response.data;
         }
@@ -103,7 +104,7 @@ export const patchOrder = (orderId, payload) => {
             loading: false,
           });
           dispatch(getAllOrders());
-          return response.data
+          return response.data;
         }
       })
       .catch((error) => {

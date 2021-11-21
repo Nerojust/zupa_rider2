@@ -42,7 +42,7 @@ export const BackViewHeader = ({
         />
       </TouchableOpacity>
       <MontserratMedium
-        style={{fontSize: fp(18), flex: 1.3, color: COLOURS.gray2}}
+        style={{fontSize: fp(18), flex: 1.3, color: COLOURS.textInputColor}}
         numberOfLines={1}>
         {backText}
       </MontserratMedium>
