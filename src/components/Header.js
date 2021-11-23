@@ -20,6 +20,7 @@ import {SIZES} from '../utils/Fonts';
 import {IMAGES} from '../utils/Images';
 import {deviceHeight, fp} from '../utils/responsive-screen';
 import MontserratMedium from './Text/MontserratMedium';
+import MontserratSemiBold from './Text/MontserratSemiBold';
 
 export const BackViewHeader = ({
   onClose,
@@ -38,14 +39,14 @@ export const BackViewHeader = ({
         <Image
           source={image}
           resizeMode={'contain'}
-          style={{width: 25, height: 18}}
+          style={{width: 21, height: 21}}
         />
       </TouchableOpacity>
-      <MontserratMedium
+      <MontserratSemiBold
         style={{fontSize: fp(18), flex: 1.3, color: COLOURS.textInputColor}}
         numberOfLines={1}>
         {backText}
-      </MontserratMedium>
+      </MontserratSemiBold>
 
       <View
         style={{

@@ -2,7 +2,7 @@ import client from '../../utils/Api';
 import {dateFilterParser} from '../../utils/DateFilter';
 import {handleError} from '../../utils/utils';
 
-export const getAllOrders = () => {
+export const getAllOrders = (isSingleOrder, parentId) => {
   console.log('About to get all orders');
 
   return async (dispatch) => {
@@ -20,20 +20,41 @@ export const getAllOrders = () => {
           const {data, offset, limit, total} = response || [];
           // console.log(total, limit, offset);
           console.log('Orders gotten successfully', response.data.length);
+          if (!isSingleOrder) {
+            var ordersExceptCompleted = await data?.filter(
+              (item, i) => item?.status != 'completed',
+            );
 
-          dispatch({
-            type: 'FETCH_ALL_ORDERS_SUCCESS',
-            loading: false,
-            orders: data,
-            meta: {
-              total,
-              limit,
-              offset,
-              page: 1 + offset / limit,
-              pageSize: limit,
-              pageTotal: Math.ceil(total / limit),
-            },
-          });
+            var ordersCompleted = await data?.filter(
+              (item, i) => item?.status == 'completed',
+            );
+
+            dispatch({
+              type: 'FETCH_ALL_ORDERS_SUCCESS',
+              loading: false,
+              completedOrders: ordersCompleted,
+              pendingOrders: ordersExceptCompleted,
+              orders: data,
+              meta: {
+                total,
+                limit,
+                offset,
+                page: 1 + offset / limit,
+                pageSize: limit,
+                pageTotal: Math.ceil(total / limit),
+              },
+            });
+          } else {
+            var result = await data.find((item, i) => item.id == parentId);
+            if (result) {
+              console.log('Found the result in actions');
+              dispatch({
+                type: 'FETCH_ALL_ORDERS_SUCCESS',
+                loading: false,
+                order: result,
+              });
+            }
+          }
 
           return response.data;
         }
@@ -66,7 +87,7 @@ export const getOrder = (id) => {
           dispatch({
             type: 'GET_ORDER_SUCCESS',
             loading: false,
-            order:response.data
+            order: response.data,
           });
           return response.data;
         }
@@ -84,9 +105,19 @@ export const getOrder = (id) => {
   };
 };
 
-export const patchOrder = (orderId, payload) => {
+export const patchOrder = (
+  orderId,
+  payload,
+  parentId = '',
+  isSingleOrder = false,
+) => {
   return (dispatch) => {
-    console.log('About to patch order with ids ', orderId);
+    console.log(
+      'About to patch order with id ',
+      orderId,
+      'and parent id ',
+      parentId,
+    );
     dispatch({
       type: 'PATCH_ORDER_PENDING',
       loading: true,
@@ -103,7 +134,11 @@ export const patchOrder = (orderId, payload) => {
             type: 'PATCH_ORDER_SUCCESS',
             loading: false,
           });
-          dispatch(getAllOrders());
+          if (isSingleOrder) {
+            dispatch(getAllOrders(true, parentId));
+          } else {
+            dispatch(getAllOrders());
+          }
           return response.data;
         }
       })

@@ -12,7 +12,6 @@ import {
 import {COLOURS} from '../utils/Colours';
 import {SIZES} from '../utils/Sizes';
 import * as Animatable from 'react-native-animatable';
-import LoadingDialog from '../components/LoadingDialog';
 import MontserratBold from '../components/Text/MontserratBold';
 
 import {
@@ -24,8 +23,6 @@ import {
   toggleDrawer,
 } from '../utils/utils';
 import {useSelector, useDispatch} from 'react-redux';
-
-import {handleError} from '../utils/utils';
 import ViewProviderComponent from '../components/ViewProviderComponent';
 import {BackViewHeader} from '../components/Header';
 import OrderCardComponent from '../components/OrderCardComponent';
@@ -39,9 +36,7 @@ import LoaderShimmerComponent from '../components/LoaderShimmerComponent';
 
 // create a component
 const DashboardScreen = ({navigation}) => {
-  const [isLoading, setIsLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [loadingMessage, setLoadingMessage] = useState('');
   const flatListRef = useRef(null);
   let name = '';
   let phone = '';
@@ -51,16 +46,17 @@ const DashboardScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const [hasDataLoaded, setHasDataLoaded] = useState(false);
   const {user} = useSelector((state) => state.users);
-  const [filteredOrdersList, setFilteredOrdersList] = useState([]);
   //console.log("redux user", user)
 
   const {
     orders,
+    pendingOrders,
+    completedOrders,
     ordersLoading,
     getOrderLoading,
     patchOrderLoading,
   } = useSelector((state) => state.orders);
-  //console.log("orders redux", orders);
+  //console.log('pendingOrders redux',completedOrders);
 
   useEffect(() => {
     fetchData();
@@ -70,7 +66,7 @@ const DashboardScreen = ({navigation}) => {
     setHasDataLoaded(false);
     await dispatch(getAllOrders()).then((result) => {
       if (result) {
-        filterDataResult();
+        //filterDataResult();
         setHasDataLoaded(true);
       }
     });
@@ -79,11 +75,9 @@ const DashboardScreen = ({navigation}) => {
   const onRefresh = () => {
     fetchData();
   };
-  const filterDataResult = () => {
-    var newList = [];
-    return orders.filter((item, i) => item?.status != 'completed');
-    //return newList;
-  };
+  // const filterDataResult = () => {
+  //   return orders?.filter((item, i) => item?.status != 'completed');
+  // };
   const renderBatchList = (item, data) => {
     if (item.order) {
       let address1 =
@@ -114,18 +108,19 @@ const DashboardScreen = ({navigation}) => {
           }
           onPressView={() =>
             navigation.navigate('OrderDetails', {
-              id: item.id,
-              name: item.order.customer ? item.order.customer.name : name,
-              address: item.order.customer
-                ? item.order.customer.address
-                : address,
-              phoneNumber: item.order.customer
-                ? item.order.customer.phoneNumber
-                : phone,
-              status: item.status,
-              date: item.updatedAt,
+              data: data,
+              batchId: item.id,
+              // name: item.order.customer ? item.order.customer.name : name,
+              // address: item.order.customer
+              //   ? item.order.customer.address
+              //   : address,
+              // phoneNumber: item.order.customer
+              //   ? item.order.customer.phoneNumber
+              //   : phone,
+              // status: item.status,
+              // date: item.updatedAt,
               parentId: data.id,
-              parentStatus: data.status,
+              // parentStatus: data.status,
             })
           }
         />
@@ -172,7 +167,7 @@ const DashboardScreen = ({navigation}) => {
         />
       );
     } else {
-      let item = data.dispatch_orders ? data?.dispatch_orders[0] : {};
+      let item = data?.dispatch_orders ? data?.dispatch_orders[0] : {};
 
       if (item.order) {
         let address1 =
@@ -212,18 +207,20 @@ const DashboardScreen = ({navigation}) => {
               }}
               onPressView={() =>
                 navigation.navigate('OrderDetails', {
-                  id: item.id,
-                  name: item.order.customer ? item.order.customer.name : name,
-                  address: item.order.customer
-                    ? item.order.customer.address
-                    : address,
-                  phoneNumber: item.order.customer
-                    ? item.order.customer.phoneNumber
-                    : phone,
-                  status: item.status,
-                  date: item.updatedAt,
+                  data: data,
+                  batchId: item.id,
+                  // id: item.id,
+                  // name: item.order.customer ? item.order.customer.name : name,
+                  // address: item.order.customer
+                  //   ? item.order.customer.address
+                  //   : address,
+                  // phoneNumber: item.order.customer
+                  //   ? item.order.customer.phoneNumber
+                  //   : phone,
+                  // status: item.status,
+                  // date: item.updatedAt,
                   parentId: data.id,
-                  parentStatus: data.status,
+                  // parentStatus: data.status,
                 })
               }
             />
@@ -268,7 +265,7 @@ const DashboardScreen = ({navigation}) => {
     };
     dispatch(patchOrder(dispatchId, payload)).then((result) => {
       if (result) {
-        filterDataResult();
+        //filterDataResult();
       }
     });
   };
@@ -301,7 +298,7 @@ const DashboardScreen = ({navigation}) => {
       <Animatable.View animation="fadeInUp" duraton="500" style={{flex: 1}}>
         <FlatList
           ref={flatListRef}
-          data={filterDataResult()}
+          data={pendingOrders}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
@@ -338,13 +335,13 @@ const DashboardScreen = ({navigation}) => {
       />
 
       <>
-        {!hasDataLoaded && orders && orders.length > 0
+        {!hasDataLoaded && pendingOrders && pendingOrders.length > 0
           ? renderGreetingView()
           : null}
 
-        {hasDataLoaded && orders && orders.length > 0
+        {hasDataLoaded && pendingOrders&& pendingOrders.length > 0
           ? renderOrderListView()
-          : hasDataLoaded && orders?.length == 0
+          : hasDataLoaded && pendingOrders?.length == 0
           ? renderNoOrdersView()
           : null}
       </>

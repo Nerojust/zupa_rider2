@@ -1,9 +1,15 @@
-import { INDEX_PAGE_SIZE_DEFAULT, INDEX_PAGE_SIZE_OPTIONS, LIMIT_FIGURE } from "../../utils/utils";
-
+import {
+  INDEX_PAGE_SIZE_DEFAULT,
+  INDEX_PAGE_SIZE_OPTIONS,
+  LIMIT_FIGURE,
+} from '../../utils/utils';
 
 const initialState = {
   order: null,
   orders: [],
+  completedOrders: [],
+  pendingOrders: [],
+
   dashboardOrders: [],
   onlineOrders: [],
   distributionData: [],
@@ -42,9 +48,13 @@ export default (state = initialState, action) => {
         ordersLoading: action.loading,
       };
     case 'FETCH_ALL_ORDERS_SUCCESS': {
+     
       return {
         ...state,
+        completedOrders: action.completedOrders,
+        pendingOrders: action.pendingOrders,
         orders: action.orders,
+        order:action.order,
         meta: {...state.meta, ...action.meta},
         hasCreatedOrder: false,
         hasDeletedOrder: false,
