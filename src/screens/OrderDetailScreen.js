@@ -5,7 +5,12 @@ import {COLOURS} from '../utils/Colours';
 import SendSMS from 'react-native-sms';
 import {createOpenLink} from 'react-native-open-maps';
 import {useDispatch, useSelector} from 'react-redux';
-import {dialNumber, getTodaysDate} from '../utils/utils';
+import {
+  dialNumber,
+  dismissLoaderButton,
+  getTodaysDate,
+  showLoaderButton,
+} from '../utils/utils';
 import {BackViewHeader} from '../components/Header';
 import {IMAGES} from '../utils/Images';
 import {deviceWidth, fp} from '../utils/responsive-screen';
@@ -13,67 +18,73 @@ import ViewProviderComponent from '../components/ViewProviderComponent';
 import MontserratSemiBold from '../components/Text/MontserratSemiBold';
 import CircleImageComponent from '../components/CircleImage';
 import LoaderButtonComponent from '../components/LoaderButtonComponent';
-import {getAllOrders, patchOrder} from '../store/actions/orders';
+import {
+  getAllOrders,
+  getOrder,
+  patchEndTrip,
+  patchOrder,
+  patchOrderMarkComplete,
+} from '../store/actions/orders';
 import LoaderShimmerComponent from '../components/LoaderShimmerComponent';
 import MontserratBold from '../components/Text/MontserratBold';
 
 const OrderDetailScreen = ({route, navigation}) => {
-  const [data, setData] = useState();
   const retrievedId = route.params.parentId;
   const batchId = route.params.batchId;
   //console.log('data', data);
   const [isLoading, setIsLoading] = useState(false);
-  const [name, setName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
   const [address, setAddress] = useState('');
-  const [date, setDate] = useState('');
-  const [orderId, setOrderId] = useState('');
+  const [orderCount, setOrderCount] = useState(0);
   const [dispatchOrder, setDispatchOrder] = useState([]);
   const [isMarkComplete, setIsMarkComplete] = useState(false);
   const dispatch = useDispatch();
-  const [hasJourneyStarted, setHasJourneyStarted] = useState(false);
-  const [hasJourneyEnded, setHasJourneyEnded] = useState(false);
   var loadingButtonRef = useRef();
-  const [isOrderPending, setIsOrderPending] = useState(false);
-  const loadingButton = useRef();
   const [hasDataLoaded, setHasDataLoaded] = useState(false);
-  const {orders, order, ordersLoading, patchOrderLoading} = useSelector(
-    (state) => state.orders,
-  );
+  const {
+    orders,
+    order,
+    ordersLoading,
+    getOrderLoading,
+    patchOrderLoading,
+  } = useSelector((state) => state.orders);
   //console.log('order redux', order);
   const end = address;
   const travelType = 'drive';
   const openLocation = createOpenLink({travelType, end, provider: 'google'});
 
   useEffect(() => {
-    dispatch(getAllOrders(true, retrievedId)).then((result) => {
+    dispatch(getOrder(retrievedId)).then((result) => {
       if (result) {
-        setHasDataLoaded(true);
+        //console.log("start data", result)
+        var count = 0;
+        result?.dispatch_orders?.map((childOrder, i) => {
+          if (childOrder?.status == 'completed') {
+            count++;
+          }
+        });
+        setOrderCount(count);
+        setTimeout(() => {
+          setHasDataLoaded(true);
+        }, 200);
       }
     });
   }, []);
-  // useEffect(() => {
-  //   if (order) {
-  //     if (order?.status == 'started') {
-  //       setHasJourneyStarted(true);
-  //     } else if (order?.status == 'completed') {
-  //       setHasJourneyEnded(true);
-  //     } else if (order?.status == 'pending') {
-  //       setIsOrderPending(true);
-  //     }
-  //   }
-  // }, [order]);
+
   useEffect(() => {
     if (order) {
       var result = order?.dispatch_orders.find((item, i) => item.id == batchId);
     }
 
     setDispatchOrder(result);
-  }, [order]);
+    var count = 0;
+    order?.dispatch_orders?.map((childOrder, i) => {
+      if (childOrder?.status == 'completed') {
+        count++;
+      }
+    });
+    setOrderCount(count);
+  }, [order?.status]);
 
-  const getOrderData = (result) => {
-    return result.find((item, i) => item.id == retrievedId);
-  };
   const sendTextMessage = () => {
     SendSMS.send(
       {
@@ -97,7 +108,6 @@ const OrderDetailScreen = ({route, navigation}) => {
       },
     );
   };
-
   const sendWhatsappMessage = () => {
     let whatsAppMessage =
       'Hello ' +
@@ -134,10 +144,10 @@ const OrderDetailScreen = ({route, navigation}) => {
         {
           text: 'Yes',
           onPress: () => {
-            console.log('journey status before is ' + order?.status);
+            //console.log('journey status before is ' + order?.status);
 
             performPatchForDispatchItem(dispatchOrder?.id);
-            console.log('journey status after is ' + order?.status);
+            //console.log('journey status after is ' + order?.status);
           },
         },
       ],
@@ -165,25 +175,22 @@ const OrderDetailScreen = ({route, navigation}) => {
       {cancelable: true},
     );
   };
-  /**
-   * start journey for an order
-   * @param {parent dispatch id} dispatchId
-   */
 
   const startJourneyRequest = () => {
     var payload = {
       status: 'started',
       model: 'dispatch',
     };
-    dispatch(patchOrder(order?.id, payload, order?.id, true)).then((result) => {
+    showLoaderButton(loadingButtonRef);
+    setHasDataLoaded(false);
+    dispatch(patchOrder(order?.id, payload)).then((result) => {
       if (result) {
-        console.log('the jourjney has started', result);
-        // var resolvedData = getOrderData(orders);
-        // setData(resolvedData);
-        // setIsOrderPending(false);
-        // setHasJourneyStarted(true);
+       // console.log('the journey has started', result);
+        dispatch(getOrder(retrievedId));
       }
     });
+    dismissLoaderButton(loadingButtonRef);
+    setHasDataLoaded(true);
   };
   /**
    * This performs the completed patch for a single order
@@ -192,47 +199,46 @@ const OrderDetailScreen = ({route, navigation}) => {
     var payload = {
       status: 'completed',
     };
-    //setIsLoading(true);
-    await dispatch(patchOrder(id, payload, order?.id, true)).then((result) => {
+    showLoaderButton(loadingButtonRef);
+    setHasDataLoaded(false);
+    await dispatch(patchOrderMarkComplete(id, payload)).then(async (result) => {
       if (result) {
-        console.log('ended single dispatch item');
-        computeEndTrip();
-        //setHasJourneyStarted(true);
+        //console.log('ended single dispatch item');
+        var result = await dispatch(getOrder(retrievedId));
+
+        computeEndTrip(result);
       }
     });
+    dismissLoaderButton(loadingButtonRef);
+    setHasDataLoaded(true);
   };
 
-  const computeEndTrip = () => {
-    // let oneOrder = orders?.find((oneOrder) => {
-    //   return oneOrder?.id == data?.id;
-    // });
-    // //console.log('found the order', oneOrder);
-
+  const computeEndTrip = (result) => {
     var count = 0;
 
-    if (order?.dispatch_orders && order?.dispatch_orders.length > 1) {
-      console.log('dispatch is more than 1, batch');
+    if (result?.dispatch_orders && order?.dispatch_orders.length > 1) {
+      //console.log('dispatch is more than 1, batch');
 
-      order?.dispatch_orders?.map((childOrder, i) => {
-        console.log('childorder status', childOrder.status);
+      result?.dispatch_orders?.map((childOrder, i) => {
+        //console.log('childorder status', childOrder?.status);
         if (childOrder?.status == 'completed') {
           count++;
         }
-        if (count == oneOrder?.dispatch_orders.length) {
+        if (count == result?.dispatch_orders.length) {
           // console.log('Count is ' + count);
-          console.log(
-            'count is equal to the dispatch length, so end trip for batch',
-          );
+          // console.log(
+          //   'count is equal to the dispatch length, so end trip for batch',
+          // );
           endTrip();
         }
       });
-    } else if (order?.dispatch_orders.length == 1) {
-      console.log(
-        'dispatch is a single order and is equal to 1',
-        order.dispatch_orders[0].status,
-      );
-      if (order?.dispatch_orders[0]?.status == 'completed') {
-        console.log('single order is completed already, start end trip');
+    } else if (result?.dispatch_orders.length == 1) {
+      // console.log(
+      //   'dispatch is a single order and is equal to 1',
+      //   result.dispatch_orders[0].status,
+      // );
+      if (result?.dispatch_orders[0]?.status == 'completed') {
+       // console.log('single order is completed already, start end trip');
         endTrip();
       }
     }
@@ -246,19 +252,15 @@ const OrderDetailScreen = ({route, navigation}) => {
       status: 'completed',
       model: 'dispatch',
     };
-
-    await dispatch(patchOrder(order?.id, endTripPayload, order?.id, true)).then(
-      (result) => {
-        if (result) {
-          console.log('ended the parent trip');
-
-          // setIsOrderPending(false);
-          // setHasJourneyStarted(false);
-          // setHasJourneyEnded(true);
-          // setIsLoading(false);
-        }
-      },
-    );
+    // showLoaderButton(loadingButtonRef);
+    await dispatch(patchEndTrip(order?.id, endTripPayload)).then((result) => {
+      if (result) {
+        console.log('ended the parent trip');
+        dispatch(getOrder(retrievedId));
+      }
+    });
+    // dismissLoaderButton(loadingButtonRef);
+    setHasDataLoaded(true);
   };
   const renderOrderDetails = () => {
     return (
@@ -443,7 +445,7 @@ const OrderDetailScreen = ({route, navigation}) => {
             />
           </View>
         ) : null}
-        {order.status == 'started' ? (
+        {order?.status == 'started' && dispatchOrder?.status == 'pending' ? (
           <View style={{marginTop: 30}}>
             <LoaderButtonComponent
               buttonRef={loadingButtonRef}
@@ -454,50 +456,40 @@ const OrderDetailScreen = ({route, navigation}) => {
             />
           </View>
         ) : null}
-        {order?.status == 'completed' ? (
+
+        {order?.status == 'started' && dispatchOrder?.status == 'completed' ? (
           <View style={{marginTop: 30}}>
             <LoaderButtonComponent
               buttonRef={loadingButtonRef}
-              title={'Completed'}
+              title={
+                'Completed ' +
+                orderCount +
+                ' of ' +
+                order?.dispatch_orders.length
+              }
               method={handleNothing}
               bgColour={COLOURS.green3}
               radius={30}
             />
           </View>
         ) : null}
-        {/* {isOrderPending ? (
+        {order?.status == 'completed' &&
+        dispatchOrder?.status == 'completed' ? (
           <View style={{marginTop: 30}}>
             <LoaderButtonComponent
               buttonRef={loadingButtonRef}
-              title={'Start Trip'}
-              method={handleStartRide}
-              bgColour={COLOURS.blue}
-              radius={30}
-            />
-          </View>
-        ) : null}
-        {hasJourneyStarted ? (
-          <View style={{marginTop: 30}}>
-            <LoaderButtonComponent
-              buttonRef={loadingButtonRef}
-              title={'Mark Complete'}
-              method={handleComplete}
-              bgColour={COLOURS.blue}
-              radius={30}
-            />
-          </View>
-        ) : null}
-        {hasJourneyEnded ? (
-          <View style={{marginTop: 30}}>
-            <LoaderButtonComponent
-              buttonRef={loadingButtonRef}
-              title={'Completed'}
+              title={
+                'Completed Batch ' +
+                orderCount +
+                ' of ' +
+                order?.dispatch_orders.length
+              }
               method={handleNothing}
               bgColour={COLOURS.green3}
               radius={30}
             />
           </View>
-        ) : null} */}
+        ) : null}
       </>
     );
   };
@@ -519,12 +511,13 @@ const OrderDetailScreen = ({route, navigation}) => {
       ) : null}
 
       <LoaderShimmerComponent isLoading={patchOrderLoading} />
-      <LoaderShimmerComponent isLoading={ordersLoading} />
-      {hasDataLoaded ? (
+      <LoaderShimmerComponent isLoading={getOrderLoading} />
+
+      {/* {hasDataLoaded ? (
         <LoaderShimmerComponent isLoading={isLoading} />
       ) : (
-        <LoaderShimmerComponent isLoading={ordersLoading} />
-      )}
+        <LoaderShimmerComponent isLoading={getOrderLoading} />
+      )} */}
     </ViewProviderComponent>
   );
 };

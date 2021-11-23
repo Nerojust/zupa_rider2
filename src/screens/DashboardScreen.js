@@ -86,6 +86,7 @@ const DashboardScreen = ({navigation}) => {
           : address;
       //console.log("address1", address1)
       let end = address1;
+      //console.log("status is ", item?.status)
       return (
         <OrderCardComponent
           name={item.order.customer.name ? item.order.customer.name : name}
@@ -110,17 +111,7 @@ const DashboardScreen = ({navigation}) => {
             navigation.navigate('OrderDetails', {
               data: data,
               batchId: item.id,
-              // name: item.order.customer ? item.order.customer.name : name,
-              // address: item.order.customer
-              //   ? item.order.customer.address
-              //   : address,
-              // phoneNumber: item.order.customer
-              //   ? item.order.customer.phoneNumber
-              //   : phone,
-              // status: item.status,
-              // date: item.updatedAt,
               parentId: data.id,
-              // parentStatus: data.status,
             })
           }
         />

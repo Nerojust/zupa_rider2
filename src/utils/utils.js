@@ -129,6 +129,14 @@ const backPressHandler = () => {
     currentCount = 0;
   }, 2000);
 };
+export  const dismissLoaderButton = (loadingButtonRef) => {
+  if (loadingButtonRef.current) {
+    loadingButtonRef.current.showLoading(false);
+  }
+};
+export const showLoaderButton = (loadingButtonRef) => {
+  loadingButtonRef.current.showLoading(true);
+};
 
 export const dialNumber = (phoneNumber) => {
   const args = {
