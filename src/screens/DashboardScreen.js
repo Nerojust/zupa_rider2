@@ -75,9 +75,7 @@ const DashboardScreen = ({navigation}) => {
   const onRefresh = () => {
     fetchData();
   };
-  // const filterDataResult = () => {
-  //   return orders?.filter((item, i) => item?.status != 'completed');
-  // };
+
   const renderBatchList = (item, data) => {
     if (item.order) {
       let address1 =
@@ -123,8 +121,8 @@ const DashboardScreen = ({navigation}) => {
       <View style={styles.countView}>
         <MontserratSemiBold style={styles.orderCountText}>
           {data?.dispatch_orders.length > 1
-            ? data?.dispatch_orders.length + ' orders (batch)'
-            : data?.dispatch_orders.length + ' order'}
+            ? data?.dispatch_orders.length + ' Orders (batch)'
+            : data?.dispatch_orders.length + ' Order'}
         </MontserratSemiBold>
 
         {hasDataLoaded && data?.status == 'pending' ? (
@@ -160,10 +158,10 @@ const DashboardScreen = ({navigation}) => {
     } else {
       let item = data?.dispatch_orders ? data?.dispatch_orders[0] : {};
 
-      if (item.order) {
+      if (item?.order) {
         let address1 =
-          item.order && item.order.customer
-            ? item.order.customer.address
+          item?.order && item?.order?.customer
+            ? item?.order?.customer?.address
             : address;
         //console.log("address1", address1)
         let end = address1;
@@ -172,15 +170,19 @@ const DashboardScreen = ({navigation}) => {
             {renderHeaderCounter(data)}
 
             <OrderCardComponent
-              name={item.order.customer.name ? item.order.customer.name : name}
+              name={
+                item?.order?.customer?.name ? item?.order?.customer?.name : name
+              }
               address={
-                item.order.customer ? item.order.customer.address : address
+                item?.order?.customer ? item?.order?.customer?.address : address
               }
               phoneNumber={
-                item.order.customer ? item.order.customer.phoneNumber : phone
+                item?.order?.customer
+                  ? item?.order?.customer?.phoneNumber
+                  : phone
               }
-              status={item.status}
-              date={getReadableDateAndTime(item.updatedAt)}
+              status={item?.status}
+              date={getReadableDateAndTime(item?.updatedAt)}
               onPressNavigate={createOpenLink({
                 travelType,
                 end,
@@ -188,30 +190,21 @@ const DashboardScreen = ({navigation}) => {
               })}
               onPressCall={() =>
                 dialNumber(
-                  item.order.customer ? item.order.customer.phoneNumber : phone,
+                  item?.order?.customer
+                    ? item?.order?.customer?.phoneNumber
+                    : phone,
                 )
               }
-              statusMessage={data.status}
+              statusMessage={data?.status}
               pressStart={() => {
-                console.log('Start id is', data.id);
-                handleStartJourneyDialog(data.id);
+                console.log('Start id is', data?.id);
+                handleStartJourneyDialog(data?.id);
               }}
               onPressView={() =>
                 navigation.navigate('OrderDetails', {
                   data: data,
-                  batchId: item.id,
-                  // id: item.id,
-                  // name: item.order.customer ? item.order.customer.name : name,
-                  // address: item.order.customer
-                  //   ? item.order.customer.address
-                  //   : address,
-                  // phoneNumber: item.order.customer
-                  //   ? item.order.customer.phoneNumber
-                  //   : phone,
-                  // status: item.status,
-                  // date: item.updatedAt,
-                  parentId: data.id,
-                  // parentStatus: data.status,
+                  batchId: item?.id,
+                  parentId: data?.id,
                 })
               }
             />
@@ -296,6 +289,7 @@ const DashboardScreen = ({navigation}) => {
           keyExtractor={(item, index) => item?.id + index}
           renderItem={({item}) => renderItem(item)}
           showsVerticalScrollIndicator={false}
+          initialNumToRender={5}
           ListFooterComponent={<View style={{paddingBottom: 50}} />}
         />
       </Animatable.View>
@@ -321,7 +315,7 @@ const DashboardScreen = ({navigation}) => {
         backText={getTodaysDate()}
         image={IMAGES.menu}
         onLeftPress={() => toggleDrawer(navigation)}
-        shouldDisplayIcon
+        //shouldDisplayIcon
         style={{width: deviceWidth, borderBottomWidth: 0}}
       />
 
@@ -330,7 +324,7 @@ const DashboardScreen = ({navigation}) => {
           ? renderGreetingView()
           : null}
 
-        {hasDataLoaded && pendingOrders&& pendingOrders.length > 0
+        {hasDataLoaded && pendingOrders && pendingOrders.length > 0
           ? renderOrderListView()
           : hasDataLoaded && pendingOrders?.length == 0
           ? renderNoOrdersView()
@@ -364,12 +358,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginTop: 40,
   },
-  bg_view: {
-    width: SIZES.width - 20,
-    height: SIZES.width / 2.4,
-    backgroundColor: COLOURS.white,
-    justifyContent: 'center',
-  },
+
   helloView: {justifyContent: 'center', alignItems: 'center'},
   helloText: {
     marginTop: 5,
@@ -381,13 +370,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     marginBottom: 5,
   },
-  mainView: {padding: 13, flex: 0.7, justifyContent: 'center'},
-  actionRowView: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginRight: 12,
-    color: COLOURS.blue,
-  },
+
   inProgressView: {
     width: 90,
     height: 30,
@@ -441,17 +424,6 @@ const styles = StyleSheet.create({
     top: -deviceHeight * 0.1,
     borderRadius: 30,
   },
-  clickButtonView: {
-    flex: 0.5,
-    width: SIZES.width - 20,
-    height: SIZES.width / 7,
-    backgroundColor: COLOURS.lightGray5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  nameView: {fontSize: 18, fontWeight: 'bold'},
-  phoneNumber: {fontSize: 15, fontWeight: 'bold'},
-  addressView: {fontSize: 14, paddingVertical: 7},
 
   image: {
     flex: 1.5,

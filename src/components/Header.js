@@ -2,34 +2,26 @@ import React from 'react';
 import {
   StyleSheet,
   View,
-  Text,
-  FlatList,
-  ScrollView,
-  Animated,
-  CheckBox,
   Image,
-  Alert,
-  SafeAreaView,
   TouchableOpacity,
   Platform,
 } from 'react-native';
-import ProductSansBold from '../components/Text/ProductSansBold';
 import {COLOURS} from '../utils/Colours';
-import {FONTS} from '../utils/Fonts';
-import {SIZES} from '../utils/Fonts';
 import {IMAGES} from '../utils/Images';
 import {deviceHeight, fp} from '../utils/responsive-screen';
-import MontserratMedium from './Text/MontserratMedium';
 import MontserratSemiBold from './Text/MontserratSemiBold';
 
 export const BackViewHeader = ({
   onClose,
   onLeftPress,
+  onRightPress,
   backText,
   shouldDisplayIcon,
   handleLogout,
   style,
+  imageRight = IMAGES.zupaLogo,
   image,
+  imageStyle,
 }) => {
   return (
     <View style={[styles.exitView]}>
@@ -51,7 +43,7 @@ export const BackViewHeader = ({
       <View
         style={{
           flexDirection: 'row',
-          flex: 0.2,
+          flex: 0.25,
           justifyContent: 'space-between',
           alignItems: 'center',
         }}>
@@ -59,11 +51,11 @@ export const BackViewHeader = ({
           <TouchableOpacity
             activeOpacity={0.4}
             style={style}
-            onPress={handleLogout}>
+            onPress={onRightPress}>
             <Image
-              source={IMAGES.zupaLogo}
+              source={imageRight}
               resizeMode={'contain'}
-              style={{width: 25, height: 25}}
+              style={[{width: 20, height: 20,tintColor:COLOURS.gray4}, imageStyle]}
             />
           </TouchableOpacity>
         ) : null}

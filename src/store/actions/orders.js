@@ -11,7 +11,65 @@ export const getAllOrders = () => {
       loading: true,
       error: null,
     });
-    var getUrl = `/rider-requests`;
+    var getUrl = `/rider-requests?status=started&status=pending`;
+    //console.log('geturl', getUrl);
+    return client
+      .get(getUrl)
+      .then(async (response) => {
+        if (response.data) {
+          const {data, offset, limit, total} = response || [];
+          // console.log(total, limit, offset);
+          console.log('Orders gotten successfully', response.data.length);
+
+          // var ordersExceptCompleted = await data?.filter(
+          //   (item, i) => item?.status != 'completed',
+          // );
+
+          var ordersCompleted = await data?.filter(
+            (item, i) => item?.status == 'completed',
+          );
+
+          dispatch({
+            type: 'FETCH_ALL_ORDERS_SUCCESS',
+            loading: false,
+            completedOrders: ordersCompleted,
+            pendingOrders: data,
+            // pendingOrders: ordersExceptCompleted,
+            orders: data,
+            meta: {
+              total,
+              limit,
+              offset,
+              page: 1 + offset / limit,
+              pageSize: limit,
+              pageTotal: Math.ceil(total / limit),
+            },
+          });
+
+          return response.data;
+        }
+      })
+      .catch((error) => {
+        console.log('Getting orders failed', error);
+        handleError(error, 'get orders list');
+        dispatch({
+          type: 'FETCH_ALL_ORDERS_FAILED',
+          loading: false,
+          error: error.message,
+        });
+      });
+  };
+};
+export const getAllOrdersWithDate = (startDate, endDate) => {
+  console.log('About to get all orders');
+
+  return async (dispatch) => {
+    dispatch({
+      type: 'FETCH_ALL_ORDERS_PENDING',
+      loading: true,
+      error: null,
+    });
+    var getUrl = `/rider-requests/?status=completed&startDate=${startDate}&endDate=${endDate}`;
     //console.log('geturl', getUrl);
     return client
       .get(getUrl)
@@ -81,7 +139,7 @@ export const getOrder = (parentId) => {
 
           var result = await data.find((item, i) => item.id == parentId);
           if (result) {
-           // console.log('Found the result in actions');
+            // console.log('Found the result in actions');
             dispatch({
               type: 'GET_ORDER_SUCCESS',
               loading: false,
@@ -162,7 +220,7 @@ export const patchOrderMarkComplete = (orderId, payload) => {
             type: 'PATCH_ORDER_SUCCESS',
             loading: false,
           });
-         dispatch(getAllOrders())
+          dispatch(getAllOrders());
           return response.data;
         }
       })

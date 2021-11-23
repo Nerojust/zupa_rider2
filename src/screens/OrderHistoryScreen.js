@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
   useLayoutEffect,
-} from "react";
+} from 'react';
 import {
   View,
   Text,
@@ -19,90 +19,126 @@ import {
   TouchableOpacity,
   Platform,
   SafeAreaView,
-} from "react-native";
-import { createOpenLink } from "react-native-open-maps";
+} from 'react-native';
+import {createOpenLink} from 'react-native-open-maps';
 import {COLOURS} from '../utils/Colours';
 import {FONTS} from '../utils/Fonts';
 import {SIZES} from '../utils/Sizes';
-import OrderHistory from "../components/OrderHistory";
-import Order from "../components/Order";
-import * as Animatable from "react-native-animatable";
-import LoadingDialog from "../components/LoadingDialog";
-import { GET_RIDER_REQUESTS } from "../utils/Api";
-import { useDispatch } from "react-redux";
-import RBSheet from "react-native-raw-bottom-sheet";
-import DatePicker from "react-native-datepicker";
-import { useSelector } from "react-redux";
+import OrderHistory from '../components/OrderHistory';
+import Order from '../components/Order';
+import * as Animatable from 'react-native-animatable';
+import LoadingDialog from '../components/LoadingDialog';
+import {GET_RIDER_REQUESTS} from '../utils/Api';
+import {useDispatch} from 'react-redux';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import DatePicker from 'react-native-datepicker';
+import {useSelector} from 'react-redux';
 import {
   dialNumber,
   getReadableDateAndTime,
   getValue,
   handleError,
-} from "../utils/utils";
+} from '../utils/utils';
+import LoaderShimmerComponent from '../components/LoaderShimmerComponent';
+import ViewProviderComponent from '../components/ViewProviderComponent';
+import {BackViewHeader} from '../components/Header';
+import {
+  deviceHeight,
+  deviceWidth,
+  fp,
+  hp,
+  wp,
+} from '../utils/responsive-screen';
+import {IMAGES} from '../utils/Images';
+import {getAllOrders} from '../store/actions/orders';
+import OrderCardComponent from '../components/OrderCardComponent';
+import MontserratSemiBold from '../components/Text/MontserratSemiBold';
+import MontserratBold from '../components/Text/MontserratBold';
+import MontserratMedium from '../components/Text/MontserratMedium';
 // create a component
-const OrderHistoryScreen = ({ navigation }) => {
-  const [isLoading, setIsLoading] = useState(false);
+const OrderHistoryScreen = ({navigation}) => {
   const [refreshing, setRefreshing] = useState(false);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState('');
+  const [hasDataLoaded, setHasDataLoaded] = useState(false);
+  const [endDate, setEndDate] = useState('');
   let todaysDate = new Date();
-  let userToken = "";
-  let userName = "";
-  let name = "Nerojust Adjeks";
-  let phone = "08012345678";
-  let address = "Necom House";
-  const travelType = "drive";
-  const [isDialogVisible, setIsDialogVisible] = useState(false);
+  let name = 'Nerojust Adjeks';
+  let phone = '08012345678';
+  let address = 'Necom House';
+  const travelType = 'drive';
   const [orderArray, setOrderArray] = useState([]);
-  const [isResultOrderEmpty, setIsResultOrderEmpty] = useState(false);
-  const [userNameRider, setUserNameRider] = useState("");
-  const [token, setToken] = useState("");
   const [singleTripCount, setSingleTripCount] = useState(0);
   const [batchTripCount, setBatchTripCount] = useState(0);
   const dispatch = useDispatch();
-  const loginData = useSelector((state) => state.login.loginResults);
-  //console.log("login data redux", loginData);
+  const {user} = useSelector((state) => state.users);
+  const {
+    orders,
+    pendingOrders,
+    completedOrders,
+    ordersLoading,
+    getOrderLoading,
+    patchOrderLoading,
+  } = useSelector((state) => state.orders);
+  //console.log('completed orders', completedOrders.length);
   const refRBSheet = useRef();
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity
-          onPress={() => refRBSheet.current.open()}
-          style={{
-            marginRight: 25,
-            justifyContent: "center",
-          }}
-          activeOpacity={0.5}
-        >
-          <Image
-            source={require("../assets/icons/search.png")}
-            style={styles.searchIcon}
-          />
-        </TouchableOpacity>
-      ),
-    });
-  }, [navigation]);
-
   useEffect(() => {
-    if (loginData.jwt) {
-      getOrders();
-    }
-  }, [loginData.jwt]);
-
-  const showLoader = () => {
-    setIsLoading(true);
-  };
-  const dismissLoader = () => {
-    setIsLoading(false);
-  };
-  const onRefresh = useCallback(() => {
-    setOrderArray([]);
-    getOrders();
+    fetchData();
   }, []);
 
+  useEffect(() => {
+    var singleCount = 0;
+    var batchCount = 0;
+    if (completedOrders) {
+      completedOrders.map((order, i) => {
+        // console.log('counting', order?.dispatch_orders.length);
+        if (order?.dispatch_orders.length > 1) {
+          batchCount++;
+        } else if (order?.dispatch_orders.length == 1) {
+          singleCount++;
+        }
+      });
+      setSingleTripCount(singleCount);
+      setBatchTripCount(batchCount);
+    }
+  }, [completedOrders]);
+
+  const fetchData = () => {
+    dispatch(getAllOrders()).then((result) => {
+      if (result) {
+        setHasDataLoaded(true);
+      }
+    });
+  };
+
+  const onRefresh = () => {
+    fetchData();
+  };
+  const renderHeaderCounter = (data) => {
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingVertical: 5,
+          paddingHorizontal: 30,
+          marginBottom: 5,
+        }}>
+        <MontserratSemiBold style={styles.orderCountText}>
+          {data?.dispatch_orders.length > 1
+            ? data?.dispatch_orders.length + ' Orders'
+            : data?.dispatch_orders.length + ' Order'}
+        </MontserratSemiBold>
+
+        <MontserratSemiBold style={styles.orderCountText}>
+          1 Trip
+        </MontserratSemiBold>
+      </View>
+    );
+  };
   const renderBatchList = (item, data) => {
-    if (item.order) {
+    if (item?.order) {
       let address1 =
         item.order && item.order.customer
           ? item.order.customer.address
@@ -110,7 +146,7 @@ const OrderHistoryScreen = ({ navigation }) => {
       //console.log("address1", address1)
       let end = address1;
       return (
-        <Order
+        <OrderCardComponent
           name={item.order.customer.name ? item.order.customer.name : name}
           address={item.order.customer ? item.order.customer.address : address}
           phoneNumber={
@@ -121,15 +157,15 @@ const OrderHistoryScreen = ({ navigation }) => {
           onPressNavigate={createOpenLink({
             travelType,
             end,
-            provider: "google",
+            provider: 'google',
           })}
           onPressCall={() =>
             dialNumber(
-              item.order.customer ? item.order.customer.phoneNumber : phone
+              item.order.customer ? item.order.customer.phoneNumber : phone,
             )
           }
           onPressView={() =>
-            navigation.navigate("OrderHistoryDetails", {
+            navigation.navigate('OrderHistoryDetails', {
               id: item.id,
               name: item.order.customer ? item.order.customer.name : name,
               address: item.order.customer
@@ -149,296 +185,183 @@ const OrderHistoryScreen = ({ navigation }) => {
     }
   };
   const renderItem = (data) => {
-    if (data.dispatch_orders.length > 1) {
+    //console.log('data in render', data);
+    if (data?.dispatch_orders.length > 1) {
       return (
         <FlatList
-          data={data.dispatch_orders}
+          data={data?.dispatch_orders}
           keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => renderBatchList(item, data)}
+          renderItem={({item, index}) => renderBatchList(item, data)}
           showsVerticalScrollIndicator={false}
-          ListHeaderComponent={
-            <>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  paddingVertical: 5,
-                  paddingHorizontal: 20,
-                  backgroundColor: COLOURS.blue1,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 15,
-                    color: COLOURS.white,
-                    //marginBottom: 50,
-                    fontFamily:
-                      Platform.OS == "ios"
-                        ? FONTS.ROBOTO_MEDIUM_IOS
-                        : FONTS.ROBOTO_MEDIUM,
-                  }}
-                >
-                1 TRIP
-                </Text>
-
-                <Text
-                  style={{
-                    fontSize: 15,
-                    color: COLOURS.white,
-                    //marginBottom: 50,
-                    fontFamily:
-                      Platform.OS == "ios"
-                        ? FONTS.ROBOTO_MEDIUM_IOS
-                        : FONTS.ROBOTO_MEDIUM,
-                  }}
-                >
-                 {data.dispatch_orders.length} orders
-                </Text>
-              </View>
-            </>
-          }
+          ListHeaderComponent={renderHeaderCounter(data)}
         />
       );
-    }
-    let item = data.dispatch_orders[0];
-    //console.log("Item is ", item);
+    } else {
+      let item = data?.dispatch_orders ? data?.dispatch_orders[0] : {};
+      //console.log("Item is ", item);
 
-    if (item.order) {
-      let address1 =
-        item.order && item.order.customer
-          ? item.order.customer.address
-          : address;
-      //console.log("address1", address1)
-      let end = address1;
-      return (
-        <OrderHistory
-          name={item.order.customer.name ? item.order.customer.name : name}
-          address={item.order.customer ? item.order.customer.address : address}
-          phoneNumber={
-            item.order.customer ? item.order.customer.phoneNumber : phone
-          }
-          status={item.status}
-          date={getReadableDateAndTime(item.updatedAt)}
-          onPressNavigate={createOpenLink({
-            travelType,
-            end,
-            provider: "google",
-          })}
-          onPressCall={() =>
-            dialNumber(
-              item.order.customer ? item.order.customer.phoneNumber : phone
-            )
-          }
-          onPressView={() =>
-            navigation.navigate("OrderHistoryDetails", {
-              id: item.id,
-              name: item.order.customer ? item.order.customer.name : name,
-              address: item.order.customer
-                ? item.order.customer.address
-                : address,
-              phoneNumber: item.order.customer
-                ? item.order.customer.phoneNumber
-                : phone,
-              status: item.status,
-              date: item.updatedAt,
-              parentId: data.id,
-              parentStatus: data.status,
-            })
-          }
-        />
-      );
+      if (item?.order) {
+        let address1 =
+          item.order && item.order.customer
+            ? item.order.customer.address
+            : address;
+        //console.log("address1", address1)
+        let end = address1;
+        return (
+          <>
+            {renderHeaderCounter(data)}
+            <OrderCardComponent
+              name={item.order.customer.name ? item.order.customer.name : name}
+              address={
+                item.order.customer ? item.order.customer.address : address
+              }
+              phoneNumber={
+                item.order.customer ? item.order.customer.phoneNumber : phone
+              }
+              status={item.status}
+              date={getReadableDateAndTime(item.updatedAt)}
+              onPressNavigate={createOpenLink({
+                travelType,
+                end,
+                provider: 'google',
+              })}
+              onPressCall={() =>
+                dialNumber(
+                  item.order.customer ? item.order.customer.phoneNumber : phone,
+                )
+              }
+              onPressView={() =>
+                navigation.navigate('OrderHistoryDetails', {
+                  id: item.id,
+                  name: item.order.customer ? item.order.customer.name : name,
+                  address: item.order.customer
+                    ? item.order.customer.address
+                    : address,
+                  phoneNumber: item.order.customer
+                    ? item.order.customer.phoneNumber
+                    : phone,
+                  status: item.status,
+                  date: item.updatedAt,
+                  parentId: data.id,
+                  parentStatus: data.status,
+                })
+              }
+            />
+          </>
+        );
+      }
     }
   };
-  const getOrders = (url) => {
-    setTimeout(() => {
-      showLoader();
-    }, 0);
 
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", "Bearer " + loginData.jwt);
-    //console.log("header token", loginData.jwt)
-    var requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
-    let urlAdd = url ? url : "/?status=completed";
-    let fullUrl = GET_RIDER_REQUESTS + urlAdd;
-    //console.log("url is", fullUrl);
-    fetch(fullUrl, requestOptions)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        //console.log("order response", responseJson)
-        if (responseJson) {
-          if (!responseJson.code) {
-            if (responseJson.length > 0) {
-              var batchCount = 0;
-              var singleCount = 0;
-              setOrderArray(responseJson);
-              //setIsResultOrderEmpty(false);
-
-              for (let i = 0; i < responseJson.length; i++) {
-                const oneOrder = responseJson[i];
-                //console.log(oneOrder.dispatch_orders.length);
-                if (
-                  oneOrder.dispatch_orders &&
-                  oneOrder.dispatch_orders.length > 1
-                ) {
-                  //console.log("dispatch is more than 1, batch");
-                  batchCount++;
-                } else if (
-                  oneOrder.dispatch_orders &&
-                  oneOrder.dispatch_orders.length == 1
-                ) {
-                  //console.log("dispatch is a single order and is equal to 1");
-                  singleCount++;
-                } else if (!oneOrder.dispatch_orders) {
-                  setIsResultOrderEmpty(false);
-                }
-              }
-              setSingleTripCount(singleCount);
-              setBatchTripCount(batchCount);
-
-              if (orderArray) {
-                dismissLoader();
-              }
-            } else {
-              setIsResultOrderEmpty(true);
-            }
-            if (refreshing) {
-              setRefreshing(false);
-            }
-          } else {
-            alert(responseJson.message + " " + responseJson.name);
-          }
-        } else {
-          alert(responseJson.message);
-        }
-        setRefreshing(false);
-        dismissLoader();
-      })
-      .catch((error) => {
-        console.log("error", error);
-        handleError(error);
-        dismissLoader();
-        setRefreshing(false);
-      });
-  };
   const handleDismissDialog = () => {
     if (refRBSheet.current) {
       refRBSheet.current.close();
     }
-    setStartDate("");
-    setEndDate("");
-  };
-
-  const handleRefreshPage = () => {
-    getOrders();
+    setStartDate('');
+    setEndDate('');
   };
 
   const handleSearch = () => {
-    if (startDate != "" && startDate != null) {
-      if (endDate != "" && endDate != null) {
-        if (startDate.localeCompare(endDate)) {
-          handleDismissDialog();
-          setOrderArray([]);
-          // showLoader();
-          let searchUrl =
-            "/?status=completed&startDate=" + startDate + "&endDate=" + endDate;
-          getOrders(searchUrl);
+    if (startDate != '' && startDate != null) {
+      if (endDate != '' && endDate != null) {
+        handleDismissDialog();
 
-          setStartDate("");
-          setEndDate("");
-        } else {
-          alert("Both dates can not be the same");
-        }
+        let searchUrl =
+          '/?status=completed&startDate=' + startDate + '&endDate=' + endDate;
+        //getOrders(searchUrl);
+
+        setStartDate('');
+        setEndDate('');
       } else {
-        alert("End date is required");
+        alert('End date is required');
       }
     } else {
-      alert("Start date is required");
+      alert('Start date is required');
     }
   };
-  return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar
-        backgroundColor={COLOURS.blue}
-        barStyle={Platform.OS === "ios" ? "dark-content" : "light-content"}
-      />
-      <LoadingDialog loading={isLoading} message={"Fetching your orders..."} />
-
+  const renderDatePickerBottomSheet = () => {
+    return (
       <RBSheet
         ref={refRBSheet}
-        animationType={"none"}
+        animationType={'slide'}
+        closeDuration={0}
+        openDuration={0}
         closeOnDragDown={true}
         closeOnPressMask={true}
         closeOnPressBack={true}
-        height={SIZES.width / 1.8}
+        // height={
+        //   Platform.OS == 'ios' ? hp(deviceHeight / 2.5) : hp(deviceHeight / 2.055)
+        // }
         customStyles={{
           wrapper: {
-            backgroundColor: "transparent",
+            backgroundColor: COLOURS.transparentColour,
           },
           draggableIcon: {
-            backgroundColor: COLOURS.blue,
+            width: 0,
+            top: 5,
           },
-        }}
-      >
+          container: {
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            borderColor: COLOURS.lightGray,
+            borderWidth: 0.4,
+            backgroundColor: COLOURS.zupa_rider_bg,
+          },
+        }}>
         <View
           style={{
-            justifyContent: "center",
-            alignItems: "center",
-            marginTop: 10,
-            flex: 1,
-          }}
-        >
+            justifyContent: 'center',
+            alignItems: 'center',
+            //marginTop: 10,
+            flex: 0.8,
+          }}>
           <Text
             style={{
-              alignSelf: "center",
+              alignSelf: 'center',
               fontSize: 15,
               marginBottom: 20,
               //fontWeight: "bold",
-            }}
-          >
+            }}>
             Filter records by date range
           </Text>
           <View
             style={{
-              flexDirection: "row",
+              flexDirection: 'row',
               paddingHorizontal: 5,
               marginBottom: 20,
-            }}
-          >
+            }}>
             <View
               style={{
                 marginRight: 10,
                 height: 50,
-                backgroundColor: COLOURS.lightGray1,
-                justifyContent: "center",
-                alignItems: "center",
+                backgroundColor: COLOURS.lightGray5,
+                justifyContent: 'center',
+                alignItems: 'center',
                 borderRadius: 5,
-              }}
-            >
+              }}>
               <DatePicker
-                style={{ width: 130 }}
+                style={{width: wp(140)}}
                 date={startDate}
                 mode="date"
                 placeholder="Start date"
                 format="YYYY-MM-DD"
                 minDate="2020-01-01"
-                androidMode={"spinner"}
+                androidMode={'spinner'}
                 maxDate={todaysDate}
                 confirmBtnText="Confirm"
-                showIcon={false}
+                showIcon={true}
                 cancelBtnText="Cancel"
                 customStyles={{
-                  // dateIcon: {
-                  //   position: "absolute",
-                  //   left: 0,
-                  //   top: 4,
-                  //   marginLeft: 0,
-                  // },
+                  dateIcon: {
+                    position: 'absolute',
+                    left: 5,
+                    //top: 4,
+                    marginLeft: 0,
+                    width: 20,
+                    height: 20,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  },
                   dateInput: {
                     borderColor: COLOURS.transparent,
                   },
@@ -452,31 +375,34 @@ const OrderHistoryScreen = ({ navigation }) => {
               style={{
                 marginLeft: 10,
                 height: 50,
-                backgroundColor: COLOURS.lightGray1,
-                justifyContent: "center",
-                alignItems: "center",
+                backgroundColor: COLOURS.lightGray5,
+                justifyContent: 'center',
+                alignItems: 'center',
                 borderRadius: 5,
-              }}
-            >
+              }}>
               <DatePicker
-                style={{ width: 130 }}
+                style={{width: wp(140)}}
                 date={endDate}
                 mode="date"
                 placeholder="End date"
                 format="YYYY-MM-DD"
                 minDate="2020-01-01"
-                androidMode={"spinner"}
+                androidMode={'spinner'}
                 maxDate={todaysDate}
                 confirmBtnText="Confirm"
-                showIcon={false}
+                showIcon={true}
                 cancelBtnText="Cancel"
                 customStyles={{
-                  // dateIcon: {
-                  //   position: "absolute",
-                  //   left: 0,
-                  //   top: 4,
-                  //   marginLeft: 0,
-                  // },
+                  dateIcon: {
+                    position: 'absolute',
+                    left: 5,
+                    //top: 4,
+                    marginLeft: 0,
+                    width: 20,
+                    height: 20,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  },
                   dateInput: {
                     borderColor: COLOURS.transparent,
                   },
@@ -489,13 +415,12 @@ const OrderHistoryScreen = ({ navigation }) => {
           </View>
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
               marginTop: 0,
               padding: 10,
-            }}
-          >
+            }}>
             <TouchableOpacity
               onPress={() => refRBSheet.current.close()}
               activeOpacity={0.4}
@@ -503,18 +428,16 @@ const OrderHistoryScreen = ({ navigation }) => {
                 flex: 1,
                 backgroundColor: COLOURS.lightGray2,
                 height: 45,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
               <Text
                 style={{
                   fontSize: 15,
                   color: COLOURS.gray,
-                  alignSelf: "center",
-                  fontWeight: "bold",
-                }}
-              >
+                  alignSelf: 'center',
+                  fontWeight: 'bold',
+                }}>
                 Cancel
               </Text>
             </TouchableOpacity>
@@ -525,187 +448,149 @@ const OrderHistoryScreen = ({ navigation }) => {
                 flex: 1,
                 backgroundColor: COLOURS.blue,
                 height: 45,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
               <Text
                 style={{
-                  fontWeight: "bold",
+                  fontWeight: 'bold',
                   fontSize: 15,
                   color: COLOURS.white,
-                  alignSelf: "center",
-                }}
-              >
+                  alignSelf: 'center',
+                }}>
                 Search
               </Text>
             </TouchableOpacity>
           </View>
         </View>
       </RBSheet>
+    );
+  };
+  const renderCalculateHeader = () => {
+    return (
       <>
-        {!isLoading && orderArray && orderArray.length > 0 ? (
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              //alignItems: "center",
-              paddingVertical: 15,
-            }}
-          >
+        <View style={styles.countView}>
+          {hasDataLoaded && completedOrders && completedOrders.length > 0 ? (
             <View
               style={{
-                flexDirection: "row",
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text
+                flexDirection: 'row',
+                alignItems: 'center',
+                alignContent: 'center',
+                paddingVertical: 15,
+              }}>
+              <View
                 style={{
-                  fontSize: 14,
-                  color: COLOURS.black,
-                  opacity: 0.3,
-                  marginRight: 3,
-                  fontFamily:
-                    Platform.OS == "ios"
-                      ? FONTS.ROBOTO_MEDIUM_IOS
-                      : FONTS.ROBOTO_MEDIUM,
-                }}
-              >
-                Total trips:
-              </Text>
-              <Text
+                  flexDirection: 'row',
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <MontserratSemiBold style={styles.totalTripText}>
+                  Total trips:{' '}
+                </MontserratSemiBold>
+                <MontserratSemiBold style={styles.totalTripText}>
+                  {completedOrders.length}
+                </MontserratSemiBold>
+              </View>
+              <View
                 style={{
-                  fontSize: 15,
-                  fontFamily:
-                    Platform.OS == "ios"
-                      ? FONTS.ROBOTO_MEDIUM_IOS
-                      : FONTS.ROBOTO_MEDIUM,
-                }}
-              >
-                {orderArray.length}
-              </Text>
+                  flexDirection: 'row',
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <MontserratSemiBold style={styles.singleText}>
+                  Single:{' '}
+                </MontserratSemiBold>
+                <MontserratSemiBold style={styles.singleText}>
+                  {singleTripCount}
+                </MontserratSemiBold>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <MontserratSemiBold style={styles.batchText}>
+                  Batch:{' '}
+                </MontserratSemiBold>
+                <MontserratSemiBold style={styles.batchText}>
+                  {batchTripCount}
+                </MontserratSemiBold>
+              </View>
             </View>
-            <View
-              style={{
-                flexDirection: "row",
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: COLOURS.blue,
-                  //opacity: 0.3,
-                  marginRight: 3,
-                  fontFamily:
-                    Platform.OS == "ios"
-                      ? FONTS.ROBOTO_MEDIUM_IOS
-                      : FONTS.ROBOTO_MEDIUM,
-                }}
-              >
-                Single:
-              </Text>
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontFamily:
-                    Platform.OS == "ios"
-                      ? FONTS.ROBOTO_MEDIUM_IOS
-                      : FONTS.ROBOTO_MEDIUM,
-                }}
-              >
-                {singleTripCount}
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: COLOURS.blue1,
-                  //opacity: 0.3,
-                  marginRight: 3,
-                  fontFamily:
-                    Platform.OS == "ios"
-                      ? FONTS.ROBOTO_MEDIUM_IOS
-                      : FONTS.ROBOTO_MEDIUM,
-                }}
-              >
-                Batch:
-              </Text>
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontFamily:
-                    Platform.OS == "ios"
-                      ? FONTS.ROBOTO_MEDIUM_IOS
-                      : FONTS.ROBOTO_MEDIUM,
-                }}
-              >
-                {batchTripCount}
-              </Text>
-            </View>
-          </View>
-        ) : null}
-
-        {!isLoading && orderArray && orderArray.length > 0 ? (
-          <Animatable.View
-            animation="fadeInUp"
-            duraton="1500"
-            style={{ flex: 1 }}
-          >
-            <FlatList
-              data={orderArray}
-              refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-              }
-              keyExtractor={(item) => item.dispatch_orders[0].id}
-              renderItem={({ item, index }) => renderItem(item)}
-              initialNumToRender={2}
-              showsVerticalScrollIndicator={false}
-            />
-          </Animatable.View>
-        ) : isResultOrderEmpty ? (
-          <View style={styles.parentView}>
-            <Text style={styles.nameTextview}>
-              Hello {loginData.rider.name}!
-            </Text>
-
-            <Image
-              source={require("../assets/images/rider.png")}
-              resizeMode={"contain"}
-              style={styles.image}
-            />
-            <Text style={styles.noOrderTextview}>No record found</Text>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              style={{
-                width: 100,
-                height: 50,
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: COLOURS.blue,
-                borderRadius: 10,
-                marginTop: 20,
-              }}
-              onPress={() => handleRefreshPage()}
-            >
-              <Text style={styles.refreshTextview}>Refresh</Text>
-            </TouchableOpacity>
-          </View>
-        ) : null}
+          ) : null}
+        </View>
       </>
-    </SafeAreaView>
+    );
+  };
+  const renderOrderListView = () => {
+    return (
+      <Animatable.View animation="fadeInUp" duraton="1500" style={{flex: 1}}>
+        <FlatList
+          data={completedOrders}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          keyExtractor={(item) => item?.dispatch_orders[0]?.id}
+          renderItem={({item, index}) => renderItem(item)}
+          initialNumToRender={5}
+          showsVerticalScrollIndicator={false}
+        />
+      </Animatable.View>
+    );
+  };
+  const renderNoOrdersView = () => {
+    return (
+      <View style={styles.parentView}>
+        <MontserratBold style={styles.nameTextview}>
+          Hello {user?.rider?.name}!
+        </MontserratBold>
+
+        <MontserratMedium style={styles.newOrderText}>
+          You have no riding history
+        </MontserratMedium>
+
+        <TouchableOpacity
+          activeOpacity={0.6}
+          style={styles.refreshView}
+          onPress={fetchData}>
+          <MontserratSemiBold style={styles.refreshTextview}>
+            Refresh
+          </MontserratSemiBold>
+        </TouchableOpacity>
+        <Image source={IMAGES.bike} style={styles.image} />
+      </View>
+    );
+  };
+
+  return (
+    <ViewProviderComponent>
+      <BackViewHeader
+        backText={'Rider History'}
+        image={IMAGES.arrowLeft}
+        imageRight={IMAGES.search}
+        onLeftPress={() => navigation.goBack()}
+        onRightPress={() => refRBSheet.current.open()}
+        shouldDisplayIcon={true}
+        imageStyle={{marginRight: 20}}
+      />
+
+      {renderDatePickerBottomSheet()}
+      <>
+        {renderCalculateHeader()}
+
+        {hasDataLoaded && completedOrders && completedOrders.length > 0
+          ? renderOrderListView()
+          : hasDataLoaded && pendingOrders?.length == 0
+          ? renderNoOrdersView()
+          : null}
+      </>
+      <LoaderShimmerComponent isLoading={ordersLoading} />
+      <LoaderShimmerComponent isLoading={patchOrderLoading} />
+    </ViewProviderComponent>
   );
 };
 
@@ -713,83 +598,118 @@ const OrderHistoryScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: COLOURS.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLOURS.zupa_rider_bg,
   },
   parentView: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
     paddingHorizontal: 10,
+    marginTop: 40,
   },
-  bg_view: {
-    width: SIZES.width - 20,
-    height: SIZES.width / 2.4,
-    backgroundColor: COLOURS.white,
-    justifyContent: "center",
+  nameText: {
+    fontSize: fp(15),
+    color: COLOURS.textInputColor,
   },
-  mainView: { padding: 13, flex: 0.7, justifyContent: "center" },
-  actionRowView: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginRight: 12,
+  totalTripText: {
+    fontSize: fp(15),
+    color: COLOURS.gray,
+  },
+  singleText: {
+    fontSize: fp(15),
+    color: COLOURS.blue,
+  },
+  batchText: {
+    fontSize: fp(15),
+    color: COLOURS.blue,
+  },
+  helloView: {justifyContent: 'center', alignItems: 'center'},
+  helloText: {
+    marginTop: 5,
+    marginHorizontal: 5,
+    marginBottom: 5,
+    fontSize: fp(18),
+  },
+  helloText1: {
+    marginHorizontal: 5,
+    marginBottom: 5,
+  },
+
+  inProgressView: {
+    width: 90,
+    height: 30,
+    backgroundColor: COLOURS.lightPurple,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
+  },
+  orderCountText: {
+    fontSize: fp(15),
+    color: COLOURS.textInputColor,
+    //flex: 1,
+  },
+  countView: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    marginLeft: 14,
+    // paddingVertical: 5,
+    // paddingHorizontal: 15,
+    // marginVertical: 10,
+  },
+  startRideView: {
+    width: 80,
+    height: 30,
+    backgroundColor: COLOURS.blue,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
+  },
+  startRideText: {
+    fontSize: fp(13),
+    color: COLOURS.white,
+  },
+  inProgressText: {
+    fontSize: fp(12),
     color: COLOURS.blue,
   },
   iconImageView: {
-    flexDirection: "row",
+    flexDirection: 'row',
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  clickButtonView: {
-    flex: 0.5,
-    width: SIZES.width - 20,
-    height: SIZES.width / 7,
-    backgroundColor: COLOURS.lightGray5,
-    justifyContent: "center",
-    alignItems: "center",
+  refreshView: {
+    width: 124,
+    height: 62,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLOURS.blue,
+    borderRadius: 10,
+    top: -deviceHeight * 0.1,
+    borderRadius: 30,
   },
-  nameView: { fontSize: 18, fontWeight: "bold" },
-  phoneNumber: { fontSize: 15, fontWeight: "bold" },
-  addressView: { fontSize: 14, paddingVertical: 7 },
-  imageStyle: {
-    width: 15,
-    height: 20,
-    opacity: 0.75,
-    tintColor: COLOURS.blue,
-  },
+
   image: {
-    top: -100,
-    width: SIZES.width,
-    height: SIZES.width / 3,
+    flex: 1.5,
+    width: deviceWidth,
+    height: deviceHeight * 0.3,
   },
   noOrderTextview: {
-    fontSize: 16,
-    fontWeight: "300",
-    fontFamily:
-      Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
-    //marginTop:50
-  },
-  refreshTextview: {
     fontSize: 14,
-    fontWeight: "300",
-    fontFamily:
-      Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
-    color: COLOURS.white,
+    fontWeight: '300',
   },
   nameTextview: {
-    fontSize: 18,
-    fontWeight: "400",
-    fontFamily:
-      Platform.OS == "ios" ? FONTS.ROBOTO_MEDIUM_IOS : FONTS.ROBOTO_MEDIUM,
-    flex: 0.5,
+    fontSize: fp(21),
+    flex: 0.15,
   },
-  searchIcon: {
-    width: 19,
-    height: 19,
-    // alignSelf: "flex-end",
-    tintColor: COLOURS.white,
+  refreshTextview: {
+    fontSize: fp(15),
+    // fontWeight: '300',
+
+    color: COLOURS.white,
   },
 });
 
