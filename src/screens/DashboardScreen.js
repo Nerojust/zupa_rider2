@@ -30,7 +30,7 @@ import {deviceHeight, deviceWidth, fp} from '../utils/responsive-screen';
 import {IMAGES} from '../utils/Images';
 import MontserratMedium from '../components/Text/MontserratMedium';
 import MontserratSemiBold from '../components/Text/MontserratSemiBold';
-import {getAllOrders, patchOrder} from '../store/actions/orders';
+import { getAllPendingOrders, patchOrder} from '../store/actions/orders';
 import {createOpenLink} from 'react-native-open-maps';
 import LoaderShimmerComponent from '../components/LoaderShimmerComponent';
 
@@ -64,7 +64,7 @@ const DashboardScreen = ({navigation}) => {
 
   async function fetchData() {
     setHasDataLoaded(false);
-    await dispatch(getAllOrders()).then((result) => {
+    await dispatch(getAllPendingOrders()).then((result) => {
       if (result) {
         //filterDataResult();
         setHasDataLoaded(true);
@@ -282,7 +282,7 @@ const DashboardScreen = ({navigation}) => {
       <Animatable.View animation="fadeInUp" duraton="500" style={{flex: 1}}>
         <FlatList
           ref={flatListRef}
-          data={pendingOrders}
+          data={pendingOrders||[]}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }

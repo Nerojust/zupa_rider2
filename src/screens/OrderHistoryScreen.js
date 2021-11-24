@@ -1,56 +1,31 @@
 //import liraries
-import React, {
-  useEffect,
-  useCallback,
-  useRef,
-  useState,
-  useLayoutEffect,
-} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  StatusBar,
   FlatList,
   Image,
-  BackHandler,
   RefreshControl,
-  Button,
   TouchableOpacity,
-  Platform,
-  SafeAreaView,
 } from 'react-native';
 import {createOpenLink} from 'react-native-open-maps';
 import {COLOURS} from '../utils/Colours';
-import {FONTS} from '../utils/Fonts';
-import {SIZES} from '../utils/Sizes';
-import OrderHistory from '../components/OrderHistory';
-import Order from '../components/Order';
 import * as Animatable from 'react-native-animatable';
-import LoadingDialog from '../components/LoadingDialog';
-import {GET_RIDER_REQUESTS} from '../utils/Api';
 import {useDispatch} from 'react-redux';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import DatePicker from 'react-native-datepicker';
 import {useSelector} from 'react-redux';
-import {
-  dialNumber,
-  getReadableDateAndTime,
-  getValue,
-  handleError,
-} from '../utils/utils';
+import {dialNumber, getReadableDateAndTime} from '../utils/utils';
 import LoaderShimmerComponent from '../components/LoaderShimmerComponent';
 import ViewProviderComponent from '../components/ViewProviderComponent';
 import {BackViewHeader} from '../components/Header';
-import {
-  deviceHeight,
-  deviceWidth,
-  fp,
-  hp,
-  wp,
-} from '../utils/responsive-screen';
+import {deviceHeight, deviceWidth, fp, wp} from '../utils/responsive-screen';
 import {IMAGES} from '../utils/Images';
-import {getAllOrders} from '../store/actions/orders';
+import {
+  getAllOrdersWithDate,
+  getAllCompletedOrders,
+} from '../store/actions/orders';
 import OrderCardComponent from '../components/OrderCardComponent';
 import MontserratSemiBold from '../components/Text/MontserratSemiBold';
 import MontserratBold from '../components/Text/MontserratBold';
@@ -69,6 +44,7 @@ const OrderHistoryScreen = ({navigation}) => {
   const [orderArray, setOrderArray] = useState([]);
   const [singleTripCount, setSingleTripCount] = useState(0);
   const [batchTripCount, setBatchTripCount] = useState(0);
+  const [isSearch, setIsSearch] = useState(false);
   const dispatch = useDispatch();
   const {user} = useSelector((state) => state.users);
   const {
@@ -104,9 +80,10 @@ const OrderHistoryScreen = ({navigation}) => {
   }, [completedOrders]);
 
   const fetchData = () => {
-    dispatch(getAllOrders()).then((result) => {
+    dispatch(getAllCompletedOrders()).then((result) => {
       if (result) {
         setHasDataLoaded(true);
+        setIsSearch(false);
       }
     });
   };
@@ -260,18 +237,23 @@ const OrderHistoryScreen = ({navigation}) => {
     setStartDate('');
     setEndDate('');
   };
-
-  const handleSearch = () => {
+  const makeSearchRequest = () => {
+    dispatch(getAllOrdersWithDate(startDate, endDate)).then((result) => {
+      if (result) {
+        clearDateFields();
+        setIsSearch(true);
+      }
+    });
+  };
+  const clearDateFields = () => {
+    setStartDate('');
+    setEndDate('');
+  };
+  const validateSearch = () => {
     if (startDate != '' && startDate != null) {
       if (endDate != '' && endDate != null) {
         handleDismissDialog();
-
-        let searchUrl =
-          '/?status=completed&startDate=' + startDate + '&endDate=' + endDate;
-        //getOrders(searchUrl);
-
-        setStartDate('');
-        setEndDate('');
+        makeSearchRequest();
       } else {
         alert('End date is required');
       }
@@ -442,7 +424,7 @@ const OrderHistoryScreen = ({navigation}) => {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={handleSearch}
+              onPress={validateSearch}
               activeOpacity={0.5}
               style={{
                 flex: 1,
@@ -530,7 +512,7 @@ const OrderHistoryScreen = ({navigation}) => {
     return (
       <Animatable.View animation="fadeInUp" duraton="1500" style={{flex: 1}}>
         <FlatList
-          data={completedOrders}
+          data={completedOrders || []}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
@@ -550,7 +532,7 @@ const OrderHistoryScreen = ({navigation}) => {
         </MontserratBold>
 
         <MontserratMedium style={styles.newOrderText}>
-          You have no riding history
+          You have no riding history {isSearch ? 'for this time frame' : ''}
         </MontserratMedium>
 
         <TouchableOpacity
@@ -584,7 +566,7 @@ const OrderHistoryScreen = ({navigation}) => {
 
         {hasDataLoaded && completedOrders && completedOrders.length > 0
           ? renderOrderListView()
-          : hasDataLoaded && pendingOrders?.length == 0
+          : hasDataLoaded && completedOrders?.length == 0
           ? renderNoOrdersView()
           : null}
       </>
@@ -688,8 +670,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: COLOURS.blue,
     borderRadius: 10,
-    top: -deviceHeight * 0.1,
+    //top: -deviceHeight * 0.1,
     borderRadius: 30,
+    marginVertical: 40,
   },
 
   image: {

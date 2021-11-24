@@ -41,20 +41,19 @@ export default (state = initialState, action) => {
     case 'ORDER_DATA':
       return initialState;
 
-    case 'FETCH_ALL_ORDERS_PENDING':
+    case 'FETCH_ALL_PENDING_ORDERS_PENDING':
       return {
         ...state,
         hasFetchedOrders: false,
         ordersLoading: action.loading,
       };
-    case 'FETCH_ALL_ORDERS_SUCCESS': {
-     
+    case 'FETCH_ALL_PENDING_ORDERS_SUCCESS': {
       return {
         ...state,
-        completedOrders: action.completedOrders,
+
         pendingOrders: action.pendingOrders,
         orders: action.orders,
-        order:action.order,
+        order: action.order,
         meta: {...state.meta, ...action.meta},
         hasCreatedOrder: false,
         hasDeletedOrder: false,
@@ -62,7 +61,49 @@ export default (state = initialState, action) => {
         ordersLoading: action.loading,
       };
     }
-    case 'FETCH_ALL_ORDERS_FAILED':
+    case 'FETCH_ALL_PENDING_ORDERS_FAILED':
+      return {
+        ...state,
+        ordersLoading: action.loading,
+        hasFetchedOrders: false,
+        error: action.error,
+      };
+
+    case 'FETCH_ALL_COMPLETED_ORDERS_PENDING':
+      return {
+        ...state,
+        hasFetchedOrders: false,
+        ordersLoading: action.loading,
+      };
+    case 'FETCH_ALL_COMPLETED_ORDERS_SUCCESS': {
+      return {
+        ...state,
+        completedOrders: action.completedOrders,
+        ordersLoading: action.loading,
+      };
+    }
+    case 'FETCH_ALL_COMPLETED_ORDERS_FAILED':
+      return {
+        ...state,
+        ordersLoading: action.loading,
+        hasFetchedOrders: false,
+        error: action.error,
+      };
+
+    case 'FETCH_ALL_ORDERS_WITH_DATE_PENDING':
+      return {
+        ...state,
+        hasFetchedOrders: false,
+        ordersLoading: action.loading,
+      };
+    case 'FETCH_ALL_ORDERS_WITH_DATE_SUCCESS': {
+      return {
+        ...state,
+        completedOrders: action.completedOrders,
+        ordersLoading: action.loading,
+      };
+    }
+    case 'FETCH_ALL_ORDERS_WITH_DATE_FAILED':
       return {
         ...state,
         ordersLoading: action.loading,

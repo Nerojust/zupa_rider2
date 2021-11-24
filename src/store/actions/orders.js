@@ -2,12 +2,12 @@ import client from '../../utils/Api';
 import {dateFilterParser} from '../../utils/DateFilter';
 import {handleError} from '../../utils/utils';
 
-export const getAllOrders = () => {
-  console.log('About to get all orders');
+export const getAllPendingOrders = () => {
+  console.log('About to get all pending orders');
 
   return async (dispatch) => {
     dispatch({
-      type: 'FETCH_ALL_ORDERS_PENDING',
+      type: 'FETCH_ALL_PENDING_ORDERS_PENDING',
       loading: true,
       error: null,
     });
@@ -19,57 +19,39 @@ export const getAllOrders = () => {
         if (response.data) {
           const {data, offset, limit, total} = response || [];
           // console.log(total, limit, offset);
-          console.log('Orders gotten successfully', response.data.length);
-
-          // var ordersExceptCompleted = await data?.filter(
-          //   (item, i) => item?.status != 'completed',
-          // );
-
-          var ordersCompleted = await data?.filter(
-            (item, i) => item?.status == 'completed',
-          );
+          console.log('Pending Orders gotten successfully', response.data.length);
 
           dispatch({
-            type: 'FETCH_ALL_ORDERS_SUCCESS',
+            type: 'FETCH_ALL_PENDING_ORDERS_SUCCESS',
             loading: false,
-            completedOrders: ordersCompleted,
             pendingOrders: data,
-            // pendingOrders: ordersExceptCompleted,
-            orders: data,
-            meta: {
-              total,
-              limit,
-              offset,
-              page: 1 + offset / limit,
-              pageSize: limit,
-              pageTotal: Math.ceil(total / limit),
-            },
+            //orders: data,
           });
 
           return response.data;
         }
       })
       .catch((error) => {
-        console.log('Getting orders failed', error);
+        console.log('Getting pending orders failed', error);
         handleError(error, 'get orders list');
         dispatch({
-          type: 'FETCH_ALL_ORDERS_FAILED',
+          type: 'FETCH_ALL_PENDING_ORDERS_FAILED',
           loading: false,
           error: error.message,
         });
       });
   };
 };
-export const getAllOrdersWithDate = (startDate, endDate) => {
-  console.log('About to get all orders');
+export const getAllCompletedOrders = () => {
+  console.log('About to get all completed orders');
 
   return async (dispatch) => {
     dispatch({
-      type: 'FETCH_ALL_ORDERS_PENDING',
+      type: 'FETCH_ALL_COMPLETED_ORDERS_PENDING',
       loading: true,
       error: null,
     });
-    var getUrl = `/rider-requests/?status=completed&startDate=${startDate}&endDate=${endDate}`;
+    var getUrl = `/rider-requests?status=completed`;
     //console.log('geturl', getUrl);
     return client
       .get(getUrl)
@@ -77,40 +59,62 @@ export const getAllOrdersWithDate = (startDate, endDate) => {
         if (response.data) {
           const {data, offset, limit, total} = response || [];
           // console.log(total, limit, offset);
-          console.log('Orders gotten successfully', response.data.length);
-
-          var ordersExceptCompleted = await data?.filter(
-            (item, i) => item?.status != 'completed',
-          );
-
-          var ordersCompleted = await data?.filter(
-            (item, i) => item?.status == 'completed',
-          );
+          console.log('completed Orders gotten successfully', response.data.length);
 
           dispatch({
-            type: 'FETCH_ALL_ORDERS_SUCCESS',
+            type: 'FETCH_ALL_COMPLETED_ORDERS_SUCCESS',
             loading: false,
-            completedOrders: ordersCompleted,
-            pendingOrders: ordersExceptCompleted,
-            orders: data,
-            meta: {
-              total,
-              limit,
-              offset,
-              page: 1 + offset / limit,
-              pageSize: limit,
-              pageTotal: Math.ceil(total / limit),
-            },
+            completedOrders: data,
           });
 
           return response.data;
         }
       })
       .catch((error) => {
-        console.log('Getting orders failed', error);
+        console.log('Getting completed orders failed', error);
         handleError(error, 'get orders list');
         dispatch({
-          type: 'FETCH_ALL_ORDERS_FAILED',
+          type: 'FETCH_ALL_COMPLETED_ORDERS_FAILED',
+          loading: false,
+          error: error.message,
+        });
+      });
+  };
+};
+export const getAllOrdersWithDate = (startDate = '', endDate = '') => {
+  console.log('About to get all orders with date', startDate, endDate);
+
+  return async (dispatch) => {
+    dispatch({
+      type: 'FETCH_ALL_ORDERS_WITH_DATE_PENDING',
+      loading: true,
+      error: null,
+    });
+    var getUrl = `/rider-requests/?status=completed&startDate=${startDate}&endDate=${endDate}`;
+    console.log('geturl', getUrl);
+    return client
+      .get(getUrl)
+      .then(async (response) => {
+        if (response.data) {
+          const {data, offset, limit, total} = response || [];
+          // console.log(total, limit, offset);
+          console.log('Orders with date gotten successfully', response.data.length);
+
+          dispatch({
+            type: 'FETCH_ALL_ORDERS_WITH_DATE_SUCCESS',
+            loading: false,
+            completedOrders: data,
+            orders: data,
+          });
+
+          return response.data;
+        }
+      })
+      .catch((error) => {
+        console.log('Getting orders with date failed', error);
+        handleError(error, 'get orders list');
+        dispatch({
+          type: 'FETCH_ALL_ORDERS_WITH_DATE_FAILED',
           loading: false,
           error: error.message,
         });
@@ -181,7 +185,7 @@ export const patchOrder = (orderId, payload) => {
             type: 'PATCH_ORDER_SUCCESS',
             loading: false,
           });
-          dispatch(getAllOrders());
+          dispatch(getAllPendingOrders());
           return response.data;
         }
       })
@@ -220,7 +224,7 @@ export const patchOrderMarkComplete = (orderId, payload) => {
             type: 'PATCH_ORDER_SUCCESS',
             loading: false,
           });
-          dispatch(getAllOrders());
+          dispatch(getAllPendingOrders());
           return response.data;
         }
       })
@@ -259,7 +263,7 @@ export const patchEndTrip = (orderId, payload) => {
             type: 'PATCH_ORDER_SUCCESS',
             loading: false,
           });
-          dispatch(getAllOrders());
+          dispatch(getAllPendingOrders());
           return response.data;
         }
       })

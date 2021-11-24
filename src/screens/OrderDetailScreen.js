@@ -19,7 +19,6 @@ import MontserratSemiBold from '../components/Text/MontserratSemiBold';
 import CircleImageComponent from '../components/CircleImage';
 import LoaderButtonComponent from '../components/LoaderButtonComponent';
 import {
-  getAllOrders,
   getOrder,
   patchEndTrip,
   patchOrder,
