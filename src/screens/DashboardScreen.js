@@ -350,6 +350,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     flex: 0.5,
     fontSize: fp(19),
+    color:COLOURS.gray
   },
   parentView: {
     justifyContent: 'center',

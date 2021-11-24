@@ -9,6 +9,7 @@ import {
 import {COLOURS} from '../utils/Colours';
 import {IMAGES} from '../utils/Images';
 import {deviceHeight, fp} from '../utils/responsive-screen';
+import MontserratBold from './Text/MontserratBold';
 import MontserratSemiBold from './Text/MontserratSemiBold';
 
 export const BackViewHeader = ({
@@ -16,7 +17,7 @@ export const BackViewHeader = ({
   onLeftPress,
   onRightPress,
   backText,
-  shouldDisplayIcon,
+  shouldDisplayIcon = false,
   handleLogout,
   style,
   imageRight = IMAGES.zupaLogo,
@@ -34,11 +35,11 @@ export const BackViewHeader = ({
           style={{width: 21, height: 21}}
         />
       </TouchableOpacity>
-      <MontserratSemiBold
-        style={{fontSize: fp(18), flex: 1.3, color: COLOURS.textInputColor}}
+      <MontserratBold
+        style={{fontSize: fp(19), flex: 1.3, color: COLOURS.textInputColor}}
         numberOfLines={1}>
         {backText}
-      </MontserratSemiBold>
+      </MontserratBold>
 
       <View
         style={{
@@ -55,7 +56,10 @@ export const BackViewHeader = ({
             <Image
               source={imageRight}
               resizeMode={'contain'}
-              style={[{width: 20, height: 20,tintColor:COLOURS.gray4}, imageStyle]}
+              style={[
+                {width: 20, height: 20, tintColor: COLOURS.gray4},
+                imageStyle,
+              ]}
             />
           </TouchableOpacity>
         ) : null}

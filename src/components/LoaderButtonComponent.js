@@ -5,10 +5,16 @@ import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
 import {Platform} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {COLOURS} from '../utils/Colours';
-import {deviceWidth} from '../utils/responsive-screen';
+import {deviceWidth, fp} from '../utils/responsive-screen';
 
 // create a component
-const LoaderButtonComponent = ({buttonRef, title, method,bgColour,radius=10}) => {
+const LoaderButtonComponent = ({
+  buttonRef,
+  title,
+  method,
+  bgColour = COLOURS.blue,
+  radius = 10,
+}) => {
   return (
     <TouchableOpacity onPress={method.bind(this)} activeOpacity={0.6}>
       <AnimateLoadingButton
@@ -18,7 +24,7 @@ const LoaderButtonComponent = ({buttonRef, title, method,bgColour,radius=10}) =>
         title={title}
         onPress={null}
         titleFontFamily={'Montserrat-Bold'}
-        titleFontSize={RFValue(14)}
+        titleFontSize={fp(15)}
         titleColor={COLOURS.white}
         activityIndicatorColor={COLOURS.white}
         backgroundColor={bgColour}

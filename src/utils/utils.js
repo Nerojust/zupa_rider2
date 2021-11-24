@@ -11,6 +11,7 @@ import {
   BackHandler,
   Image,
   StatusBar,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import {AuthContext} from './Context';
 import call from 'react-native-phone-call';
@@ -129,6 +130,11 @@ const backPressHandler = () => {
     currentCount = 0;
   }, 2000);
 };
+export const DismissKeyboard = ({ children, handleClose }) => (
+  <TouchableWithoutFeedback onPress={handleClose}>
+    {children}
+  </TouchableWithoutFeedback>
+);
 export  const dismissLoaderButton = (loadingButtonRef) => {
   if (loadingButtonRef.current) {
     loadingButtonRef.current.showLoading(false);

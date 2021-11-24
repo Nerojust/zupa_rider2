@@ -595,6 +595,13 @@ const styles = StyleSheet.create({
     fontSize: fp(15),
     color: COLOURS.textInputColor,
   },
+  newOrderText: {
+    marginHorizontal: 5,
+    marginBottom: 5,
+    flex: 0.5,
+    fontSize: fp(19),
+    color: COLOURS.gray,
+  },
   totalTripText: {
     fontSize: fp(15),
     color: COLOURS.gray,
@@ -670,9 +677,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: COLOURS.blue,
     borderRadius: 10,
-    //top: -deviceHeight * 0.1,
+    top: -deviceHeight * 0.1,
     borderRadius: 30,
-    marginVertical: 40,
+    //marginVertical: 40,
   },
 
   image: {

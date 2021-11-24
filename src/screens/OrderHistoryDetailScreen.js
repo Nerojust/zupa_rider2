@@ -212,7 +212,8 @@ const OrderHistoryDetailScreen = ({route, navigation}) => {
               marginLeft: 30,
             }}>
             <CircleImageComponent
-              image={IMAGES.location}
+              image={IMAGES.text}
+              isText
               onPress={sendTextMessage}
               style={{
                 backgroundColor: COLOURS.lightPurple,
@@ -234,10 +235,11 @@ const OrderHistoryDetailScreen = ({route, navigation}) => {
               //right: 20,
             }}>
             <CircleImageComponent
-              image={IMAGES.call}
+              image={IMAGES.whatsapp}
               onPress={sendWhatsappMessage}
+              isWhatsapp
               style={{
-                backgroundColor: COLOURS.whatsappgreen,
+                backgroundColor: COLOURS.green,
                 marginRight: 10,
               }}
             />

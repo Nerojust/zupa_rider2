@@ -1,36 +1,59 @@
 //import liraries
-import React, { Component } from "react";
-import { View, Text, StyleSheet, TextInput,Platform } from "react-native";
-import { COLOURS } from "../utils/Colours";
-import { FONTS } from "../utils/Fonts";
-import { SIZES } from "../utils/Sizes";
+import React, {Component} from 'react';
+import {View, Text, StyleSheet, TextInput, Platform} from 'react-native';
+import {COLOURS} from '../utils/Colours';
+import {FONTS} from '../utils/Fonts';
+import { fp } from '../utils/responsive-screen';
+import {SIZES} from '../utils/Sizes';
 
 // create a component
 const TextInputComponent = ({
   placeholder,
   handleTextChange,
   defaultValue,
-  refInput,
   onSubmitEditing,
   keyboardType,
+  refValue,
   secureTextEntry,
+  handleTextInputFocus,
   returnKeyType,
+  props,
+  handleBlur,
+  heightfigure,
+  widthFigure,
+  multiline,
+  length,
+  editable,
+  capitalize = 'none',
+  paddingLeft = 16,
 }) => {
   return (
     <TextInput
-      style={styles.textInput}
+      style={[
+        styles.textInput,
+        {height: heightfigure, width: widthFigure, paddingLeft: paddingLeft},
+        props,
+      ]}
+      blurOnSubmit={false}
       placeholder={placeholder}
-      placeholderTextColor={COLOURS.gray}
-      onChangeText={(text) => handleTextChange(text)}
+      placeholderTextColor={COLOURS.textInputColor}
+      onChangeText={handleTextChange}
       underlineColor={COLOURS.white}
-      defaultValue={defaultValue}
-      ref={refInput}
+      defaultValue={defaultValue && defaultValue.trim()}
+      ref={refValue}
+      onFocus={handleTextInputFocus}
+      onBlur={handleBlur}
       onSubmitEditing={onSubmitEditing}
-      returnKeyLabel={"Next"}
+      returnKeyLabel={'Next'}
       returnKeyType={returnKeyType}
       keyboardType={keyboardType}
       secureTextEntry={secureTextEntry}
-      autoCapitalize="none"
+      autoCapitalize={capitalize}
+      multiline={multiline}
+      editable={editable}
+      //clearButtonMode={"always"}
+      textAlignVertical={multiline ? 'top' : null}
+      maxLength={length}
     />
   );
 };
@@ -38,20 +61,15 @@ const TextInputComponent = ({
 // define your styles
 const styles = StyleSheet.create({
   textInput: {
-    height: 50,
-    marginTop: 20,
     backgroundColor: COLOURS.lightGray5,
     paddingLeft: 16,
     color: COLOURS.black,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
-    fontFamily:
-      Platform.OS == "ios" ? FONTS.ROBOTO_REGULAR_IOS : FONTS.ROBOTO_REGULAR,
-    borderBottomLeftRadius: 10,
-    fontSize: 17,
-    alignSelf: "center",
-    width: SIZES.width / 1.25,
+    borderWidth: 0.7,
+    borderRadius: 10,
+    fontSize: fp(15),
+    alignSelf: 'center',
+    fontFamily: 'Montserrat-Regular',
+    //letterSpacing: -0.4,
   },
 });
 

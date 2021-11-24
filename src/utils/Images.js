@@ -17,4 +17,11 @@ export const IMAGES = {
   rider: require('../assets/images/rider.png'),
   bike: require('../assets/images/bike.png'),
   search: require('../assets/icons/search.png'),
+  cancel: require('../assets/icons/cancel.png'),
+  shipping: require('../assets/icons/shipping.png'),
+  text: require('../assets/icons/text.png'),
+  whatsapp: require('../assets/icons/whatsapp.png'),
+  deliver: require('../assets/icons/deliver.png'),
+  logout: require('../assets/icons/logout.png'),
+  loginBG: require('../assets/images/auth_bg.png'),
 };

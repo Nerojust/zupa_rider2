@@ -184,7 +184,7 @@ const OrderDetailScreen = ({route, navigation}) => {
     setHasDataLoaded(false);
     dispatch(patchOrder(order?.id, payload)).then((result) => {
       if (result) {
-       // console.log('the journey has started', result);
+        // console.log('the journey has started', result);
         dispatch(getOrder(retrievedId));
       }
     });
@@ -237,7 +237,7 @@ const OrderDetailScreen = ({route, navigation}) => {
       //   result.dispatch_orders[0].status,
       // );
       if (result?.dispatch_orders[0]?.status == 'completed') {
-       // console.log('single order is completed already, start end trip');
+        // console.log('single order is completed already, start end trip');
         endTrip();
       }
     }
@@ -393,8 +393,9 @@ const OrderDetailScreen = ({route, navigation}) => {
               marginLeft: 30,
             }}>
             <CircleImageComponent
-              image={IMAGES.location}
+              image={IMAGES.text}
               onPress={sendTextMessage}
+              isText
               style={{
                 backgroundColor: COLOURS.lightPurple,
                 marginRight: 10,
@@ -415,10 +416,11 @@ const OrderDetailScreen = ({route, navigation}) => {
               //right: 20,
             }}>
             <CircleImageComponent
-              image={IMAGES.call}
+              image={IMAGES.whatsapp}
+              isWhatsapp
               onPress={sendWhatsappMessage}
               style={{
-                backgroundColor: COLOURS.whatsappgreen,
+                backgroundColor: COLOURS.green,
                 marginRight: 10,
               }}
             />
@@ -498,7 +500,6 @@ const OrderDetailScreen = ({route, navigation}) => {
         backText={'Order Details'}
         image={IMAGES.arrowLeft}
         onLeftPress={() => navigation.goBack()}
-        shouldDisplayIcon={true}
         style={{width: deviceWidth, borderBottomWidth: 0}}
       />
       {hasDataLoaded ? (

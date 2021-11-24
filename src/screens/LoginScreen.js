@@ -8,6 +8,8 @@ import {
   Image,
   ImageBackground,
   Platform,
+  FlatList,
+  Keyboard,
 } from 'react-native';
 import {COLOURS} from '../utils/Colours';
 import {FONTS} from '../utils/Fonts';
@@ -18,24 +20,43 @@ import TogglePasswordEye from '../components/TogglePassword';
 import TextInputComponent from '../components/TextInputComponent';
 import AnimateLoadingButton from 'react-native-animate-loading-button';
 import TextInputComponent2 from '../components/TextInputComponent2';
-
+import {KeyboardObserverComponent} from '../components/KeyboardObserverComponent';
+import LoaderButtonComponent from '../components/LoaderButtonComponent';
 import ViewProviderComponent from '../components/ViewProviderComponent';
 import {login} from '../store/actions/users';
-
+import {
+  DismissKeyboard,
+  dismissLoaderButton,
+  showLoaderButton,
+} from '../utils/utils';
+import {ACTIVE_OPACITY} from '../utils/Constants';
+import {
+  deviceHeight,
+  deviceWidth,
+  fp,
+  hp,
+  wp,
+} from '../utils/responsive-screen';
+import MontserratBold from '../components/Text/MontserratBold';
+import MontserratMedium from '../components/Text/MontserratMedium';
+import useKeyboardHeight from 'react-native-use-keyboard-height';
+import {IMAGES} from '../utils/Images';
 // create a component
 const LoginScreen = ({navigation}) => {
   const dispatch = useDispatch();
+  const keyboardHeight = useKeyboardHeight();
   const [phoneNumber, setPhoneNumber] = useState('08000000000');
   const [password, setPassword] = useState('2729');
   const phoneNumberRef = useRef(null);
-  const pinRef = useRef(null);
+  const passwordRef = useRef(null);
   const [securePassword, setSecurePassword] = useState(true);
-  const loadingButton = useRef();
-
+  const loadingButtonRef = useRef();
+  const [isPhoneNumberFocused, setIsPhoneNumberFocused] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const handlePhoneNumber = (value) => {
     setPhoneNumber(value);
   };
-  const handlePin = (value) => {
+  const handlePassword = (value) => {
     setPassword(value);
   };
   const togglePassword = () => {
@@ -46,16 +67,18 @@ const LoginScreen = ({navigation}) => {
     navigation.push('ForgotPassword');
   };
 
-  const handleRefFocus = () => {
-    pinRef.current.focus();
-  };
-  const dismissLoader = () => {
-    if (loadingButton.current) {
-      loadingButton.current.showLoading(false);
-    }
-  };
-  const showLoader = () => {
-    loadingButton.current.showLoading(true);
+  const renderButton = () => {
+    return (
+      <>
+        <LoaderButtonComponent
+          buttonRef={loadingButtonRef}
+          title={'Sign In'}
+          method={makeLoginRequest}
+        />
+
+        <View style={{marginBottom: 20}} />
+      </>
+    );
   };
 
   const makeLoginRequest = () => {
@@ -67,126 +90,121 @@ const LoginScreen = ({navigation}) => {
       phoneNumber: phoneNumber,
       pin: password,
     };
-    showLoader();
+    showLoaderButton(loadingButtonRef);
     dispatch(login(payload));
-    dismissLoader();
+    dismissLoaderButton(loadingButtonRef);
   };
+  const handleClose = () => {
+    Keyboard.dismiss();
+  };
+  const renderInputFields = () => {
+    return (
+      <>
+        <TextInputComponent
+          placeholder={'Phone number'}
+          handleTextChange={handlePhoneNumber}
+          defaultValue={phoneNumber}
+          refValue={phoneNumberRef}
+          placeholderTextColor={COLOURS.gray5}
+          keyboardType={'email-address'}
+          length={11}
+          heightfigure={50}
+          widthFigure={deviceWidth / 1.15}
+          props={
+            isPhoneNumberFocused
+              ? {borderColor: COLOURS.blue, color: COLOURS.textInputColor}
+              : {borderColor: COLOURS.zupa_gray_bg}
+          }
+          handleTextInputFocus={() => setIsPhoneNumberFocused(true)}
+          handleBlur={() => setIsPasswordFocused(false)}
+          onSubmitEditing={() => passwordRef.current.focus()}
+        />
 
-  // const getOrders = (token, loginData) => {
-  //   var myHeaders = new Headers();
-  //   myHeaders.append('Content-Type', 'application/json');
-  //   myHeaders.append('Authorization', 'Bearer ' + token);
+        <View style={{marginVertical: 10}} />
 
-  //   var requestOptions = {
-  //     method: 'GET',
-  //     headers: myHeaders,
-  //     redirect: 'follow',
-  //   };
-  //   fetch(GET_RIDER_REQUESTS, requestOptions)
-  //     .then((response) => response.json())
-  //     .then((responseJson) => {
-  //       if (responseJson) {
-  //         if (!responseJson.code) {
-  //           var newOrderList = [];
-  //           for (let i = 0; i < responseJson.length; i++) {
-  //             const element = responseJson[i];
-  //             if (element.status != 'completed') {
-  //               newOrderList.push(element);
-  //             }
-  //           }
-  //           dispatch(saveOrder(newOrderList));
-  //           console.log('login orders saved to redux');
-  //           if ((loginData && newOrderList) || loginData) {
-  //             dismissLoader();
-  //             dispatch(loginUser(loginData));
-  //             signIn(loginData);
-  //           }
-  //         } else {
-  //           alert(responseJson.message);
-  //         }
-  //       } else {
-  //         alert(responseJson.message);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log('error', error);
-  //       dismissLoader();
-  //       handleError(error);
-  //     });
-  // };
+        <TextInputComponent
+          placeholder={'Password'}
+          handleTextChange={handlePassword}
+          defaultValue={password}
+          refValue={passwordRef}
+          heightfigure={50}
+          widthFigure={deviceWidth / 1.15}
+          returnKeyType={'done'}
+          placeholderTextColor={COLOURS.gray5}
+          secureTextEntry
+          props={
+            isPasswordFocused
+              ? {borderColor: COLOURS.blue, color: COLOURS.textInputColor}
+              : {borderColor: COLOURS.zupa_gray_bg}
+          }
+          handleTextInputFocus={() => setIsPasswordFocused(true)}
+          handleBlur={() => setIsPasswordFocused(false)}
+          onSubmitEditing={makeLoginRequest}
+        />
+        <View style={{marginVertical: 10}} />
+      </>
+    );
+  };
+  const renderBottomRow = () => {
+    return (
+      <View
+        style={[
+          styles.signUpPasswordRowView,
+          {
+            marginBottom:
+              keyboardHeight > 0
+                ? Platform.OS == 'ios'
+                  ? keyboardHeight - hp(150)
+                  : 0
+                : 0,
+          },
+        ]}>
+        <TouchableOpacity
+          activeOpacity={ACTIVE_OPACITY}
+          onPress={gotoForgotPasswordPage}>
+          <MontserratMedium style={styles.forgotPasswordView}>
+            Forgot Password?
+          </MontserratMedium>
+        </TouchableOpacity>
+      </View>
+    );
+  };
 
   return (
     <ViewProviderComponent>
-      <ImageBackground
-        source={require('../assets/images/auth_bg.png')}
-        style={styles.image}>
-        <View style={styles.parentView}>
-          <Image
-            source={require('../assets/icons/zupa.png')}
-            resizeMode={'contain'}
-            style={styles.logoImage}
-          />
+      <ImageBackground source={IMAGES.loginBG} style={styles.image}>
+        <FlatList
+          data={[]}
+          keyboardShouldPersistTaps={'handled'}
+          showsVerticalScrollIndicator={false}
+          ListHeaderComponent={
+            <DismissKeyboard handleClose={handleClose}>
+              <KeyboardObserverComponent>
+                <View
+                  style={{
+                    justifyContent: 'center',
+                    height: fp(deviceHeight - wp(125)),
+                  }}>
+                  <View style={{marginLeft: 25}}>
+                    <MontserratBold style={styles.welcomeTextView}>
+                      Sign In
+                    </MontserratBold>
 
-          <View style={styles.emailAndPasswordView}>
-            <TextInputComponent
-              placeholder={'Phone number'}
-              handleTextChange={handlePhoneNumber}
-              defaultValue={phoneNumber}
-              refInput={phoneNumberRef}
-              onSubmitEditing={handleRefFocus}
-              keyboardType={'email-address'}
-              secureTextEntry={false}
-              returnKeyType="next"
-            />
-            <View style={styles.passwordRowView}>
-              <View
-                style={{
-                  flex: 1,
-                }}>
-                <TextInputComponent2
-                  placeholder={'Password'}
-                  handleTextChange={handlePin}
-                  defaultValue={password}
-                  refInput={pinRef}
-                  keyboardType={'default'}
-                  returnKeyType="done"
-                  secureTextEntry={securePassword ? true : false}
-                />
-              </View>
-              <TouchableOpacity
-                style={styles.toggleView}
-                onPress={togglePassword}>
-                <TogglePasswordEye securePassword={securePassword} />
-              </TouchableOpacity>
-            </View>
-            <TouchableOpacity
-              onPress={gotoForgotPasswordPage}
-              activeOpacity={0.8}>
-              <Text style={styles.forgotPasswordView}>Forgot Password?</Text>
-            </TouchableOpacity>
+                    <MontserratMedium style={styles.signInTextView}>
+                      Sign in to your account
+                    </MontserratMedium>
+                  </View>
+                  {renderInputFields()}
 
-            <View style={{marginTop: 18}}>
-              <AnimateLoadingButton
-                ref={(c) => (loadingButton.current = c)}
-                width={Platform.OS == 'ios' ? 300 : 290}
-                height={50}
-                title="Login"
-                titleWeight={'700'}
-                titleFontFamily={
-                  Platform.OS == 'ios'
-                    ? FONTS.MONTSERRAT_MEDIUM_IOS
-                    : FONTS.MONTSERRAT_MEDIUM
-                }
-                titleFontSize={16}
-                titleColor={COLOURS.white}
-                activityIndicatorColor={COLOURS.white}
-                backgroundColor={COLOURS.blue}
-                borderRadius={10}
-                onPress={makeLoginRequest.bind(this)}
-              />
-            </View>
-          </View>
-        </View>
+                  {renderButton()}
+                  {renderBottomRow()}
+                </View>
+              </KeyboardObserverComponent>
+            </DismissKeyboard>
+          }
+          renderItem={null}
+          keyExtractor={(item) => item?.id}
+        />
       </ImageBackground>
     </ViewProviderComponent>
   );
@@ -199,61 +217,52 @@ const styles = StyleSheet.create({
     //justifyContent: "center",
     //backgroundColor: COLOURS.white,
   },
-  parentView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    //width: SIZES.width - 70,
+  image: {
+    width: deviceWidth,
+    height: deviceHeight,
+  },
+  welcomeTextView: {
+    fontSize: fp(30),
+    color: COLOURS.text_color,
+  },
+  signInTextView: {
+    fontSize: fp(14),
+    color: COLOURS.textInputColor,
+    marginTop: 15,
+    marginBottom: 30,
+  },
 
-    marginHorizontal: 35,
-  },
-  image: {width: SIZES.width, height: SIZES.height},
-  logoImage: {width: Platform.OS == 'ios' ? 170 : 170, height: 40},
-  emailAndPasswordView: {
-    alignSelf: 'center',
-    marginTop: 20,
-  },
-  toggleView: {
-    backgroundColor: COLOURS.lightGray5,
-    flex: 0.2,
-    justifyContent: 'center',
-    top: 10,
-    left: -1,
+  button: {
+    marginBottom: hp(40),
+    width: deviceWidth / 1.25,
     height: 50,
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
+    justifyContent: 'center',
+    right: -5,
+    alignItems: 'center',
+    borderRadius: 10,
+    backgroundColor: COLOURS.blue,
   },
-  signUp: {
-    color: COLOURS.black,
-    fontSize: 15,
-    fontWeight: 'bold',
-    alignSelf: 'center',
-    fontFamily:
-      Platform.OS == 'ios' ? FONTS.ROBOTO_REGULAR_IOS : FONTS.ROBOTO_REGULAR,
+
+  buttonText: {
+    color: COLOURS.white,
+    fontSize: fp(16),
   },
-  passwordRowView: {
+
+  signUpPasswordRowView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginHorizontal: 25,
     marginTop: 10,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-    width: SIZES.width / 1.25,
   },
-  signRowView: {
-    //flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 45,
-  },
-  forgotPasswordView: {
+  signupView: {
+    fontSize: fp(14),
     color: COLOURS.blue,
-    marginTop: 30,
-    fontSize: 13,
-    alignSelf: 'flex-end',
-    fontFamily:
-      Platform.OS == 'ios' ? FONTS.ROBOTO_REGULAR_IOS : FONTS.ROBOTO_REGULAR,
+  },
+
+  forgotPasswordView: {
+    fontSize: fp(14),
+    color: COLOURS.labelTextColor,
   },
 });
 
