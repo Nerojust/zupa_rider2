@@ -1,5 +1,5 @@
 //import liraries
-import React, { Component } from "react";
+import React, {Component, useRef, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -11,48 +11,55 @@ import {
   Platform,
   Alert,
   SafeAreaView,
-} from "react-native";
+} from 'react-native';
 import {COLOURS} from '../utils/Colours';
 import {FONTS} from '../utils/Fonts';
 import {SIZES} from '../utils/Sizes';
-import DisplayButton from "../components/Button1";
-import SendSMS from "react-native-sms";
-import call from "react-native-phone-call";
-import openMap from "react-native-open-maps";
-import { createOpenLink } from "react-native-open-maps";
-import { getTodaysDate } from "../utils/utils";
+import DisplayButton from '../components/Button1';
+import SendSMS from 'react-native-sms';
+import call from 'react-native-phone-call';
+import openMap from 'react-native-open-maps';
+import {createOpenLink} from 'react-native-open-maps';
+import {dialNumber, getTodaysDate} from '../utils/utils';
+import ViewProviderComponent from '../components/ViewProviderComponent';
+import {BackViewHeader} from '../components/Header';
+import {deviceWidth, fp} from '../utils/responsive-screen';
+import {IMAGES} from '../utils/Images';
+import MontserratSemiBold from '../components/Text/MontserratSemiBold';
+import CircleImageComponent from '../components/CircleImage';
+import LoaderButtonComponent from '../components/LoaderButtonComponent';
 
 // create a component
-const OrderHistoryDetailScreen = ({ route, navigation }) => {
+const OrderHistoryDetailScreen = ({route, navigation}) => {
   const name = route.params.name;
   const address = route.params.address;
   const phoneNumber = route.params.phoneNumber;
   const status = route.params.status;
   const date = route.params.date;
-
+  var loadingButtonRef = useRef();
   const orderId = route.params.id;
-  console.log("order id", orderId);
+  console.log('order id', orderId);
   const parentId = route.params.parentId;
   const parentStatus = route.params.parentStatus;
   //console.log("parent status ", parentStatus);
-  console.log("parent id ", parentId);
+  console.log('parent id ', parentId);
   const end = address;
-  const travelType = "drive";
-
-  const openLocation = createOpenLink({ travelType, end, provider: "google" });
+  const travelType = 'drive';
+  const [hasDataLoaded, setHasDataLoaded] = useState(false);
+  const openLocation = createOpenLink({travelType, end, provider: 'google'});
 
   const sendWhatsappMessage = () => {
     let whatsAppMessage = `Hello ${name} I will be delivering your package today. Please be on standby. Thank you`;
     let URL =
-      "whatsapp://send?text=" + whatsAppMessage + "&phone=234" + phoneNumber;
+      'whatsapp://send?text=' + whatsAppMessage + '&phone=234' + phoneNumber;
 
     Linking.openURL(URL)
       .then((data) => {
-        console.log("WhatsApp Opened", data);
+        console.log('WhatsApp Opened', data);
       })
       .catch((error) => {
-        alert("Oops! seems whatsapp is not installed on your device");
-        console.log("No whatsapp app found", error);
+        alert('Oops! seems whatsapp is not installed on your device');
+        console.log('No whatsapp app found', error);
       });
   };
 
@@ -61,157 +68,218 @@ const OrderHistoryDetailScreen = ({ route, navigation }) => {
       {
         body: `Hello ${name}, I will be delivering your package today. Please be on standby. Thank you`,
         recipients: [phoneNumber],
-        successTypes: ["sent", "queued"],
+        successTypes: ['sent', 'queued'],
         allowAndroidSendWithoutReadPermission: true,
       },
       (completed, cancelled, error) => {
         console.log(
-          "SMS Callback: completed: " +
+          'SMS Callback: completed: ' +
             completed +
-            " cancelled: " +
+            ' cancelled: ' +
             cancelled +
-            " error: " +
-            error
+            ' error: ' +
+            error,
         );
-      }
+      },
+    );
+  };
+
+  const renderOrderDetails = () => {
+    return (
+      <View
+        style={{
+          //flex: 1,
+          marginTop: 15,
+          paddingHorizontal: 30,
+        }}>
+        <MontserratSemiBold style={{fontSize: fp(15), color: COLOURS.gray5}}>
+          Customer Name
+        </MontserratSemiBold>
+
+        <MontserratSemiBold
+          style={{
+            fontSize: fp(17),
+            color: COLOURS.textInputColor,
+            marginTop: 3,
+          }}>
+          {name}
+        </MontserratSemiBold>
+        <MontserratSemiBold
+          style={{fontSize: fp(15), color: COLOURS.gray5, marginTop: 13}}>
+          Date
+        </MontserratSemiBold>
+
+        <MontserratSemiBold
+          style={{
+            fontSize: fp(15),
+            color: COLOURS.textInputColor,
+            marginTop: 4,
+          }}>
+          {getTodaysDate(date)}
+        </MontserratSemiBold>
+
+        <MontserratSemiBold
+          style={{fontSize: fp(15), color: COLOURS.gray5, marginTop: 15}}>
+          Location
+        </MontserratSemiBold>
+
+        <MontserratSemiBold
+          style={{
+            fontSize: fp(15),
+            color: COLOURS.textInputColor,
+            marginTop: 4,
+          }}>
+          {address}
+        </MontserratSemiBold>
+
+        <MontserratSemiBold
+          style={{fontSize: fp(15), color: COLOURS.gray5, marginTop: 17}}>
+          Phone Number
+        </MontserratSemiBold>
+        <MontserratSemiBold
+          style={{fontSize: 15, color: COLOURS.textInputColor, marginTop: 4}}>
+          {phoneNumber}
+        </MontserratSemiBold>
+      </View>
+    );
+  };
+  const renderActionbuttons = () => {
+    return (
+      <>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: 30,
+          }}>
+          <TouchableOpacity
+            onPress={openLocation}
+            style={{
+              //flex: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginLeft: 30,
+            }}>
+            <CircleImageComponent
+              image={IMAGES.location}
+              onPress={openLocation}
+              style={{
+                backgroundColor: COLOURS.lightPurple,
+                marginRight: 10,
+              }}
+            />
+            <MontserratSemiBold style={{color: COLOURS.zupaBlue}}>
+              Navigate
+            </MontserratSemiBold>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => dialNumber(phoneNumber)}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flex: 1,
+              right: 20,
+            }}>
+            <CircleImageComponent
+              image={IMAGES.call}
+              onPress={() => dialNumber(phoneNumber)}
+              style={{
+                backgroundColor: COLOURS.lightPurple,
+                marginRight: 10,
+              }}
+            />
+            <MontserratSemiBold style={{color: COLOURS.zupaBlue}}>
+              Call
+            </MontserratSemiBold>
+          </TouchableOpacity>
+        </View>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: 30,
+          }}>
+          <TouchableOpacity
+            onPress={sendTextMessage}
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+
+              marginLeft: 30,
+            }}>
+            <CircleImageComponent
+              image={IMAGES.location}
+              onPress={sendTextMessage}
+              style={{
+                backgroundColor: COLOURS.lightPurple,
+                marginRight: 10,
+              }}
+            />
+            <MontserratSemiBold style={{color: COLOURS.zupaBlue}}>
+              Text
+            </MontserratSemiBold>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={sendWhatsappMessage}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              //justifyContent: 'center',
+              flex: 1,
+              //right: 20,
+            }}>
+            <CircleImageComponent
+              image={IMAGES.call}
+              onPress={sendWhatsappMessage}
+              style={{
+                backgroundColor: COLOURS.whatsappgreen,
+                marginRight: 10,
+              }}
+            />
+            <MontserratSemiBold style={{color: COLOURS.zupaBlue}}>
+              Whatsapp
+            </MontserratSemiBold>
+          </TouchableOpacity>
+        </View>
+      </>
+    );
+  };
+  const renderCompleteButtons = () => {
+    return (
+      <>
+        {parentStatus == 'completed' && status == 'completed' ? (
+          <View style={{marginTop: 30}}>
+            <LoaderButtonComponent
+              buttonRef={loadingButtonRef}
+              title={'Completed'}
+              method={() => null}
+              bgColour={COLOURS.green3}
+              radius={30}
+            />
+          </View>
+        ) : null}
+      </>
     );
   };
   return (
-    <SafeAreaView style={styles.container}>
-      <View
-        style={{
-          //flex: 1,
-          flexDirection: "row",
-          marginTop: 15,
-          alignItems: "center",
-          justifyContent: "flex-start",
-          paddingHorizontal: 5,
-        }}
-      >
-        <>
-          <Image
-            source={require("../assets/icons/calendar.png")}
-            resizeMode={"contain"}
-            style={{
-              width: 13,
-              height: 13,
-              flex: 0.37,
-            }}
-          />
-          <Text
-            selectable={true}
-            style={{ fontSize: 15, flex: 1.9, left: -10 }}
-          >
-            {getTodaysDate(date)}
-          </Text>
-        </>
-      </View>
-      <View
-        style={{
-          //flex: 1,
-          flexDirection: "row",
-          marginTop: 17,
-          alignItems: "center",
-          justifyContent: "flex-start",
-          paddingHorizontal: 5,
-        }}
-      >
-        <>
-          <Image
-            source={require("../assets/icons/pin.png")}
-            resizeMode={"contain"}
-            style={{
-              width: 13,
-              height: 13,
-              flex: 0.37,
-            }}
-          />
-          <Text style={{ fontSize: 15, flex: 1.9, left: -10 }}>{address}</Text>
-        </>
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          marginTop: 20,
-          alignSelf: "flex-start",
-          justifyContent: "center",
-          alignItems: "center",
-          paddingHorizontal: 5,
-        }}
-      >
-        <Image
-          source={require("../assets/icons/smartphone.png")}
-          resizeMode={"contain"}
-          style={{ width: 13, height: 13, flex: 0.37 }}
-        />
-        <Text style={{ fontSize: 15, flex: 1.9, left: -10 }}>
-          {phoneNumber}
-        </Text>
-      </View>
-
-      <View style={{ marginTop: 40 }}>
-        <DisplayButton
-          text="Navigate"
-          onPress={openLocation}
-          color={COLOURS.blue}
-          left={SIZES.width / 3 - 5}
-          width={SIZES.width - 70}
-          image={require("../assets/icons/pin.png")}
-          tintColor={COLOURS.white}
-        />
-      </View>
-      <View style={{ marginTop: 30 }}>
-        <DisplayButton
-          text="Call"
-          onPress={() => dialNumber(phoneNumber)}
-          color={COLOURS.blue}
-          left={SIZES.width / 3 - 5}
-          width={SIZES.width - 70}
-          image={require("../assets/icons/phone.png")}
-          tintColor={COLOURS.white}
-        />
-      </View>
-
-      <View
-        style={{
-          flexDirection: "row",
-          marginTop: 30,
-          justifyContent: "center",
-          alignItems: "center",
-          width: SIZES.width - 70,
-        }}
-      >
-        <View style={{ flex: 1, marginRight: 3 }}>
-          <DisplayButton
-            text="Text"
-            onPress={sendTextMessage}
-            color={COLOURS.blue}
-            image={require("../assets/icons/smartphone.png")}
-            tintColor={COLOURS.lightGray3}
-          />
-        </View>
-        <View style={{ flex: 1, marginLeft: 3 }}>
-          <DisplayButton
-            text="Whatsapp"
-            onPress={sendWhatsappMessage}
-            color={COLOURS.blue}
-            //left={SIZES.width / 3 - 5}
-            image={require("../assets/icons/smartphone.png")}
-            tintColor={COLOURS.lightGray3}
-          />
-        </View>
-      </View>
-      {status == "completed" ? (
-        <View style={{ marginTop: 30 }}>
-          <DisplayButton
-            text="Completed"
-            width={SIZES.width - 70}
-            color={COLOURS.green1}
-            left={SIZES.width / 3 - 5}
-          />
-        </View>
-      ) : null}
-    </SafeAreaView>
+    <ViewProviderComponent>
+      <BackViewHeader
+        backText={'History Details'}
+        image={IMAGES.arrowLeft}
+        onLeftPress={() => navigation.goBack()}
+        // style={{width: deviceWidth, borderBottomWidth: 0}}
+      />
+      <>
+        {renderOrderDetails()}
+        {renderActionbuttons()}
+        {renderCompleteButtons()}
+      </>
+    </ViewProviderComponent>
   );
 };
 
@@ -220,8 +288,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     //justifyContent: 'center',
-    alignItems: "center",
-    backgroundColor: COLOURS.white,
+    alignItems: 'center',
+    backgroundColor: COLOURS.zupa_rider_bg,
   },
 });
 

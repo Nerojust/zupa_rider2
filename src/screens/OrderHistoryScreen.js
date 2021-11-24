@@ -179,8 +179,8 @@ const OrderHistoryScreen = ({navigation}) => {
 
       if (item?.order) {
         let address1 =
-          item.order && item.order.customer
-            ? item.order.customer.address
+          item?.order && item?.order.customer
+            ? item?.order?.customer?.address
             : address;
         //console.log("address1", address1)
         let end = address1;
@@ -297,7 +297,7 @@ const OrderHistoryScreen = ({navigation}) => {
             //marginTop: 10,
             flex: 0.8,
           }}>
-          <Text
+          <MontserratMedium
             style={{
               alignSelf: 'center',
               fontSize: 15,
@@ -305,7 +305,7 @@ const OrderHistoryScreen = ({navigation}) => {
               //fontWeight: "bold",
             }}>
             Filter records by date range
-          </Text>
+          </MontserratMedium>
           <View
             style={{
               flexDirection: 'row',
@@ -413,7 +413,7 @@ const OrderHistoryScreen = ({navigation}) => {
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <Text
+              <MontserratBold
                 style={{
                   fontSize: 15,
                   color: COLOURS.gray,
@@ -421,7 +421,7 @@ const OrderHistoryScreen = ({navigation}) => {
                   fontWeight: 'bold',
                 }}>
                 Cancel
-              </Text>
+              </MontserratBold>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={validateSearch}
@@ -433,7 +433,7 @@ const OrderHistoryScreen = ({navigation}) => {
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <Text
+              <MontserratBold
                 style={{
                   fontWeight: 'bold',
                   fontSize: 15,
@@ -441,7 +441,7 @@ const OrderHistoryScreen = ({navigation}) => {
                   alignSelf: 'center',
                 }}>
                 Search
-              </Text>
+              </MontserratBold>
             </TouchableOpacity>
           </View>
         </View>

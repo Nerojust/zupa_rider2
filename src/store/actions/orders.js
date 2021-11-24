@@ -91,7 +91,7 @@ export const getAllOrdersWithDate = (startDate = '', endDate = '') => {
       error: null,
     });
     var getUrl = `/rider-requests/?status=completed&startDate=${startDate}&endDate=${endDate}`;
-    console.log('geturl', getUrl);
+    //console.log('geturl', getUrl);
     return client
       .get(getUrl)
       .then(async (response) => {
