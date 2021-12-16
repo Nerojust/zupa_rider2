@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const baseURL = 'https://api.zupa.ng'; //new prod link
+const baseURL = 'https://dev.api.zupa.ng'; //new dev link
+//const baseURL = 'https://api.zupa.ng'; //new prod link
 // const baseURL = 'https://zupa-api.dev.intelia.io'; //dev link
 //const baseURL = 'https://zupa-prod-api.dev.intelia.io'; //prod link
 

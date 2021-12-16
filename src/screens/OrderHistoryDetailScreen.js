@@ -38,18 +38,18 @@ const OrderHistoryDetailScreen = ({route, navigation}) => {
   const date = route.params.date;
   var loadingButtonRef = useRef();
   const orderId = route.params.id;
-  console.log('order id', orderId);
+  //console.log('order id', orderId);
   const parentId = route.params.parentId;
   const parentStatus = route.params.parentStatus;
   //console.log("parent status ", parentStatus);
-  console.log('parent id ', parentId);
+  //console.log('parent id ', parentId);
   const end = address;
   const travelType = 'drive';
   const [hasDataLoaded, setHasDataLoaded] = useState(false);
   const openLocation = createOpenLink({travelType, end, provider: 'google'});
 
   const sendWhatsappMessage = () => {
-    let whatsAppMessage = `Hello ${name} I will be delivering your package today. Please be on standby. Thank you`;
+    let whatsAppMessage = `Hello ${name}, I will be delivering your package today. Please be on standby. Thank you`;
     let URL =
       'whatsapp://send?text=' + whatsAppMessage + '&phone=234' + phoneNumber;
 
@@ -102,7 +102,7 @@ const OrderHistoryDetailScreen = ({route, navigation}) => {
             color: COLOURS.textInputColor,
             marginTop: 3,
           }}>
-          {name}
+          {name||"No name"}
         </MontserratSemiBold>
         <MontserratSemiBold
           style={{fontSize: fp(15), color: COLOURS.gray5, marginTop: 13}}>
@@ -129,7 +129,7 @@ const OrderHistoryDetailScreen = ({route, navigation}) => {
             color: COLOURS.textInputColor,
             marginTop: 4,
           }}>
-          {address}
+          {address||"No address"}
         </MontserratSemiBold>
 
         <MontserratSemiBold
@@ -138,7 +138,7 @@ const OrderHistoryDetailScreen = ({route, navigation}) => {
         </MontserratSemiBold>
         <MontserratSemiBold
           style={{fontSize: 15, color: COLOURS.textInputColor, marginTop: 4}}>
-          {phoneNumber}
+          {phoneNumber||"No phone number"}
         </MontserratSemiBold>
       </View>
     );

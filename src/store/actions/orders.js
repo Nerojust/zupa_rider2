@@ -11,15 +11,16 @@ export const getAllPendingOrders = () => {
       loading: true,
       error: null,
     });
-    var getUrl = `/rider-requests?status=started&status=pending`;
+    var getUrl = `/rider/dispatches/?$include=dispatch_orders.order.customer&$order=-updatedAt&status=started&status=pending`;
+    //var getUrl = `/rider-requests?status=started&status=pending`;
     //console.log('geturl', getUrl);
     return client
       .get(getUrl)
       .then(async (response) => {
         if (response.data) {
-          const {data, offset, limit, total} = response || [];
-          // console.log(total, limit, offset);
-          console.log('Pending Orders gotten successfully', response.data.length);
+          const {data, offset, limit, total} = response.data || [];
+
+          console.log('Pending Orders gotten successfully', data.length);
 
           dispatch({
             type: 'FETCH_ALL_PENDING_ORDERS_SUCCESS',
@@ -51,15 +52,18 @@ export const getAllCompletedOrders = () => {
       loading: true,
       error: null,
     });
-    var getUrl = `/rider-requests?status=completed`;
+    var getUrl = `/rider/dispatches/?$include=dispatch_orders.order.customer&status=completed&$order=-updatedAt`;
     //console.log('geturl', getUrl);
     return client
       .get(getUrl)
       .then(async (response) => {
         if (response.data) {
-          const {data, offset, limit, total} = response || [];
+          const {data, offset, limit, total} = response?.data || [];
           // console.log(total, limit, offset);
-          console.log('completed Orders gotten successfully', response.data.length);
+          console.log(
+            'completed Orders gotten successfully',
+            data.length,
+          );
 
           dispatch({
             type: 'FETCH_ALL_COMPLETED_ORDERS_SUCCESS',
@@ -67,7 +71,7 @@ export const getAllCompletedOrders = () => {
             completedOrders: data,
           });
 
-          return response.data;
+          return data;
         }
       })
       .catch((error) => {
@@ -90,15 +94,18 @@ export const getAllOrdersWithDate = (startDate = '', endDate = '') => {
       loading: true,
       error: null,
     });
-    var getUrl = `/rider-requests/?status=completed&startDate=${startDate}&endDate=${endDate}`;
-    //console.log('geturl', getUrl);
+    var getUrl = `/rider/dispatches/?$include=dispatch_orders.order.customer&status=completed&$order=-updatedAt&startDate=${startDate}&endDate=${endDate}`;
+    console.log('geturl', getUrl);
     return client
       .get(getUrl)
       .then(async (response) => {
         if (response.data) {
           const {data, offset, limit, total} = response || [];
           // console.log(total, limit, offset);
-          console.log('Orders with date gotten successfully', response.data.length);
+          console.log(
+            'Orders with date gotten successfully',
+            response.data.length,
+          );
 
           dispatch({
             type: 'FETCH_ALL_ORDERS_WITH_DATE_SUCCESS',
@@ -123,7 +130,7 @@ export const getAllOrdersWithDate = (startDate = '', endDate = '') => {
 };
 
 export const getOrder = (parentId) => {
-  console.log('About to get all orders');
+  console.log('About to get single order with parent id ' + parentId);
 
   return async (dispatch) => {
     dispatch({
@@ -131,7 +138,7 @@ export const getOrder = (parentId) => {
       loading: true,
       error: null,
     });
-    var getUrl = `/rider-requests`;
+    var getUrl = `/rider/dispatches/${parentId}?$include=dispatch_orders.order.customer`;
     //console.log('geturl', getUrl);
     return client
       .get(getUrl)
@@ -139,23 +146,19 @@ export const getOrder = (parentId) => {
         if (response.data) {
           const {data} = response || [];
           // console.log(total, limit, offset);
-          console.log('Orders gotten successfully', response.data.length);
+          console.log('single order gotten successfully');
 
-          var result = await data.find((item, i) => item.id == parentId);
-          if (result) {
-            // console.log('Found the result in actions');
-            dispatch({
-              type: 'GET_ORDER_SUCCESS',
-              loading: false,
-              order: result,
-            });
-          }
+          dispatch({
+            type: 'GET_ORDER_SUCCESS',
+            loading: false,
+            order: data,
+          });
 
-          return result;
+          return data;
         }
       })
       .catch((error) => {
-        console.log('Getting orders failed', error);
+        console.log('Getting sigle order failed', error);
         handleError(error, 'get orders list');
         dispatch({
           type: 'GET_ORDER_FAILED',
@@ -166,9 +169,10 @@ export const getOrder = (parentId) => {
   };
 };
 
-export const patchOrder = (orderId, payload) => {
+export const patchParentOrder = (dispatchId, payload, isDashboard) => {
   return (dispatch) => {
-    console.log('About to patch order with id ', orderId);
+    console.log('About to patch dispatch with id ', dispatchId);
+
     dispatch({
       type: 'PATCH_ORDER_PENDING',
       loading: true,
@@ -176,16 +180,21 @@ export const patchOrder = (orderId, payload) => {
     });
 
     return client
-      .patch(`/rider-requests/${orderId}`, payload)
+      .put(`/rider/dispatches/${dispatchId}`, payload)
       .then((response) => {
         if (response.data) {
-          console.log('Order patched successfully');
+          console.log('dispatch Order patched successfully');
 
           dispatch({
             type: 'PATCH_ORDER_SUCCESS',
             loading: false,
           });
-          dispatch(getAllPendingOrders());
+
+          if (isDashboard) {
+            dispatch(getAllPendingOrders());
+          } else {
+            dispatch(getOrder(dispatchId));
+          }
           return response.data;
         }
       })
@@ -195,19 +204,14 @@ export const patchOrder = (orderId, payload) => {
         dispatch({
           type: 'PATCH_ORDER_FAILED',
           loading: false,
-          error:
-            error.message ||
-            error.response ||
-            error.response.data ||
-            error.response.message ||
-            error.response.data.message,
+          error: error.message,
         });
       });
   };
 };
 export const patchOrderMarkComplete = (orderId, payload) => {
   return (dispatch) => {
-    console.log('About to patch order with id ', orderId);
+    console.log('About to patch order complete with id ', orderId);
     dispatch({
       type: 'PATCH_ORDER_PENDING',
       loading: true,
@@ -215,10 +219,10 @@ export const patchOrderMarkComplete = (orderId, payload) => {
     });
 
     return client
-      .patch(`/rider-requests/${orderId}`, payload)
+      .put(`/rider/dispatch-orders/${orderId}`, payload)
       .then((response) => {
         if (response.data) {
-          console.log('Order patched successfully');
+          console.log('Order patched complete successful');
 
           dispatch({
             type: 'PATCH_ORDER_SUCCESS',
@@ -230,16 +234,11 @@ export const patchOrderMarkComplete = (orderId, payload) => {
       })
       .catch((error) => {
         handleError(error, 'update order');
-        console.log('Error patching order', error);
+        console.log('Error patching complete order', error);
         dispatch({
           type: 'PATCH_ORDER_FAILED',
           loading: false,
-          error:
-            error.message ||
-            error.response ||
-            error.response.data ||
-            error.response.message ||
-            error.response.data.message,
+          error: error.message,
         });
       });
   };
@@ -254,7 +253,7 @@ export const patchEndTrip = (orderId, payload) => {
     });
 
     return client
-      .patch(`/rider-requests/${orderId}`, payload)
+      .put(`/rider/dispatches/${orderId}`, payload)
       .then((response) => {
         if (response.data) {
           console.log('Order patched successfully');

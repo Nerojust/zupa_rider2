@@ -55,7 +55,7 @@ const Order = ({
             ellipsizeMode={"tail"}
             numberOfLines={1}
           >
-            {address}
+            {address?address:"No address"}
           </Text>
 
           <Text selectable={true} style={styles.phoneNumber}>

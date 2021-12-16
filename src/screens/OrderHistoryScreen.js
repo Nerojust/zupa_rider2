@@ -55,7 +55,7 @@ const OrderHistoryScreen = ({navigation}) => {
     getOrderLoading,
     patchOrderLoading,
   } = useSelector((state) => state.orders);
-  //console.log('completed orders', completedOrders.length);
+  //console.log('completed orders', completedOrders);
   const refRBSheet = useRef();
 
   useEffect(() => {
@@ -510,7 +510,10 @@ const OrderHistoryScreen = ({navigation}) => {
   };
   const renderOrderListView = () => {
     return (
-      <Animatable.View animation="fadeInUp" duraton="1500" style={{flex: 1}}>
+      <Animatable.View
+        animation="fadeInUp"
+        duraton="1500"
+        style={{flex: 1, marginBottom: 30}}>
         <FlatList
           data={completedOrders || []}
           refreshControl={

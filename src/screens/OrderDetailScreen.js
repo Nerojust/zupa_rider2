@@ -23,6 +23,7 @@ import {
   patchEndTrip,
   patchOrder,
   patchOrderMarkComplete,
+  patchParentOrder,
 } from '../store/actions/orders';
 import LoaderShimmerComponent from '../components/LoaderShimmerComponent';
 import MontserratBold from '../components/Text/MontserratBold';
@@ -90,7 +91,7 @@ const OrderDetailScreen = ({route, navigation}) => {
         body:
           'Hello ' +
           dispatchOrder?.order?.customer?.name +
-          ' I will be delivering your package today. Please be on standby. Thank you',
+          ', I will be delivering your package today. Please be on standby. Thank you',
         recipients: [dispatchOrder?.order?.customer?.phoneNumber],
         successTypes: ['sent', 'queued'],
         allowAndroidSendWithoutReadPermission: true,
@@ -111,7 +112,7 @@ const OrderDetailScreen = ({route, navigation}) => {
     let whatsAppMessage =
       'Hello ' +
       dispatchOrder?.order?.customer?.name +
-      ' I will be delivering your package today. Please be on standby. Thank you';
+      ', I will be delivering your package today. Please be on standby. Thank you';
     let URL =
       'whatsapp://send?text=' +
       whatsAppMessage +
@@ -145,7 +146,7 @@ const OrderDetailScreen = ({route, navigation}) => {
           onPress: () => {
             //console.log('journey status before is ' + order?.status);
 
-            performPatchForDispatchItem(dispatchOrder?.id);
+            performPatchForDispatchItem();
             //console.log('journey status after is ' + order?.status);
           },
         },
@@ -178,36 +179,42 @@ const OrderDetailScreen = ({route, navigation}) => {
   const startJourneyRequest = () => {
     var payload = {
       status: 'started',
-      model: 'dispatch',
+      //model: 'dispatch',
     };
     showLoaderButton(loadingButtonRef);
+
     setHasDataLoaded(false);
-    dispatch(patchOrder(order?.id, payload)).then((result) => {
+    dispatch(patchParentOrder(order?.id, payload, false)).then((result) => {
       if (result) {
         // console.log('the journey has started', result);
         dispatch(getOrder(retrievedId));
       }
     });
+
     dismissLoaderButton(loadingButtonRef);
     setHasDataLoaded(true);
   };
   /**
    * This performs the completed patch for a single order
    */
-  const performPatchForDispatchItem = async (id) => {
+  const performPatchForDispatchItem = async () => {
     var payload = {
       status: 'completed',
     };
     showLoaderButton(loadingButtonRef);
     setHasDataLoaded(false);
-    await dispatch(patchOrderMarkComplete(id, payload)).then(async (result) => {
-      if (result) {
-        //console.log('ended single dispatch item');
-        var result = await dispatch(getOrder(retrievedId));
+    await dispatch(patchOrderMarkComplete(dispatchOrder?.id, payload)).then(
+      async (result) => {
+        if (result) {
+          //console.log('ended single dispatch item');
+          // var result1 = dispatch(getOrder(retrievedId));
 
-        computeEndTrip(result);
-      }
-    });
+          // computeEndTrip(result1);
+          alert('Order update successful');
+          navigation.goBack();
+        }
+      },
+    );
     dismissLoaderButton(loadingButtonRef);
     setHasDataLoaded(true);
   };
@@ -279,7 +286,7 @@ const OrderDetailScreen = ({route, navigation}) => {
             color: COLOURS.textInputColor,
             marginTop: 3,
           }}>
-          {dispatchOrder?.order?.customer?.name}
+          {dispatchOrder?.order?.customer?.name || 'No name'}
         </MontserratSemiBold>
         <MontserratSemiBold
           style={{fontSize: fp(15), color: COLOURS.gray5, marginTop: 13}}>
@@ -306,7 +313,7 @@ const OrderDetailScreen = ({route, navigation}) => {
             color: COLOURS.textInputColor,
             marginTop: 4,
           }}>
-          {dispatchOrder?.order?.customer?.address}
+          {dispatchOrder?.order?.customer?.address || 'No address'}
         </MontserratSemiBold>
 
         <MontserratSemiBold
@@ -315,7 +322,7 @@ const OrderDetailScreen = ({route, navigation}) => {
         </MontserratSemiBold>
         <MontserratSemiBold
           style={{fontSize: 15, color: COLOURS.textInputColor, marginTop: 4}}>
-          {dispatchOrder?.order?.customer?.phoneNumber}
+          {dispatchOrder?.order?.customer?.phoneNumber || 'No phone number'}
         </MontserratSemiBold>
       </View>
     );
@@ -432,6 +439,7 @@ const OrderDetailScreen = ({route, navigation}) => {
       </>
     );
   };
+
   const renderCompleteButtons = () => {
     return (
       <>
@@ -502,13 +510,13 @@ const OrderDetailScreen = ({route, navigation}) => {
         onLeftPress={() => navigation.goBack()}
         style={{width: deviceWidth, borderBottomWidth: 0}}
       />
-      {hasDataLoaded ? (
+     
         <>
           {renderOrderDetails()}
           {renderActionbuttons()}
           {renderCompleteButtons()}
         </>
-      ) : null}
+ 
 
       <LoaderShimmerComponent isLoading={patchOrderLoading} />
       <LoaderShimmerComponent isLoading={getOrderLoading} />

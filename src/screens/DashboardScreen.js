@@ -30,7 +30,11 @@ import {deviceHeight, deviceWidth, fp} from '../utils/responsive-screen';
 import {IMAGES} from '../utils/Images';
 import MontserratMedium from '../components/Text/MontserratMedium';
 import MontserratSemiBold from '../components/Text/MontserratSemiBold';
-import { getAllPendingOrders, patchOrder} from '../store/actions/orders';
+import {
+  getAllPendingOrders,
+  patchOrder,
+  patchParentOrder,
+} from '../store/actions/orders';
 import {createOpenLink} from 'react-native-open-maps';
 import LoaderShimmerComponent from '../components/LoaderShimmerComponent';
 
@@ -245,9 +249,9 @@ const DashboardScreen = ({navigation}) => {
   const startJourneyRequest = (dispatchId) => {
     var payload = {
       status: 'started',
-      model: 'dispatch',
+      //model: 'dispatch',
     };
-    dispatch(patchOrder(dispatchId, payload)).then((result) => {
+    dispatch(patchParentOrder(dispatchId, payload, true)).then((result) => {
       if (result) {
         //filterDataResult();
       }
@@ -282,7 +286,7 @@ const DashboardScreen = ({navigation}) => {
       <Animatable.View animation="fadeInUp" duraton="500" style={{flex: 1}}>
         <FlatList
           ref={flatListRef}
-          data={pendingOrders||[]}
+          data={pendingOrders || []}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
@@ -315,7 +319,6 @@ const DashboardScreen = ({navigation}) => {
         backText={getTodaysDate()}
         image={IMAGES.menu}
         onLeftPress={() => toggleDrawer(navigation)}
-        //shouldDisplayIcon
         style={{width: deviceWidth, borderBottomWidth: 0}}
       />
 
@@ -350,7 +353,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     flex: 0.5,
     fontSize: fp(19),
-    color:COLOURS.gray
+    color: COLOURS.gray,
   },
   parentView: {
     justifyContent: 'center',

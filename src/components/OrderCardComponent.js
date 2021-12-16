@@ -33,7 +33,7 @@ const OrderCardComponent = ({
           <MontserratBold
             numberOfLines={3}
             style={styles.nameText(statusMessage)}>
-            {name}
+            {name || 'No name'}
           </MontserratBold>
 
           {status == 'completed' ? (
@@ -48,11 +48,11 @@ const OrderCardComponent = ({
         <MontserratMedium
           style={styles.addressView(statusMessage)}
           numberOfLines={4}>
-          {address}
+          {address ? address : 'No address'}
         </MontserratMedium>
 
         <MontserratMedium style={styles.phoneNumber(statusMessage)}>
-          {phoneNumber}
+          {phoneNumber || 'No phone number'}
         </MontserratMedium>
 
         <View style={styles.timeClickView}>
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   },
   mainView: (statusMessage) => ({
     width: deviceWidth * 0.88,
-    height: deviceHeight*0.26,
+    height: deviceHeight * 0.26,
     backgroundColor: statusMessage == 'started' ? COLOURS.blue : COLOURS.white,
     borderRadius: 43,
     paddingHorizontal: 30,
