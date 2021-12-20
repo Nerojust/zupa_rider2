@@ -52,11 +52,11 @@ const LoginScreen = ({navigation}) => {
   const [isPhoneNumberFocused, setIsPhoneNumberFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
-  // const [phoneNumber, setPhoneNumber] = useState('');
-  // const [password, setPassword] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [password, setPassword] = useState('');
 
-  const [phoneNumber, setPhoneNumber] = useState('08027827837');
-  const [password, setPassword] = useState('2729');
+  // const [phoneNumber, setPhoneNumber] = useState('08027827837');
+  // const [password, setPassword] = useState('2729');
 
   // const [phoneNumber, setPhoneNumber] = useState('09087654323');
   // const [password, setPassword] = useState('8940');
@@ -92,7 +92,7 @@ const LoginScreen = ({navigation}) => {
   const makeLoginRequest = () => {
     //validate entry
     if (!phoneNumber || !password) {
-      return alert('please enter your phone number and password');
+      return alert('Please enter your phone number and password');
     }
     var payload = {
       phoneNumber: phoneNumber,
@@ -180,7 +180,6 @@ const LoginScreen = ({navigation}) => {
 
   return (
     <ViewProviderComponent>
-      {/* <ImageBackground source={IMAGES.loginBG} style={styles.image}> */}
         <FlatList
           data={[]}
           keyboardShouldPersistTaps={'handled'}
@@ -213,7 +212,6 @@ const LoginScreen = ({navigation}) => {
           renderItem={null}
           keyExtractor={(item) => item?.id}
         />
-      {/* </ImageBackground> */}
     </ViewProviderComponent>
   );
 };
