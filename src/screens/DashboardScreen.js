@@ -225,7 +225,7 @@ const DashboardScreen = ({navigation}) => {
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
-          keyExtractor={(item, index) => item?.id + index}
+          keyExtractor={(item, index) => (item?.id + index).toString()}
           renderItem={({item}) => renderItem(item)}
           showsVerticalScrollIndicator={false}
           initialNumToRender={5}

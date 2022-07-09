@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -23,12 +23,10 @@
                         <viewLayoutGuide key="safeArea" id="jn4-ia-MgX"/>
                         <color key="backgroundColor" red="0.23444256147153686" green="0.33121451295403814" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="9wl-UB-397" firstAttribute="leading" secondItem="jn4-ia-MgX" secondAttribute="leading" constant="145" id="0BW-ra-JHb"/>
-                            <constraint firstItem="jn4-ia-MgX" firstAttribute="trailing" secondItem="9wl-UB-397" secondAttribute="trailing" constant="145" id="K7F-ow-Twh"/>
-                            <constraint firstItem="9wl-UB-397" firstAttribute="leading" secondItem="jn4-ia-MgX" secondAttribute="leading" constant="140" id="KsY-bF-wda"/>
-                            <constraint firstItem="jn4-ia-MgX" firstAttribute="trailing" secondItem="9wl-UB-397" secondAttribute="trailing" constant="140" id="hVJ-J6-4cq"/>
-                            <constraint firstItem="9wl-UB-397" firstAttribute="top" secondItem="jn4-ia-MgX" secondAttribute="top" id="nJ9-kT-XMr"/>
-                            <constraint firstItem="jn4-ia-MgX" firstAttribute="bottom" secondItem="9wl-UB-397" secondAttribute="bottom" id="vYK-OR-1Vb"/>
+                            <constraint firstItem="9wl-UB-397" firstAttribute="leading" secondItem="jn4-ia-MgX" secondAttribute="leading" constant="140" id="7uJ-M0-YPN"/>
+                            <constraint firstItem="9wl-UB-397" firstAttribute="bottom" secondItem="jn4-ia-MgX" secondAttribute="bottom" id="892-Z0-q0o"/>
+                            <constraint firstItem="9wl-UB-397" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Tri-te-tJh"/>
+                            <constraint firstItem="9wl-UB-397" firstAttribute="top" secondItem="jn4-ia-MgX" secondAttribute="top" id="o5t-rp-hdK"/>
                         </constraints>
                     </view>
                 </viewController>

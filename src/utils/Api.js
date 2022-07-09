@@ -7,11 +7,11 @@ if (Platform.OS == 'android') {
 } else {
   localBase = 'localhost';
 }
-const baseURL_kitchen = `http://${localBase}:8089/api`;
-//const baseURL_kitchen = 'https://gourmet-kitchen-api-oq8ef.ondigitalocean.app/api/';
+//const baseURL_kitchen = `http://${localBase}:8089/api`;
+const baseURL_kitchen = 'https://gourmet-kitchen-api-oq8ef.ondigitalocean.app/api/';
 
-const baseURL_zupa = 'https://dev.api.zupa.ng'; //new dev link
-//const baseURL_zupa = 'https://api.zupa.ng'; //new prod link
+//const baseURL_zupa = 'https://dev.api.zupa.ng'; //new dev link
+const baseURL_zupa = 'https://api.zupa.ng'; //new prod link
 // const baseURL_zupa = 'https://zupa-api.dev.intelia.io'; //dev link
 //const baseURL_zupa = 'https://zupa-prod-api.dev.intelia.io'; //prod link
 
