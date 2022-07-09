@@ -1,4 +1,4 @@
-import client from '../../utils/Api';
+import { getZupaClient } from '../../utils/Api';
 import {clearStorage, handleError} from '../../utils/utils';
 
 export const login = (payload) => {
@@ -10,18 +10,21 @@ export const login = (payload) => {
       loading: true,
       error: null,
     });
-    return client
+    return getZupaClient()
       .post(`/auth/rider/login`, payload)
       .then(async (response) => {
         if (response.data) {
-          console.log('Login successful, status code is ', response.data.rider.name);
+          console.log(
+            'Login successful, rider is',
+            response.data.rider.name,
+          );
 
           if (!response.code) {
             if (response.data.rider && response.data.jwt) {
               const accessToken = response.data.jwt;
               const profile = response.data.rider;
-              console.log("jjjjjjjjjj")
-              client.defaults.headers.common[
+              console.log('user profile', profile);
+              getZupaClient().defaults.headers.common[
                 'Authorization'
               ] = `Bearer ${accessToken}`;
 
@@ -48,14 +51,17 @@ export const login = (payload) => {
         }
       })
       .catch((error) => {
-        console.log('Login failed:', error.message);
+        console.log('Login failed:', error?.response?.data?.message);
         dispatch({
           type: 'LOGIN_FAILED',
           loading: false,
           error: error.message,
         });
-
-        handleError(error, dispatch);
+        if (!error.response.data.message) {
+          handleError(error, dispatch);
+        } else {
+          alert(error.response.data.message);
+        }
       });
   };
 };
@@ -68,7 +74,7 @@ export const logoutUser = () => {
     dispatch({
       type: 'LOGOUT_USER',
       user: null,
-      accessToken: ''
+      accessToken: '',
     });
     clearStorage();
   };

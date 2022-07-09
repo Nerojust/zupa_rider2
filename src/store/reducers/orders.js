@@ -78,7 +78,7 @@ export default (state = initialState, action) => {
     case 'FETCH_ALL_COMPLETED_ORDERS_SUCCESS': {
       return {
         ...state,
-        completedOrders: action.completedOrders,
+        completedOrders: action.data,
         ordersLoading: action.loading,
       };
     }

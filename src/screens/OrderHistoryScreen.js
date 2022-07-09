@@ -30,12 +30,13 @@ import OrderCardComponent from '../components/OrderCardComponent';
 import MontserratSemiBold from '../components/Text/MontserratSemiBold';
 import MontserratBold from '../components/Text/MontserratBold';
 import MontserratMedium from '../components/Text/MontserratMedium';
+import {getDateWithoutTime} from '../utils/DateFilter';
 // create a component
 const OrderHistoryScreen = ({navigation}) => {
   const [refreshing, setRefreshing] = useState(false);
-  const [startDate, setStartDate] = useState('');
+  const [startDate, setStartDate] = useState(getDateWithoutTime(new Date()));
   const [hasDataLoaded, setHasDataLoaded] = useState(false);
-  const [endDate, setEndDate] = useState('');
+  const [endDate, setEndDate] = useState(getDateWithoutTime(new Date()));
   let todaysDate = new Date();
   let name = 'Nerojust Adjeks';
   let phone = '08012345678';
@@ -62,32 +63,17 @@ const OrderHistoryScreen = ({navigation}) => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    var singleCount = 0;
-    var batchCount = 0;
-    if (completedOrders) {
-      completedOrders.map((order, i) => {
-        // console.log('counting', order?.dispatch_orders.length);
-        if (order?.dispatch_orders.length > 1) {
-          batchCount++;
-        } else if (order?.dispatch_orders.length == 1) {
-          singleCount++;
-        }
-      });
-      setSingleTripCount(singleCount);
-      setBatchTripCount(batchCount);
-    }
-  }, [completedOrders]);
-
-  const fetchData = () => {
-    dispatch(getAllCompletedOrders()).then((result) => {
+  async function fetchData() {
+    setHasDataLoaded(false);
+    await dispatch(
+      getAllCompletedOrders(user?.rider?.id, startDate, endDate),
+    ).then((result) => {
       if (result) {
+        //filterDataResult();
         setHasDataLoaded(true);
-        setIsSearch(false);
       }
     });
-  };
-
+  }
   const onRefresh = () => {
     fetchData();
   };
@@ -114,120 +100,43 @@ const OrderHistoryScreen = ({navigation}) => {
       </View>
     );
   };
-  const renderBatchList = (item, data) => {
-    if (item?.order) {
-      let address1 =
-        item.order && item.order.customer
-          ? item.order.customer.address
-          : address;
-      //console.log("address1", address1)
-      let end = address1;
-      return (
-        <OrderCardComponent
-          name={item.order.customer.name ? item.order.customer.name : name}
-          address={item.order.customer ? item.order.customer.address : address}
-          phoneNumber={
-            item.order.customer ? item.order.customer.phoneNumber : phone
-          }
-          status={item.status}
-          date={getReadableDateAndTime(item.updatedAt)}
-          onPressNavigate={createOpenLink({
-            travelType,
-            end,
-            provider: 'google',
-          })}
-          onPressCall={() =>
-            dialNumber(
-              item.order.customer ? item.order.customer.phoneNumber : phone,
-            )
-          }
-          onPressView={() =>
-            navigation.navigate('OrderHistoryDetails', {
-              id: item.id,
-              name: item.order.customer ? item.order.customer.name : name,
-              address: item.order.customer
-                ? item.order.customer.address
-                : address,
-              phoneNumber: item.order.customer
-                ? item.order.customer.phoneNumber
-                : phone,
-              status: item.status,
-              date: item.updatedAt,
-              parentId: data.id,
-              parentStatus: data.status,
-            })
-          }
-        />
-      );
-    }
-  };
-  const renderItem = (data) => {
-    //console.log('data in render', data);
-    if (data?.dispatch_orders.length > 1) {
-      return (
-        <FlatList
-          data={data?.dispatch_orders}
-          keyExtractor={(item) => item.id}
-          renderItem={({item, index}) => renderBatchList(item, data)}
-          showsVerticalScrollIndicator={false}
-          ListHeaderComponent={renderHeaderCounter(data)}
-        />
-      );
-    } else {
-      let item = data?.dispatch_orders ? data?.dispatch_orders[0] : {};
-      //console.log("Item is ", item);
 
-      if (item?.order) {
-        let address1 =
-          item?.order && item?.order.customer
-            ? item?.order?.customer?.address
-            : address;
-        //console.log("address1", address1)
-        let end = address1;
-        return (
-          <>
-            {renderHeaderCounter(data)}
-            <OrderCardComponent
-              name={item.order.customer.name ? item.order.customer.name : name}
-              address={
-                item.order.customer ? item.order.customer.address : address
-              }
-              phoneNumber={
-                item.order.customer ? item.order.customer.phoneNumber : phone
-              }
-              status={item.status}
-              date={getReadableDateAndTime(item.updatedAt)}
-              onPressNavigate={createOpenLink({
-                travelType,
-                end,
-                provider: 'google',
-              })}
-              onPressCall={() =>
-                dialNumber(
-                  item.order.customer ? item.order.customer.phoneNumber : phone,
-                )
-              }
-              onPressView={() =>
-                navigation.navigate('OrderHistoryDetails', {
-                  id: item.id,
-                  name: item.order.customer ? item.order.customer.name : name,
-                  address: item.order.customer
-                    ? item.order.customer.address
-                    : address,
-                  phoneNumber: item.order.customer
-                    ? item.order.customer.phoneNumber
-                    : phone,
-                  status: item.status,
-                  date: item.updatedAt,
-                  parentId: data.id,
-                  parentStatus: data.status,
-                })
-              }
-            />
-          </>
-        );
-      }
-    }
+  const renderItem = (item) => {
+    let end = item?.customer?.address;
+    return (
+      <>
+        {/* {renderHeaderCounter(item)} */}
+        {item ? (
+          <OrderCardComponent
+            name={item?.customer?.name ? item?.customer?.name : 'None'}
+            address={item?.customer ? item?.customer?.address : 'None'}
+            phoneNumber={item?.customer ? item?.customer?.phonenumber : 'None'}
+            status={item?.dispatchstatus}
+            date={getReadableDateAndTime(item?.updatedat)}
+            onPressNavigate={createOpenLink({
+              travelType,
+              end,
+              provider: 'google',
+            })}
+            onPressCall={() =>
+              dialNumber(item?.customer ? item?.customer?.phonenumber : 0)
+            }
+            statusMessage={item?.dispatchstatus}
+            pressStart={() => {
+              console.log('Start id is', item?.id);
+              handleStartJourneyDialog(item?.id, 'started');
+            }}
+            onPressView={() =>
+              navigation.navigate('OrderDetails', {
+                id: item.id,
+                data: item,
+                riderId: user?.rider?.id,
+              })
+            }
+          />
+        ) : null}
+      </>
+    );
   };
 
   const handleDismissDialog = () => {
@@ -238,12 +147,14 @@ const OrderHistoryScreen = ({navigation}) => {
     setEndDate('');
   };
   const makeSearchRequest = () => {
-    dispatch(getAllOrdersWithDate(startDate, endDate)).then((result) => {
-      if (result) {
-        clearDateFields();
-        setIsSearch(true);
-      }
-    });
+    dispatch(getAllCompletedOrders(user?.rider?.id, startDate, endDate)).then(
+      (result) => {
+        if (result) {
+          clearDateFields();
+          setIsSearch(true);
+        }
+      },
+    );
   };
   const clearDateFields = () => {
     setStartDate('');
@@ -468,13 +379,13 @@ const OrderHistoryScreen = ({navigation}) => {
                   alignItems: 'center',
                 }}>
                 <MontserratSemiBold style={styles.totalTripText}>
-                  Total trips:{' '}
+                  Total count:{' '}
                 </MontserratSemiBold>
                 <MontserratSemiBold style={styles.totalTripText}>
                   {completedOrders.length}
                 </MontserratSemiBold>
               </View>
-              <View
+              {/* <View
                 style={{
                   flexDirection: 'row',
                   flex: 1,
@@ -501,7 +412,7 @@ const OrderHistoryScreen = ({navigation}) => {
                 <MontserratSemiBold style={styles.batchText}>
                   {batchTripCount}
                 </MontserratSemiBold>
-              </View>
+              </View> */}
             </View>
           ) : null}
         </View>
@@ -510,19 +421,18 @@ const OrderHistoryScreen = ({navigation}) => {
   };
   const renderOrderListView = () => {
     return (
-      <Animatable.View
-        animation="fadeInUp"
-        duraton="1500"
-        style={{flex: 1, marginBottom: 30}}>
+      <Animatable.View animation="fadeInUp" duraton="500" style={{flex: 1}}>
         <FlatList
+          //ref={flatListRef}
           data={completedOrders || []}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
-          keyExtractor={(item) => item?.dispatch_orders[0]?.id}
-          renderItem={({item, index}) => renderItem(item)}
-          initialNumToRender={5}
+          keyExtractor={(item, index) => item?.id + index}
+          renderItem={({item}) => renderItem(item)}
           showsVerticalScrollIndicator={false}
+          initialNumToRender={5}
+          ListFooterComponent={<View style={{paddingBottom: 50}} />}
         />
       </Animatable.View>
     );

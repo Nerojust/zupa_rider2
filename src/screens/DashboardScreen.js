@@ -34,9 +34,11 @@ import {
   getAllPendingOrders,
   patchOrder,
   patchParentOrder,
+  updateDispatchStatus,
 } from '../store/actions/orders';
 import {createOpenLink} from 'react-native-open-maps';
 import LoaderShimmerComponent from '../components/LoaderShimmerComponent';
+import {getDateWithoutTime} from '../utils/DateFilter';
 
 // create a component
 const DashboardScreen = ({navigation}) => {
@@ -68,7 +70,9 @@ const DashboardScreen = ({navigation}) => {
 
   async function fetchData() {
     setHasDataLoaded(false);
-    await dispatch(getAllPendingOrders()).then((result) => {
+    await dispatch(
+      getAllPendingOrders(user?.rider?.id, getDateWithoutTime(new Date())),
+    ).then((result) => {
       if (result) {
         //filterDataResult();
         setHasDataLoaded(true);
@@ -80,65 +84,25 @@ const DashboardScreen = ({navigation}) => {
     fetchData();
   };
 
-  const renderBatchList = (item, data) => {
-    if (item.order) {
-      let address1 =
-        item.order && item.order.customer
-          ? item.order.customer.address
-          : address;
-      //console.log("address1", address1)
-      let end = address1;
-      //console.log("status is ", item?.status)
-      return (
-        <OrderCardComponent
-          name={item.order.customer.name ? item.order.customer.name : name}
-          address={item.order.customer ? item.order.customer.address : address}
-          phoneNumber={
-            item.order.customer ? item.order.customer.phoneNumber : phone
-          }
-          status={item.status}
-          statusMessage={data.status}
-          date={getReadableDateAndTime(item.updatedAt)}
-          onPressNavigate={createOpenLink({
-            travelType,
-            end,
-            provider: 'google',
-          })}
-          onPressCall={() =>
-            dialNumber(
-              item.order.customer ? item.order.customer.phoneNumber : phone,
-            )
-          }
-          onPressView={() =>
-            navigation.navigate('OrderDetails', {
-              data: data,
-              batchId: item.id,
-              parentId: data.id,
-            })
-          }
-        />
-      );
-    }
-  };
   const renderHeaderCounter = (data) => {
     return (
       <View style={styles.countView}>
         <MontserratSemiBold style={styles.orderCountText}>
-          {data?.dispatch_orders.length > 1
-            ? data?.dispatch_orders.length + ' Orders (batch)'
-            : data?.dispatch_orders.length + ' Order'}
+          {data?.products.length > 1
+            ? data?.products.length + ' Items'
+            : data?.products.length + ' Item'}
         </MontserratSemiBold>
 
-        {hasDataLoaded && data?.status == 'pending' ? (
+        {hasDataLoaded && data?.dispatchstatus == 'pending' ? (
           <TouchableOpacity
             activeOpacity={0.6}
-            onPress={() => handleStartJourneyDialog(data.id)}
+            onPress={() => handleStartJourneyDialog(data.id, 'started')}
             style={styles.startRideView}>
             <MontserratSemiBold style={styles.startRideText}>
               Start ride
             </MontserratSemiBold>
           </TouchableOpacity>
-        ) : data?.status == 'started' ? (
+        ) : data?.dispatchstatus == 'started' ? (
           <TouchableOpacity activeOpacity={0.8} style={styles.inProgressView}>
             <MontserratSemiBold style={styles.inProgressText}>
               In progress
@@ -148,81 +112,51 @@ const DashboardScreen = ({navigation}) => {
       </View>
     );
   };
-  const renderItem = (data) => {
-    if (data?.dispatch_orders && data?.dispatch_orders.length > 1) {
-      return (
-        <FlatList
-          data={data?.dispatch_orders}
-          keyExtractor={(item) => item.id}
-          renderItem={({item, index}) => renderBatchList(item, data)}
-          showsVerticalScrollIndicator={false}
-          ListHeaderComponent={renderHeaderCounter(data)}
-        />
-      );
-    } else {
-      let item = data?.dispatch_orders ? data?.dispatch_orders[0] : {};
+  const renderItem = (item) => {
+    let end = item?.customer?.address;
+    return (
+      <>
+        {renderHeaderCounter(item)}
+        {/* check if there is an item and the order status has been completed */}
 
-      if (item?.order) {
-        let address1 =
-          item?.order && item?.order?.customer
-            ? item?.order?.customer?.address
-            : address;
-        //console.log("address1", address1)
-        let end = address1;
-        return (
-          <>
-            {renderHeaderCounter(data)}
-
-            <OrderCardComponent
-              name={
-                item?.order?.customer?.name ? item?.order?.customer?.name : name
-              }
-              address={
-                item?.order?.customer ? item?.order?.customer?.address : address
-              }
-              phoneNumber={
-                item?.order?.customer
-                  ? item?.order?.customer?.phoneNumber
-                  : phone
-              }
-              status={item?.status}
-              date={getReadableDateAndTime(item?.updatedAt)}
-              onPressNavigate={createOpenLink({
-                travelType,
-                end,
-                provider: 'google',
-              })}
-              onPressCall={() =>
-                dialNumber(
-                  item?.order?.customer
-                    ? item?.order?.customer?.phoneNumber
-                    : phone,
-                )
-              }
-              statusMessage={data?.status}
-              pressStart={() => {
-                console.log('Start id is', data?.id);
-                handleStartJourneyDialog(data?.id);
-              }}
-              onPressView={() =>
-                navigation.navigate('OrderDetails', {
-                  data: data,
-                  batchId: item?.id,
-                  parentId: data?.id,
-                })
-              }
-            />
-          </>
-        );
-      }
-    }
+        {item && item?.order?.status == 'completed' ? (
+          <OrderCardComponent
+            name={item?.customer?.name ? item?.customer?.name : 'None'}
+            address={item?.customer ? item?.customer?.address : 'None'}
+            phoneNumber={item?.customer ? item?.customer?.phonenumber : 'None'}
+            status={item?.dispatchstatus}
+            date={getReadableDateAndTime(item?.updatedat)}
+            onPressNavigate={createOpenLink({
+              travelType,
+              end,
+              provider: 'google',
+            })}
+            onPressCall={() =>
+              dialNumber(item?.customer ? item?.customer?.phonenumber : 0)
+            }
+            statusMessage={item?.dispatchstatus}
+            pressStart={() => {
+              console.log('Start id is', item?.id);
+              handleStartJourneyDialog(item?.id, 'started');
+            }}
+            onPressView={() =>
+              navigation.navigate('OrderDetails', {
+                id: item.id,
+                data: item,
+                riderId: user?.rider?.id,
+              })
+            }
+          />
+        ) : null}
+      </>
+    );
   };
-
   /**
-   * Method to start the journey for an order or batch
-   * @param {id to patch} data_id
+   *
+   * @param {*} id item id
+   * @param {*} status status name
    */
-  const handleStartJourneyDialog = (data_id) => {
+  const handleStartJourneyDialog = (id, status) => {
     Alert.alert(
       'Trip Alert',
       'Do you want to start this trip?',
@@ -235,7 +169,7 @@ const DashboardScreen = ({navigation}) => {
         },
         {
           text: 'Yes',
-          onPress: () => startJourneyRequest(data_id),
+          onPress: () => startJourneyRequest(id, status),
         },
       ],
       {cancelable: true},
@@ -246,17 +180,18 @@ const DashboardScreen = ({navigation}) => {
    * start journey for an order
    * @param {parent dispatch id} dispatchId
    */
-  const startJourneyRequest = (dispatchId) => {
+  const startJourneyRequest = (dispatchId, statusValue) => {
     var payload = {
-      status: 'started',
-      //model: 'dispatch',
+      status: statusValue,
     };
-    dispatch(patchParentOrder(dispatchId, payload, true)).then((result) => {
+    dispatch(
+      updateDispatchStatus(dispatchId, payload, user?.rider?.id, false),
+    ).then((result) => {
       if (result) {
-        //filterDataResult();
       }
     });
   };
+
   const renderNoOrdersView = () => {
     return (
       <View style={styles.parentView}>

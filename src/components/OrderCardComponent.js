@@ -2,7 +2,6 @@
 import React from 'react';
 import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {COLOURS} from '../utils/Colours';
-import {SIZES} from '../utils/Sizes';
 import MontserratSemiBold from './Text/MontserratSemiBold';
 import {deviceHeight, deviceWidth, fp, hp} from '../utils/responsive-screen';
 import MontserratBold from './Text/MontserratBold';
@@ -33,7 +32,7 @@ const OrderCardComponent = ({
           <MontserratBold
             numberOfLines={3}
             style={styles.nameText(statusMessage)}>
-            {name || 'No name'}
+            {name.trim() || 'No name'}
           </MontserratBold>
 
           {status == 'completed' ? (
@@ -48,11 +47,11 @@ const OrderCardComponent = ({
         <MontserratMedium
           style={styles.addressView(statusMessage)}
           numberOfLines={4}>
-          {address ? address : 'No address'}
+          {address ? address.trim() : 'No address'}
         </MontserratMedium>
 
         <MontserratMedium style={styles.phoneNumber(statusMessage)}>
-          {phoneNumber || 'No phone number'}
+          {phoneNumber.trim() || 'No phone number'}
         </MontserratMedium>
 
         <View style={styles.timeClickView}>
@@ -111,7 +110,7 @@ const styles = StyleSheet.create({
   },
   mainView: (statusMessage) => ({
     width: deviceWidth * 0.88,
-    height: deviceHeight * 0.26,
+    //height: deviceHeight * 0.26,
     backgroundColor: statusMessage == 'started' ? COLOURS.blue : COLOURS.white,
     borderRadius: 43,
     paddingHorizontal: 30,
@@ -196,7 +195,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 7,
     justifyContent: 'space-between',
-    flex: 0.2,
+   // flex: 0.2,
   },
   nameText: (statusMessage) => ({
     fontSize: fp(18),
@@ -204,15 +203,15 @@ const styles = StyleSheet.create({
   }),
   phoneNumber: (statusMessage) => ({
     fontSize: fp(17),
-    flex: 0.2,
+    //flex: 0.2,
     color:
       statusMessage == 'started' ? COLOURS.lightGray : COLOURS.textInputColor,
   }),
   addressView: (statusMessage) => ({
     fontSize: fp(14),
-    paddingVertical: 5,
+    paddingVertical: 15,
     color: statusMessage == 'started' ? COLOURS.white : COLOURS.textInputColor,
-    flex: 0.5,
+    //flex: 0.5,
   }),
   dateView: (statusMessage) => ({
     fontSize: fp(14),

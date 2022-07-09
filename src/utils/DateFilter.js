@@ -1,4 +1,5 @@
 import moment from 'moment';
+import dateFormat, {masks} from 'dateformat';
 
 const dateFilterParser = (typeString) => {
   var type = typeString.toLowerCase();
@@ -15,5 +16,7 @@ const dateFilterParser = (typeString) => {
 
   return {startDate, endDate};
 };
-
-export {dateFilterParser};
+const getDateWithoutTime = date => {
+  return dateFormat(date, 'yyyy-mm-dd');
+};
+export {dateFilterParser,getDateWithoutTime};

@@ -1,9 +1,13 @@
-import client from '../../utils/Api';
-import {dateFilterParser} from '../../utils/DateFilter';
+import {getKitchenClient} from '../../utils/Api';
+import {KITCHEN_APP_TOKEN} from '../../utils/Constants';
+import {dateFilterParser, getDateWithoutTime} from '../../utils/DateFilter';
 import {handleError} from '../../utils/utils';
 
-export const getAllPendingOrders = () => {
+export const getAllPendingOrders = (riderId, date) => {
   console.log('About to get all pending orders');
+  getKitchenClient().defaults.headers.common[
+    'Authorization'
+  ] = `Bearer ${KITCHEN_APP_TOKEN}`;
 
   return async (dispatch) => {
     dispatch({
@@ -11,25 +15,39 @@ export const getAllPendingOrders = () => {
       loading: true,
       error: null,
     });
-    var getUrl = `/rider/dispatches/?$include=dispatch_orders.order.customer&$order=-updatedAt&status=started&status=pending`;
-    //var getUrl = `/rider-requests?status=started&status=pending`;
-    //console.log('geturl', getUrl);
-    return client
-      .get(getUrl)
+    var getUrl = `/dispatch/rider/orders`;
+    let payload = {
+      startDate: date + 'T00:00:01',
+      endDate: date + 'T23:59:00',
+      riderId: riderId,
+      status: 'pending',
+    };
+    
+    console.log('payload', payload);
+    return getKitchenClient()
+      .post(getUrl, payload)
       .then(async (response) => {
-        if (response.data) {
-          const {data, offset, limit, total} = response.data || [];
-
-          console.log('Pending Orders gotten successfully', data.length);
+        //console.log('bababa', response.data);
+        if (response?.data?.isSuccessful && response?.data?.results) {
+          console.log(
+            'Pending Orders gotten successfully',
+            response?.data?.results.length,
+          );
 
           dispatch({
             type: 'FETCH_ALL_PENDING_ORDERS_SUCCESS',
             loading: false,
-            pendingOrders: data,
-            //orders: data,
+            pendingOrders: response?.data?.results,
           });
 
-          return response.data;
+          return response?.data?.results;
+        } else {
+          alert(response?.data?.message);
+          dispatch({
+            type: 'FETCH_ALL_PENDING_ORDERS_FAILED',
+            loading: false,
+            error: error.message,
+          });
         }
       })
       .catch((error) => {
@@ -43,8 +61,12 @@ export const getAllPendingOrders = () => {
       });
   };
 };
-export const getAllCompletedOrders = () => {
+
+export const getAllCompletedOrders = (riderId, startDate, endDate) => {
   console.log('About to get all completed orders');
+  getKitchenClient().defaults.headers.common[
+    'Authorization'
+  ] = `Bearer ${KITCHEN_APP_TOKEN}`;
 
   return async (dispatch) => {
     dispatch({
@@ -52,26 +74,39 @@ export const getAllCompletedOrders = () => {
       loading: true,
       error: null,
     });
-    var getUrl = `/rider/dispatches/?$include=dispatch_orders.order.customer&status=completed&$order=-updatedAt`;
-    //console.log('geturl', getUrl);
-    return client
-      .get(getUrl)
+    var getUrl = `/dispatch/rider/orders`;
+    let payload = {
+      startDate: startDate + 'T00:00:01',
+      endDate: endDate + 'T23:59:00',
+      riderId: riderId,
+      status: 'completed',
+    };
+
+    console.log('payload', payload);
+    return getKitchenClient()
+      .post(getUrl, payload)
       .then(async (response) => {
-        if (response.data) {
-          const {data, offset, limit, total} = response?.data || [];
-          // console.log(total, limit, offset);
+        //console.log('bababa', response.data);
+        if (response?.data?.isSuccessful && response?.data?.results) {
           console.log(
-            'completed Orders gotten successfully',
-            data.length,
+            'Completed Orders gotten successfully',
+            response?.data?.results.length,
           );
 
           dispatch({
             type: 'FETCH_ALL_COMPLETED_ORDERS_SUCCESS',
             loading: false,
-            completedOrders: data,
+            data: response?.data?.results,
           });
 
-          return data;
+          return response?.data?.results;
+        } else {
+          alert(response?.data?.message);
+          dispatch({
+            type: 'FETCH_ALL_COMPLETED_ORDERS_FAILED',
+            loading: false,
+            error: error.message,
+          });
         }
       })
       .catch((error) => {
@@ -85,6 +120,7 @@ export const getAllCompletedOrders = () => {
       });
   };
 };
+
 export const getAllOrdersWithDate = (startDate = '', endDate = '') => {
   console.log('About to get all orders with date', startDate, endDate);
 
@@ -96,7 +132,7 @@ export const getAllOrdersWithDate = (startDate = '', endDate = '') => {
     });
     var getUrl = `/rider/dispatches/?$include=dispatch_orders.order.customer&status=completed&$order=-updatedAt&startDate=${startDate}&endDate=${endDate}`;
     console.log('geturl', getUrl);
-    return client
+    return getKitchenClient()
       .get(getUrl)
       .then(async (response) => {
         if (response.data) {
@@ -129,8 +165,8 @@ export const getAllOrdersWithDate = (startDate = '', endDate = '') => {
   };
 };
 
-export const getOrder = (parentId) => {
-  console.log('About to get single order with parent id ' + parentId);
+export const getOrder = (id) => {
+  console.log('About to get single dispatch order with id ' + id);
 
   return async (dispatch) => {
     dispatch({
@@ -138,23 +174,21 @@ export const getOrder = (parentId) => {
       loading: true,
       error: null,
     });
-    var getUrl = `/rider/dispatches/${parentId}?$include=dispatch_orders.order.customer`;
+    var getUrl = `/dispatch/status/${id}`;
     //console.log('geturl', getUrl);
-    return client
+    return getKitchenClient()
       .get(getUrl)
       .then(async (response) => {
-        if (response.data) {
-          const {data} = response || [];
-          // console.log(total, limit, offset);
+        if (response?.data?.isSuccessful && response?.data?.results) {
           console.log('single order gotten successfully');
 
           dispatch({
             type: 'GET_ORDER_SUCCESS',
             loading: false,
-            order: data,
+            order: response?.data?.results[0],
           });
 
-          return data;
+          return response?.data?.results[0];
         }
       })
       .catch((error) => {
@@ -169,7 +203,12 @@ export const getOrder = (parentId) => {
   };
 };
 
-export const patchParentOrder = (dispatchId, payload, isDashboard) => {
+export const updateDispatchStatus = (
+  dispatchId,
+  payload,
+  riderId,
+  isSingleOrder = false,
+) => {
   return (dispatch) => {
     console.log('About to patch dispatch with id ', dispatchId);
 
@@ -179,23 +218,31 @@ export const patchParentOrder = (dispatchId, payload, isDashboard) => {
       error: null,
     });
 
-    return client
-      .put(`/rider/dispatches/${dispatchId}`, payload)
+    return getKitchenClient()
+      .patch(`/dispatch/status/${dispatchId}`, payload)
       .then((response) => {
-        if (response.data) {
+        if (response?.data?.isSuccessful && response?.data?.results) {
           console.log('dispatch Order patched successfully');
 
           dispatch({
             type: 'PATCH_ORDER_SUCCESS',
             loading: false,
           });
-
-          if (isDashboard) {
-            dispatch(getAllPendingOrders());
+          if (!isSingleOrder) {
+            dispatch(
+              getAllPendingOrders(riderId, getDateWithoutTime(new Date())),
+            );
           } else {
             dispatch(getOrder(dispatchId));
           }
           return response.data;
+        } else {
+          alert(response.data.message);
+          dispatch({
+            type: 'PATCH_ORDER_FAILED',
+            loading: false,
+            error: error.message,
+          });
         }
       })
       .catch((error) => {
@@ -218,7 +265,7 @@ export const patchOrderMarkComplete = (orderId, payload) => {
       error: null,
     });
 
-    return client
+    return getKitchenClient()
       .put(`/rider/dispatch-orders/${orderId}`, payload)
       .then((response) => {
         if (response.data) {
@@ -252,7 +299,7 @@ export const patchEndTrip = (orderId, payload) => {
       error: null,
     });
 
-    return client
+    return getKitchenClient()
       .put(`/rider/dispatches/${orderId}`, payload)
       .then((response) => {
         if (response.data) {

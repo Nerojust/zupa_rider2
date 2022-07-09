@@ -7,7 +7,7 @@ import {horizontalAnimation} from './Animation';
 import {AuthStackNavigator} from './stacks/AuthNavigator';
 import {HomeStackNavigator} from './stacks/HomeNavigator';
 import {persistor, store} from '../store/root.store';
-import client from '../utils/Api';
+import client, { getZupaClient } from '../utils/Api';
 
 export const AppStack = () => {
   const AppNav = createStackNavigator();
@@ -15,7 +15,7 @@ export const AppStack = () => {
   const {accessToken} = useSelector((x) => x.users);
 
   //add to header
-  client.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+  getZupaClient().defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
   return (
     <Provider store={store}>
