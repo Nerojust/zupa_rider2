@@ -52,14 +52,14 @@ const LoginScreen = ({navigation}) => {
   const [isPhoneNumberFocused, setIsPhoneNumberFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
-  // const [phoneNumber, setPhoneNumber] = useState('');
-  // const [password, setPassword] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [password, setPassword] = useState('');
 
   // const [phoneNumber, setPhoneNumber] = useState('08027827837');
   // const [password, setPassword] = useState('2729');
 
-  const [phoneNumber, setPhoneNumber] = useState('09087654323');
-  const [password, setPassword] = useState('8940');
+  // const [phoneNumber, setPhoneNumber] = useState('09087654323');
+  // const [password, setPassword] = useState('8940');
 
   const handlePhoneNumber = (value) => {
     setPhoneNumber(value);
