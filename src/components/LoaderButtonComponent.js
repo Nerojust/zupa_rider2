@@ -1,8 +1,6 @@
-//import liraries
-import React, {Component} from 'react';
+// import libraries
+import React from 'react';
 import AnimateLoadingButton from 'react-native-animate-loading-button';
-import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
-import {Platform} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {COLOURS} from '../utils/Colours';
 import {deviceWidth, fp} from '../utils/responsive-screen';
@@ -12,28 +10,36 @@ const LoaderButtonComponent = ({
   buttonRef,
   title,
   method,
-  bgColour = COLOURS.blue,
-  radius = 10,
+  bgColour,
+  radius,
 }) => {
+  const buttonWidth = deviceWidth / 1.15;
+  const animationDurationWidth = Platform.OS === 'ios' ? 500 : 600;
+
   return (
-    <TouchableOpacity onPress={method.bind(this)} activeOpacity={0.6}>
+    <TouchableOpacity onPress={() => method()} activeOpacity={0.6}>
       <AnimateLoadingButton
         ref={(c) => (buttonRef.current = c)}
-        width={deviceWidth / 1.15}
+        width={buttonWidth}
         height={50}
         title={title}
-       // onPress={null}
         titleFontFamily={'Montserrat-Bold'}
         titleFontSize={fp(15)}
         titleColor={COLOURS.white}
         activityIndicatorColor={COLOURS.white}
         backgroundColor={bgColour}
         borderRadius={radius}
-        animationDurationWidth={Platform.OS == 'ios' ? 500 : 600}
+        animationDurationWidth={animationDurationWidth}
       />
     </TouchableOpacity>
   );
 };
 
-//make this component available to the app
+// set default props
+LoaderButtonComponent.defaultProps = {
+  bgColour: COLOURS.blue,
+  radius: 10,
+};
+
+// make this component available to the app
 export default LoaderButtonComponent;
