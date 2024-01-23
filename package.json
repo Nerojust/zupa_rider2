@@ -9,6 +9,7 @@
     "iphone11 pro": "react-native run-ios --simulator='iPhone 11 Pro'",
     "iphone11 pro max": "react-native run-ios --port 8088 --simulator='iPhone 11 Pro Max'",
     "iphone12 pro": "react-native run-ios --simulator='iPhone 12 Pro'",
+    "iphone15 pro": "react-native run-ios --simulator='iPhone 15'",
     "ios": "react-native run-ios",
     "start": "react-native start --port 8088",
     "debug": "react-native run-android --variant=debug",

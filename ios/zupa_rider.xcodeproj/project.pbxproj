@@ -15,10 +15,11 @@
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* zupa_riderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* zupa_riderTests.m */; };
-		73D479183C01B8AD17191EBB /* libPods-zupa_rider-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FBAFC1674DD5985AE8008AFC /* libPods-zupa_rider-tvOSTests.a */; };
+		6CAC28C63F1D7A63162E00AF /* libPods-zupa_rider-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F0668530A943D0C9BD651492 /* libPods-zupa_rider-tvOS.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		A53BD970010630A8FB88A307 /* libPods-zupa_rider-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C68E2222E290EC53C1FBA02 /* libPods-zupa_rider-tvOS.a */; };
-		B464C5D1FB0D5822A5E95A33 /* libPods-zupa_rider.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F09371B46E264BB6451E40B2 /* libPods-zupa_rider.a */; };
+		8298195265766C0A98FF75E5 /* libPods-zupa_rider-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B4526206A9108FF109A2957 /* libPods-zupa_rider-tvOSTests.a */; };
+		B3CA983749ED97023D4773D7 /* libPods-zupa_rider.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06F8EE7B54EBEEC345BE7DE2 /* libPods-zupa_rider.a */; };
+		B7FA3ED917A5DADAF4B54CB6 /* libPods-zupa_rider-zupa_riderTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C1727942FCCB6CD29305BA86 /* libPods-zupa_rider-zupa_riderTests.a */; };
 		C3FE0F9F25F9283A001AD3C6 /* roboto_black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C3FE0F9025F92839001AD3C6 /* roboto_black.ttf */; };
 		C3FE0FA025F9283A001AD3C6 /* roboto_regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C3FE0F9125F9283A001AD3C6 /* roboto_regular.ttf */; };
 		C3FE0FA125F9283A001AD3C6 /* Montserrat-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C3FE0F9225F9283A001AD3C6 /* Montserrat-Thin.ttf */; };
@@ -34,7 +35,6 @@
 		C3FE0FAB25F9283A001AD3C6 /* Montserrat-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C3FE0F9C25F9283A001AD3C6 /* Montserrat-Black.ttf */; };
 		C3FE0FAC25F9283A001AD3C6 /* roboto_thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C3FE0F9D25F9283A001AD3C6 /* roboto_thin.ttf */; };
 		C3FE0FAD25F9283A001AD3C6 /* Montserrat-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C3FE0F9E25F9283A001AD3C6 /* Montserrat-Light.ttf */; };
-		F8834BD11D20BA929E89A027 /* libPods-zupa_rider-zupa_riderTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B748564097FCB50B2822951 /* libPods-zupa_rider-zupa_riderTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,23 +59,25 @@
 		00E356EE1AD99517003FC87E /* zupa_riderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = zupa_riderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* zupa_riderTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = zupa_riderTests.m; sourceTree = "<group>"; };
+		06F8EE7B54EBEEC345BE7DE2 /* libPods-zupa_rider.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-zupa_rider.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		09B258C2F575A31ED64B26A1 /* Pods-zupa_rider-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-zupa_rider-tvOS.release.xcconfig"; path = "Target Support Files/Pods-zupa_rider-tvOS/Pods-zupa_rider-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* Zupa Rider.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Zupa Rider.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = zupa_rider/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = zupa_rider/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = zupa_rider/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = zupa_rider/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = zupa_rider/main.m; sourceTree = "<group>"; };
-		1C68E2222E290EC53C1FBA02 /* libPods-zupa_rider-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-zupa_rider-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C8D265BCE5B61E7902A347C /* Pods-zupa_rider.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-zupa_rider.debug.xcconfig"; path = "Target Support Files/Pods-zupa_rider/Pods-zupa_rider.debug.xcconfig"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* zupa_rider-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "zupa_rider-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* zupa_rider-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "zupa_rider-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		30CA4AD8F76A32AE9A3468E3 /* Pods-zupa_rider-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-zupa_rider-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-zupa_rider-tvOSTests/Pods-zupa_rider-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
-		4995DADB09713699A6DB41B3 /* Pods-zupa_rider-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-zupa_rider-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-zupa_rider-tvOSTests/Pods-zupa_rider-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
-		52F122EE45B3900C0CF42503 /* Pods-zupa_rider-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-zupa_rider-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-zupa_rider-tvOS/Pods-zupa_rider-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
-		6B748564097FCB50B2822951 /* libPods-zupa_rider-zupa_riderTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-zupa_rider-zupa_riderTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		6FB2A3E3071F07032DA8E07A /* Pods-zupa_rider-zupa_riderTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-zupa_rider-zupa_riderTests.release.xcconfig"; path = "Target Support Files/Pods-zupa_rider-zupa_riderTests/Pods-zupa_rider-zupa_riderTests.release.xcconfig"; sourceTree = "<group>"; };
+		43962A3B9A162AFB38F43D4B /* Pods-zupa_rider-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-zupa_rider-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-zupa_rider-tvOSTests/Pods-zupa_rider-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		55C6A94A4F08177B7A653B15 /* Pods-zupa_rider.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-zupa_rider.release.xcconfig"; path = "Target Support Files/Pods-zupa_rider/Pods-zupa_rider.release.xcconfig"; sourceTree = "<group>"; };
+		7B4526206A9108FF109A2957 /* libPods-zupa_rider-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-zupa_rider-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = zupa_rider/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		8F5A9C3784C4326F90DE193C /* Pods-zupa_rider-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-zupa_rider-tvOS.release.xcconfig"; path = "Target Support Files/Pods-zupa_rider-tvOS/Pods-zupa_rider-tvOS.release.xcconfig"; sourceTree = "<group>"; };
-		9980AB9E61AF2F41C1A63519 /* Pods-zupa_rider-zupa_riderTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-zupa_rider-zupa_riderTests.debug.xcconfig"; path = "Target Support Files/Pods-zupa_rider-zupa_riderTests/Pods-zupa_rider-zupa_riderTests.debug.xcconfig"; sourceTree = "<group>"; };
+		87F32D8B8F9423C5E66591B9 /* Pods-zupa_rider-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-zupa_rider-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-zupa_rider-tvOS/Pods-zupa_rider-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		8DC832001D6D6206106F279F /* Pods-zupa_rider-zupa_riderTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-zupa_rider-zupa_riderTests.release.xcconfig"; path = "Target Support Files/Pods-zupa_rider-zupa_riderTests/Pods-zupa_rider-zupa_riderTests.release.xcconfig"; sourceTree = "<group>"; };
+		ABB0EB8BC7E5CBB0BB6D1AF4 /* Pods-zupa_rider-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-zupa_rider-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-zupa_rider-tvOSTests/Pods-zupa_rider-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		C1727942FCCB6CD29305BA86 /* libPods-zupa_rider-zupa_riderTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-zupa_rider-zupa_riderTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3FE0F9025F92839001AD3C6 /* roboto_black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = roboto_black.ttf; path = ../src/assets/fonts/roboto_black.ttf; sourceTree = "<group>"; };
 		C3FE0F9125F9283A001AD3C6 /* roboto_regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = roboto_regular.ttf; path = ../src/assets/fonts/roboto_regular.ttf; sourceTree = "<group>"; };
 		C3FE0F9225F9283A001AD3C6 /* Montserrat-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Montserrat-Thin.ttf"; path = "../src/assets/fonts/Montserrat-Thin.ttf"; sourceTree = "<group>"; };
@@ -91,12 +93,10 @@
 		C3FE0F9C25F9283A001AD3C6 /* Montserrat-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Montserrat-Black.ttf"; path = "../src/assets/fonts/Montserrat-Black.ttf"; sourceTree = "<group>"; };
 		C3FE0F9D25F9283A001AD3C6 /* roboto_thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = roboto_thin.ttf; path = ../src/assets/fonts/roboto_thin.ttf; sourceTree = "<group>"; };
 		C3FE0F9E25F9283A001AD3C6 /* Montserrat-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Montserrat-Light.ttf"; path = "../src/assets/fonts/Montserrat-Light.ttf"; sourceTree = "<group>"; };
-		D2FA15E2FAC12F2CCAF48CCE /* Pods-zupa_rider.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-zupa_rider.release.xcconfig"; path = "Target Support Files/Pods-zupa_rider/Pods-zupa_rider.release.xcconfig"; sourceTree = "<group>"; };
+		E867556986DB2EF67CF68AB4 /* Pods-zupa_rider-zupa_riderTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-zupa_rider-zupa_riderTests.debug.xcconfig"; path = "Target Support Files/Pods-zupa_rider-zupa_riderTests/Pods-zupa_rider-zupa_riderTests.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
-		F09371B46E264BB6451E40B2 /* libPods-zupa_rider.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-zupa_rider.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		FBAFC1674DD5985AE8008AFC /* libPods-zupa_rider-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-zupa_rider-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		FEF7AC95CFAA083099DDF9A4 /* Pods-zupa_rider.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-zupa_rider.debug.xcconfig"; path = "Target Support Files/Pods-zupa_rider/Pods-zupa_rider.debug.xcconfig"; sourceTree = "<group>"; };
+		F0668530A943D0C9BD651492 /* libPods-zupa_rider-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-zupa_rider-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,7 +104,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F8834BD11D20BA929E89A027 /* libPods-zupa_rider-zupa_riderTests.a in Frameworks */,
+				B7FA3ED917A5DADAF4B54CB6 /* libPods-zupa_rider-zupa_riderTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,7 +112,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B464C5D1FB0D5822A5E95A33 /* libPods-zupa_rider.a in Frameworks */,
+				B3CA983749ED97023D4773D7 /* libPods-zupa_rider.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -120,7 +120,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A53BD970010630A8FB88A307 /* libPods-zupa_rider-tvOS.a in Frameworks */,
+				6CAC28C63F1D7A63162E00AF /* libPods-zupa_rider-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -128,7 +128,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				73D479183C01B8AD17191EBB /* libPods-zupa_rider-tvOSTests.a in Frameworks */,
+				8298195265766C0A98FF75E5 /* libPods-zupa_rider-tvOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,14 +155,14 @@
 		0C6EC04F392F75DC97EE3041 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				FEF7AC95CFAA083099DDF9A4 /* Pods-zupa_rider.debug.xcconfig */,
-				D2FA15E2FAC12F2CCAF48CCE /* Pods-zupa_rider.release.xcconfig */,
-				52F122EE45B3900C0CF42503 /* Pods-zupa_rider-tvOS.debug.xcconfig */,
-				8F5A9C3784C4326F90DE193C /* Pods-zupa_rider-tvOS.release.xcconfig */,
-				30CA4AD8F76A32AE9A3468E3 /* Pods-zupa_rider-tvOSTests.debug.xcconfig */,
-				4995DADB09713699A6DB41B3 /* Pods-zupa_rider-tvOSTests.release.xcconfig */,
-				9980AB9E61AF2F41C1A63519 /* Pods-zupa_rider-zupa_riderTests.debug.xcconfig */,
-				6FB2A3E3071F07032DA8E07A /* Pods-zupa_rider-zupa_riderTests.release.xcconfig */,
+				2C8D265BCE5B61E7902A347C /* Pods-zupa_rider.debug.xcconfig */,
+				55C6A94A4F08177B7A653B15 /* Pods-zupa_rider.release.xcconfig */,
+				87F32D8B8F9423C5E66591B9 /* Pods-zupa_rider-tvOS.debug.xcconfig */,
+				09B258C2F575A31ED64B26A1 /* Pods-zupa_rider-tvOS.release.xcconfig */,
+				43962A3B9A162AFB38F43D4B /* Pods-zupa_rider-tvOSTests.debug.xcconfig */,
+				ABB0EB8BC7E5CBB0BB6D1AF4 /* Pods-zupa_rider-tvOSTests.release.xcconfig */,
+				E867556986DB2EF67CF68AB4 /* Pods-zupa_rider-zupa_riderTests.debug.xcconfig */,
+				8DC832001D6D6206106F279F /* Pods-zupa_rider-zupa_riderTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -186,10 +186,10 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				F09371B46E264BB6451E40B2 /* libPods-zupa_rider.a */,
-				1C68E2222E290EC53C1FBA02 /* libPods-zupa_rider-tvOS.a */,
-				FBAFC1674DD5985AE8008AFC /* libPods-zupa_rider-tvOSTests.a */,
-				6B748564097FCB50B2822951 /* libPods-zupa_rider-zupa_riderTests.a */,
+				06F8EE7B54EBEEC345BE7DE2 /* libPods-zupa_rider.a */,
+				F0668530A943D0C9BD651492 /* libPods-zupa_rider-tvOS.a */,
+				7B4526206A9108FF109A2957 /* libPods-zupa_rider-tvOSTests.a */,
+				C1727942FCCB6CD29305BA86 /* libPods-zupa_rider-zupa_riderTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -257,11 +257,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "zupa_riderTests" */;
 			buildPhases = (
-				D7E51E8D983A05447A1284C5 /* [CP] Check Pods Manifest.lock */,
+				3F6E67F4EEB7958E993EA8F6 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				9DA219AD0F10F3A0CD1DBC38 /* [CP] Copy Pods Resources */,
+				50F248198CF3049DC981F2C1 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -277,13 +277,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "zupa_rider" */;
 			buildPhases = (
-				F28C26D789FE8F2C205252E5 /* [CP] Check Pods Manifest.lock */,
+				66888DBA0711D1010484AB4D /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				044819E67DEAA7084026E9C3 /* [CP] Copy Pods Resources */,
+				C3F274F231CC22F886E0C279 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -298,7 +298,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "zupa_rider-tvOS" */;
 			buildPhases = (
-				13B503EFB2A8E9E32D855B0D /* [CP] Check Pods Manifest.lock */,
+				19866C4FF5803323C818016F /* [CP] Check Pods Manifest.lock */,
 				FD10A7F122414F3F0027D42C /* Start Packager */,
 				2D02E4771E0B4A5D006451C7 /* Sources */,
 				2D02E4781E0B4A5D006451C7 /* Frameworks */,
@@ -318,7 +318,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "zupa_rider-tvOSTests" */;
 			buildPhases = (
-				58D55A9A770115AC232B01F0 /* [CP] Check Pods Manifest.lock */,
+				FFC3782D2D03AA7252C41C12 /* [CP] Check Pods Manifest.lock */,
 				2D02E48C1E0B4A5D006451C7 /* Sources */,
 				2D02E48D1E0B4A5D006451C7 /* Frameworks */,
 				2D02E48E1E0B4A5D006451C7 /* Resources */,
@@ -445,25 +445,7 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
-		044819E67DEAA7084026E9C3 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-zupa_rider/Pods-zupa_rider-resources.sh",
-				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-zupa_rider/Pods-zupa_rider-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		13B503EFB2A8E9E32D855B0D /* [CP] Check Pods Manifest.lock */ = {
+		19866C4FF5803323C818016F /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -499,47 +481,7 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
-		58D55A9A770115AC232B01F0 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-zupa_rider-tvOSTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		9DA219AD0F10F3A0CD1DBC38 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-zupa_rider-zupa_riderTests/Pods-zupa_rider-zupa_riderTests-resources.sh",
-				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-zupa_rider-zupa_riderTests/Pods-zupa_rider-zupa_riderTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D7E51E8D983A05447A1284C5 /* [CP] Check Pods Manifest.lock */ = {
+		3F6E67F4EEB7958E993EA8F6 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -561,7 +503,25 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F28C26D789FE8F2C205252E5 /* [CP] Check Pods Manifest.lock */ = {
+		50F248198CF3049DC981F2C1 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-zupa_rider-zupa_riderTests/Pods-zupa_rider-zupa_riderTests-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-zupa_rider-zupa_riderTests/Pods-zupa_rider-zupa_riderTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		66888DBA0711D1010484AB4D /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -581,6 +541,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C3F274F231CC22F886E0C279 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-zupa_rider/Pods-zupa_rider-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-zupa_rider/Pods-zupa_rider-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -619,6 +597,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		FFC3782D2D03AA7252C41C12 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-zupa_rider-tvOSTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -676,7 +676,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9980AB9E61AF2F41C1A63519 /* Pods-zupa_rider-zupa_riderTests.debug.xcconfig */;
+			baseConfigurationReference = E867556986DB2EF67CF68AB4 /* Pods-zupa_rider-zupa_riderTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -699,7 +699,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6FB2A3E3071F07032DA8E07A /* Pods-zupa_rider-zupa_riderTests.release.xcconfig */;
+			baseConfigurationReference = 8DC832001D6D6206106F279F /* Pods-zupa_rider-zupa_riderTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -719,7 +719,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FEF7AC95CFAA083099DDF9A4 /* Pods-zupa_rider.debug.xcconfig */;
+			baseConfigurationReference = 2C8D265BCE5B61E7902A347C /* Pods-zupa_rider.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -744,7 +744,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D2FA15E2FAC12F2CCAF48CCE /* Pods-zupa_rider.release.xcconfig */;
+			baseConfigurationReference = 55C6A94A4F08177B7A653B15 /* Pods-zupa_rider.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -767,7 +767,7 @@
 		};
 		2D02E4971E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 52F122EE45B3900C0CF42503 /* Pods-zupa_rider-tvOS.debug.xcconfig */;
+			baseConfigurationReference = 87F32D8B8F9423C5E66591B9 /* Pods-zupa_rider-tvOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -795,7 +795,7 @@
 		};
 		2D02E4981E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8F5A9C3784C4326F90DE193C /* Pods-zupa_rider-tvOS.release.xcconfig */;
+			baseConfigurationReference = 09B258C2F575A31ED64B26A1 /* Pods-zupa_rider-tvOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -823,7 +823,7 @@
 		};
 		2D02E4991E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 30CA4AD8F76A32AE9A3468E3 /* Pods-zupa_rider-tvOSTests.debug.xcconfig */;
+			baseConfigurationReference = 43962A3B9A162AFB38F43D4B /* Pods-zupa_rider-tvOSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -850,7 +850,7 @@
 		};
 		2D02E49A1E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4995DADB09713699A6DB41B3 /* Pods-zupa_rider-tvOSTests.release.xcconfig */;
+			baseConfigurationReference = ABB0EB8BC7E5CBB0BB6D1AF4 /* Pods-zupa_rider-tvOSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
