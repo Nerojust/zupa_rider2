@@ -1,5 +1,5 @@
-import { PropTypes } from 'prop-types';
-import React, { Component, useState, useEffect } from 'react';
+import {PropTypes} from 'prop-types';
+import React, {Component, useState, useEffect} from 'react';
 import {
   Animated,
   Dimensions,
@@ -7,22 +7,24 @@ import {
   Platform,
   StyleSheet,
   TextInput,
-  UIManager
+  UIManager,
 } from 'react-native';
 
-export const KeyboardObserverComponent = ({ children }) => {
-  const { State: TextInputState } = TextInput;
+// Import necessary libraries
+
+export const KeyboardObserverComponent = ({children}) => {
+  const {State: TextInputState} = TextInput;
   const [shift, setShift] = useState(new Animated.Value(0));
 
   useEffect(() => {
-    const showSubscription = Keyboard.addListener('keyboardDidShow', (e) => {
-      //setKeyboardStatus('Keyboard Shown');
-      handleKeyboardDidShow(e);
-    });
-    const hideSubscription = Keyboard.addListener('keyboardDidHide', (e) => {
-      //setKeyboardStatus('Keyboard Hidden');
-      handleKeyboardDidHide(e);
-    });
+    const showSubscription = Keyboard.addListener(
+      'keyboardDidShow',
+      handleKeyboardDidShow,
+    );
+    const hideSubscription = Keyboard.addListener(
+      'keyboardDidHide',
+      handleKeyboardDidHide,
+    );
 
     return () => {
       showSubscription.remove();
@@ -31,57 +33,63 @@ export const KeyboardObserverComponent = ({ children }) => {
   }, []);
 
   const handleKeyboardDidShow = (event) => {
-    const { height: windowHeight } = Dimensions.get('window');
-    const keyboardHeight = event.endCoordinates.height;
-    const currentlyFocusedFieldRef = TextInputState.currentlyFocusedInput();
-    // console.log(
-    //   'before ui measure',
-    //   windowHeight,
-    //   'keyboardheight',
-    //   keyboardHeight,
-    //   'currentlyFocusedFieldRef ',
-    //   currentlyFocusedFieldRef
-    // );
-    try {
-      if (currentlyFocusedFieldRef) {
-        currentlyFocusedFieldRef.measure(
-          (originX, originY, width, height, pageX, pageY) => {
-            const fieldHeight = height;
-            const fieldTop = pageY;
-            const gap =
-              windowHeight - keyboardHeight - (fieldTop + fieldHeight);
-            if (gap >= 0) {
-              return;
-            }
-            console.log('mesure height', height, 'gap', gap);
-            Animated.timing(shift, {
-              toValue: Platform.OS == 'ios' ? gap - 20 : gap + 60,
-              duration: 300,
-              useNativeDriver: true
-            }).start();
-          }
-        );
+    // Introduce a slight delay
+    setTimeout(() => {
+      const {height: windowHeight} = Dimensions.get('window');
+      const keyboardHeight = event.endCoordinates.height;
+      const currentlyFocusedFieldRef = TextInputState.currentlyFocusedInput();
+
+      try {
+        if (currentlyFocusedFieldRef) {
+          currentlyFocusedFieldRef.measure(
+            (originX, originY, width, height, pageX, pageY) => {
+              const fieldHeight = height;
+              const fieldTop = pageY;
+              const gap =
+                windowHeight - keyboardHeight - (fieldTop + fieldHeight);
+
+              if (gap >= 0) {
+                return;
+              }
+
+              // Use requestAnimationFrame for smoother animation
+              requestAnimationFrame(() => {
+                Animated.timing(shift, {
+                  toValue: Platform.OS === 'ios' ? gap - 20 : gap + 60,
+                  duration: 300,
+                  useNativeDriver: true,
+                }).start();
+              });
+            },
+          );
+        }
+      } catch (error) {
+        console.log('keyboard open error', error);
       }
-    } catch (error) {
-      console.log('keyboard open error', error);
-    }
+    }, 100); // Adjust the delay as needed
   };
 
   const handleKeyboardDidHide = () => {
-    try {
-      Animated.timing(shift, {
-        toValue: 0,
-        duration: 120,
-        useNativeDriver: true
-      }).start();
-    } catch (error) {
-      console.log('keyboard hide error', error);
-    }
+    // Introduce a slight delay
+    setTimeout(() => {
+      try {
+        // Use requestAnimationFrame for smoother animation
+        requestAnimationFrame(() => {
+          Animated.timing(shift, {
+            toValue: 0,
+            duration: 120,
+            useNativeDriver: true,
+          }).start();
+        });
+      } catch (error) {
+        console.log('keyboard hide error', error);
+      }
+    }, 100); // Adjust the delay as needed
   };
+
   return (
     <Animated.View
-      style={[styles.container, { transform: [{ translateY: shift }] }]}
-    >
+      style={[styles.container, {transform: [{translateY: shift}]}]}>
       {children}
     </Animated.View>
   );
@@ -93,7 +101,6 @@ const styles = StyleSheet.create({
     left: 0,
     // position: "absolute",
     //top: 0,
-    width: '100%'
-  }
+    width: '100%',
+  },
 });
-
